@@ -1,10 +1,10 @@
-import NavigationMenu from './NavigationMenu.js';
+import NavigationHandle from './Navigation/NavigationHandle.js';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <NavigationMenu/>
+      <NavigationHandle/>
       <h1>TV Guide</h1>
     </div>
   );
