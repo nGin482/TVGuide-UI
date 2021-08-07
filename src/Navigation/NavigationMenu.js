@@ -9,12 +9,12 @@ const NavigationMenu = () => {
                 {routes.map(route => {
                     if (route.path === '/') {
                         return (
-                            <li className="nav-link"><NavLink activeClassName="active" exact to={route.path}>{route.text}</NavLink></li>
+                            <li className="nav-link" key={route.text}><NavLink activeClassName="active" exact to={route.path}>{route.text}</NavLink></li>
                         )
                     }
                     else {
                         return (
-                            <li className="nav-link"><NavLink activeClassName="active" to={route.path}>{route.text}</NavLink></li>
+                            <li className="nav-link" key={route.text}><NavLink activeClassName="active" to={route.path}>{route.text}</NavLink></li>
                         )
                     }
                 })}
