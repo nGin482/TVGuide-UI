@@ -5,7 +5,6 @@ function App() {
   return (
     <div className="App">
       <NavigationHandle/>
-      <h1>TV Guide</h1>
     </div>
   );
 }
