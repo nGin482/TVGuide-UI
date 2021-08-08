@@ -33,3 +33,7 @@
     background-color: gray;
     cursor: default;
 }
+
+#message {
+    margin-left: 5%;
+}

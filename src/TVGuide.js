@@ -14,8 +14,12 @@ const TVGuide = () => {
             console.log(data)
             setGuide(data)
         }).catch(err => {
-            console.log(err)
-            setMessage('There is an error happening')
+            if (err.response.status === 404) {
+                setMessage(err.response.data.message)
+            }
+            else {
+                setMessage('There is an error happening')
+            }
         })
     }, []
     )
@@ -78,7 +82,7 @@ const TVGuide = () => {
     const display = () => {
         if (message !== '') {
             return (
-                <p>{message}</p>
+                <blockquote id="message">{message}</blockquote>
             )
         }
         else if (guide) {
