@@ -19,25 +19,6 @@ const TVGuide = () => {
     }, []
     )
 
-    const renderGuideData = () => {
-        return (
-            <div id="guide-data">
-                <div id="Free to Air">
-                    <h6>Free to Air</h6>
-                    {guide['FTA'].map(show => (
-                        <blockquote className="show" key={show.time}>{showDetails(show)}</blockquote>
-                    ))}
-                </div>
-                <div id="BBC">
-                    <h6>BBC Channels</h6>
-                    {guide['BBC'].map(show => (
-                        <blockquote className="show" key={show.time}>{showDetails(show)}</blockquote>
-                    ))}
-                </div>
-            </div>
-        )
-    }
-
     const showDetails = (show) => {
         let showMessage = show.time + ': ' + show.title + ' is on ' + show.channel
 
@@ -58,28 +39,53 @@ const TVGuide = () => {
         return showMessage
     }
 
+    const renderGuideData = () => {
+        return (
+            <div id="guide-data">
+                <div className="service" id="Free to Air">
+                    <h6 className="service-header">Free to Air</h6>
+                    {guide['FTA'].map(show => (
+                        <blockquote className="show" key={show.time}>{showDetails(show)}</blockquote>
+                    ))}
+                </div>
+                <div className="service" id="BBC">
+                    <h6 className="service-header">BBC Channels</h6>
+                    {guide['BBC'].map(show => (
+                        <blockquote className="show" key={show.time}>{showDetails(show)}</blockquote>
+                    ))}
+                </div>
+            </div>
+        )
+    }
+
     // const handleClick = () => {
     //     history.push('/shows')
     // }
 
+    const display = () => {
+        if (message !== '') {
+            return (
+                <p>{message}</p>
+            )
+        }
+        else if (guide) {
+            return (
+                renderGuideData()
+            )
+        }
+        else {
+            return (
+                <blockquote>Waiting for the TV guide data to be retrieved ...</blockquote>
+            )
+        }
+    }
 
-    if (guide) {
-        return (
-            <div id="tv-guide">
-                <h4>Guide</h4>
-                {message === '' ? renderGuideData() : <p>{message}</p>}
-            </div>
-        )
-    }
-    else {
-        return (
-            <div id="tv-guide">
-                <h4>Guide</h4>
-                {message === '' ? <blockquote>Waiting for the TV guide data to be retrieved ...</blockquote> : <p>{message}</p>}
-                
-            </div>
-        )
-    }
+    return (
+        <div id="tv-guide">
+            <h4 id="tv-guide-header">Guide</h4>
+            {display()}
+        </div>
+    )
 }
 
 export default TVGuide;

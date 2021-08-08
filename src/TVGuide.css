@@ -1,3 +1,14 @@
 #tv-guide {
     border: solid black 1px;
+    max-width: 80%;
+    margin: 0 auto;
+}
+
+.service-header {
+    text-align: left;
+    margin-left: 5%;
+}
+
+.show {
+    text-align: left;
 }
