@@ -15,7 +15,7 @@ const TVGuide = () => {
             setGuide(data)
         }).catch(err => {
             console.log(err)
-            setMessage(err)
+            setMessage('There is an error happening')
         })
     }, []
     )
@@ -96,16 +96,18 @@ const TVGuide = () => {
     return (
         <div id="tv-guide">
             <h4 id="tv-guide-header">Guide</h4>
-            {display()}
-            <div id="service-filter">
-                <div className="select-service" id="select-fta" onClick={() => setService('FTA')}>
-                    Free to Air
-                </div>
-                <div className="select-service" id="select-bbc" onClick={() => setService('BBC')}>
-                    BBC Channels
-                </div>
-                <div className="select-service" id="select-bbc" onClick={() => setService('All')}>
-                    All
+            <div id="guide-content">
+                {display()}
+                <div id="service-filter">
+                    <div className="select-service" id="select-fta" onClick={() => setService('FTA')}>
+                        Free to Air
+                    </div>
+                    <div className="select-service" id="select-bbc" onClick={() => setService('BBC')}>
+                        BBC Channels
+                    </div>
+                    <div className="select-service" id="select-bbc" onClick={() => setService('All')}>
+                        All
+                    </div>
                 </div>
             </div>
         </div>

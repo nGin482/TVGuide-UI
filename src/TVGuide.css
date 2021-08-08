@@ -12,3 +12,24 @@
 .show {
     text-align: left;
 }
+
+#guide-content {
+    display: flex;
+}
+
+#service-filter {
+    width: 10%;
+    margin: 0 auto;
+    right: 10%;
+}
+
+.select-service {
+    border: solid black 1px;
+    margin-bottom: 20%;
+    padding: 3%;
+}
+
+.select-service:hover {
+    background-color: gray;
+    cursor: default;
+}
