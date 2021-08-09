@@ -87,7 +87,11 @@ const TVGuide = () => {
         }
         else if (guide) {
             return (
-                renderGuideData()
+                <div id="guide-content">
+                    {renderGuideData()}
+                    {filters()}
+                </div>
+                
             )
         }
         else {
@@ -97,23 +101,24 @@ const TVGuide = () => {
         }
     }
 
+    const filters = () => (
+        <div id="service-filter">
+            <div className="select-service" id="select-fta" onClick={() => setService('FTA')}>
+                Free to Air
+            </div>
+            <div className="select-service" id="select-bbc" onClick={() => setService('BBC')}>
+                BBC Channels
+            </div>
+            <div className="select-service" id="select-bbc" onClick={() => setService('All')}>
+                All
+            </div>
+        </div>
+    )
+
     return (
         <div id="tv-guide">
             <h4 id="tv-guide-header">Guide</h4>
-            <div id="guide-content">
-                {display()}
-                <div id="service-filter">
-                    <div className="select-service" id="select-fta" onClick={() => setService('FTA')}>
-                        Free to Air
-                    </div>
-                    <div className="select-service" id="select-bbc" onClick={() => setService('BBC')}>
-                        BBC Channels
-                    </div>
-                    <div className="select-service" id="select-bbc" onClick={() => setService('All')}>
-                        All
-                    </div>
-                </div>
-            </div>
+            {display()}
         </div>
     )
 }
