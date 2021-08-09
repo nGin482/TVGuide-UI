@@ -14,10 +14,11 @@ const ShowList = () => {
     )
 
     return (
-        <div>
-            Show List
+        <div id="list-of-shows">
             {showList.map(show => (
-                <blockquote>{show}</blockquote>
+                <div className="show" key={show}>
+                    <blockquote className="show-header">{show}</blockquote>
+                </div>
             ))}
         </div>
     )
