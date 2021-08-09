@@ -1,28 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 // import { useHistory } from "react-router";
-import requests from "./requests/requests.js";
 import './TVGuide.css';
 
-const TVGuide = () => {
-    const [guide, setGuide] = useState(null)
-    const [message, setMessage] = useState('')
+const TVGuide = ({guide, message}) => {
     const [service, setService] = useState('All')
     // const history = useHistory()
-    
-    useEffect(() => {
-        requests.getGuide().then(data => {
-            console.log(data)
-            setGuide(data)
-        }).catch(err => {
-            if (err.response.status === 404) {
-                setMessage(err.response.data.message)
-            }
-            else {
-                setMessage('There is an error happening')
-            }
-        })
-    }, []
-    )
 
     const showDetails = (show) => {
         let showMessage = show.time + ': ' + show.title + ' is on ' + show.channel
