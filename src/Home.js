@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import TVGuide from "./TVGuide.js";
+import Events from "./Events.js";
 import requests from "./requests/requests.js";
 
 const Home = () => {
@@ -35,6 +36,7 @@ const Home = () => {
         <div id="home">
             <h1>TV Guide</h1>
             <TVGuide guide={guide} message={guideError}/>
+            <Events events={events} error={eventsError}/>
         </div>
     )
 }
