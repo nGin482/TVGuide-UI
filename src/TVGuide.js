@@ -33,13 +33,13 @@ const TVGuide = ({guide, message}) => {
                     <div className="service" id="Free to Air">
                         <h6 className="service-header">Free to Air</h6>
                         {guide['FTA'].map(show => (
-                            <blockquote className="show" key={show.time}>{showDetails(show)}</blockquote>
+                            <blockquote className="show" key={show.time+show.channel}>{showDetails(show)}</blockquote>
                         ))}
                     </div>
                     <div className="service" id="BBC">
                         <h6 className="service-header">BBC Channels</h6>
                         {guide['BBC'].map(show => (
-                            <blockquote className="show" key={show.time}>{showDetails(show)}</blockquote>
+                            <blockquote className="show" key={show.time+show.channel}>{showDetails(show)}</blockquote>
                         ))}
                     </div>
                 </div>
@@ -50,7 +50,7 @@ const TVGuide = ({guide, message}) => {
                 <div className="service" id={service}>
                     {service === 'FTA' ? <h6 className="service-header">Free to Air</h6> : <h6 className="service-header">BBC Channels</h6>}
                     {guide[service].map(show => (
-                        <blockquote className="show" key={show.time}>{showDetails(show)}</blockquote>
+                        <blockquote className="show" key={show.time+show.channel}>{showDetails(show)}</blockquote>
                     ))}
                 </div>
             )
