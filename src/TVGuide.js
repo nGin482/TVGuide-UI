@@ -1,30 +1,11 @@
 import { useState } from "react";
 // import { useHistory } from "react-router";
+import utilFunctions from './utils/utils.js';
 import './TVGuide.css';
 
 const TVGuide = ({guide, message}) => {
     const [service, setService] = useState('All')
     // const history = useHistory()
-
-    const showDetails = (show) => {
-        let showMessage = show.time + ': ' + show.title + ' is on ' + show.channel
-
-        if (show.series_num) {
-            showMessage = showMessage + ' (Series ' + show.series_num + ', Episode ' + show.episode_num + ')'
-            if (show.episode_title) {
-                showMessage = showMessage.substring(0, showMessage.length-2) + ': ' + show.episode_title + ')'
-            }
-        }
-        else {
-            showMessage = showMessage + ' (' + show.episode_title + ')'
-        }
-
-        if (show.repeat) {
-            showMessage = showMessage + ' (Repeat)'
-        }
-
-        return showMessage
-    }
 
     const renderGuideData = () => {
         if (service === 'All') {
@@ -33,13 +14,13 @@ const TVGuide = ({guide, message}) => {
                     <div className="service" id="Free to Air">
                         <h6 className="service-header">Free to Air</h6>
                         {guide['FTA'].map(show => (
-                            <blockquote className="show" key={show.time+show.channel}>{showDetails(show)}</blockquote>
+                            <blockquote className="show" key={show.time+show.channel}>{utilFunctions.showDetails(show)}</blockquote>
                         ))}
                     </div>
                     <div className="service" id="BBC">
                         <h6 className="service-header">BBC Channels</h6>
                         {guide['BBC'].map(show => (
-                            <blockquote className="show" key={show.time+show.channel}>{showDetails(show)}</blockquote>
+                            <blockquote className="show" key={show.time+show.channel}>{utilFunctions.showDetails(show)}</blockquote>
                         ))}
                     </div>
                 </div>
@@ -50,7 +31,7 @@ const TVGuide = ({guide, message}) => {
                 <div className="service" id={service}>
                     {service === 'FTA' ? <h6 className="service-header">Free to Air</h6> : <h6 className="service-header">BBC Channels</h6>}
                     {guide[service].map(show => (
-                        <blockquote className="show" key={show.time+show.channel}>{showDetails(show)}</blockquote>
+                        <blockquote className="show" key={show.time+show.channel}>{utilFunctions.showDetails(show)}</blockquote>
                     ))}
                 </div>
             )
