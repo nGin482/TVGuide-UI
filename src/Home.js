@@ -5,8 +5,9 @@ import requests from "./requests/requests.js";
 
 const Home = () => {
     const [guide, setGuide] = useState(null)
-    const [events, setEvents] = useState([])
     const [guideError, setGuideError] = useState('')
+    
+    const [events, setEvents] = useState([])
     const [eventsError, setEventsError] = useState('')
     const [showEvents, setShowEvents] = useState(true)
 
