@@ -21,7 +21,7 @@ const showDetails = show => {
     if (show.series_num) {
         showMessage = showMessage + ' (Series ' + show.series_num + ', Episode ' + show.episode_num + ')'
         if (show.episode_title) {
-            showMessage = showMessage.substring(0, showMessage.length-2) + ': ' + show.episode_title + ')'
+            showMessage = showMessage.substring(0, showMessage.length-1) + ': ' + show.episode_title + ')'
         }
     }
     else {
