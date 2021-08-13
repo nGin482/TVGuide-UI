@@ -13,11 +13,15 @@ const getEvents = () => {
 const getShowList = () => {
     return axios.get(baseURL + 'show-list').then(response => response.data)
 }
+const addShowToList = showToAdd => {
+    return axios.put(baseURL + 'show-list', {'show': showToAdd}).then(response => response.data)
+}
 
 const requests = {
     getGuide,
     getShowList,
-    getEvents
+    getEvents,
+    addShowToList
 }
 
 export default requests;
