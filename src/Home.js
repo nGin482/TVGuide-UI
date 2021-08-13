@@ -16,8 +16,10 @@ const Home = () => {
             console.log(data)
             setGuide(data)
         }).catch(err => {
-            if (err.response.status === 404) {
-                setGuideError(err.response.data.message)
+            if (err.response) {
+                if (err.response.status === 404) {
+                    setGuideError(err.response.data.message)
+                }
             }
             else {
                 setGuideError('There is an error happening')
@@ -35,40 +37,32 @@ const Home = () => {
     )
 
     const linkGuidetoEpisode = () => {
-        const filteredFTAGuide = guide['FTA'].filter(show => show.channel !== 'ABCHD')
-        const filteredGuide = filteredFTAGuide.concat(guide['BBC'])
-
-        if (filteredGuide.length === events.length) {
-            filteredGuide.forEach((show, index) => {
-                show.event = events[index]
-            });
+        if (guide) {
+            const filteredFTAGuide = guide['FTA'].filter(show => show.channel !== 'ABCHD')
+            const filteredGuide = filteredFTAGuide.concat(guide['BBC'])
+    
+            if (filteredGuide.length === events.length) {
+                filteredGuide.forEach((show, index) => {
+                    show.event = events[index]
+                });
+            }
+            else {
+                return 'Unable to link the shows to the events.'
+            }
+            console.log(filteredGuide)
         }
-        else {
-            return 'Unable to link the shows to the events.'
-        }
-        console.log(filteredGuide)
 
     }
 
-    if (guide && events) {
-        return (
-            <div id="home">
-                <h1>TV Guide</h1>
-                <TVGuide guide={guide} message={guideError}/>
-                {linkGuidetoEpisode()}
-                {showEvents ? <button onClick={() => setShowEvents(false)}>Hide Events</button> : <button onClick={() => setShowEvents(true)}>Show Events</button>}
-                {showEvents ? <Events events={events} error={eventsError}/> : ''}
-            </div>
-        )
-    }
-    else {
-        return (
+    return (
         <div id="home">
-            <h1>TVGuide</h1>
-            Waiting for data to be retrieved ...
+            <h1>TV Guide</h1>
+            <TVGuide guide={guide} message={guideError}/>
+            {linkGuidetoEpisode()}
+            {showEvents ? <button onClick={() => setShowEvents(false)}>Hide Events</button> : <button onClick={() => setShowEvents(true)}>Show Events</button>}
+            {showEvents ? <Events events={events} error={eventsError}/> : ''}
         </div>
-        )
-    }
+    )
 }
 
 export default Home;
