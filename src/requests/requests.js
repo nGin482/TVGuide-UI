@@ -16,12 +16,16 @@ const getShowList = () => {
 const addShowToList = showToAdd => {
     return axios.put(baseURL + 'show-list', {'show': showToAdd}).then(response => response.data)
 }
+const removeShowFromList = showToRemove => {
+    return axios.delete(baseURL + 'show-list/' + showToRemove).then(response => response.data).catch(err => err.response)
+}
 
 const requests = {
     getGuide,
     getShowList,
     getEvents,
-    addShowToList
+    addShowToList,
+    removeShowFromList
 }
 
 export default requests;
