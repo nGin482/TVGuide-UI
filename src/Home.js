@@ -47,7 +47,7 @@ const Home = () => {
                 });
             }
             else {
-                return 'Unable to link the shows to the events.'
+                return <blockquote>Unable to link the shows to the events.</blockquote>
             }
             console.log(filteredGuide)
         }
