@@ -26,10 +26,10 @@ const AddShow = () => {
         <div id="add-show">
             <form onSubmit={event => addShowSubmission(event)}>
                 <input type="text" id="show-to-add" placeholder="Show name" value={showToAdd} onChange={event => setShowToAdd(event.target.value)}/>
-                <input type="submit" id="submit-show" value={'Add '+showToAdd}/>
+                {showToAdd === '' ? <input type="submit" id="submit-show" value={'Add Show'}/> : <input type="submit" id="submit-show" value={'Add '+showToAdd}/>}
             </form>
             <blockquote id="add-show-result">{result}</blockquote>
-            <button onClick={() => clearAddShowInput()}>OK</button>
+            {result === '' ? '' : <button id="clear-input" onClick={() => clearAddShowInput()}>OK</button>}
         </div>
     )
 }
