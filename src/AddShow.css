@@ -26,3 +26,8 @@
     cursor: pointer;
     background-color: rgba(102, 88, 211, .7);
 }
+
+#clear-input {
+    padding: 0.5%;
+    width: 10%;
+}
