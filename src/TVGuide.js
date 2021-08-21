@@ -24,7 +24,7 @@ const TVGuide = ({guide, message}) => {
                         {guide['FTA'].map(show => (
                             <div className="show" key={show.time+show.channel}>
                                 <blockquote>{utilFunctions.showDetails(show)}</blockquote>
-                                {show.channel !== 'ABCHD' ? <button onClick={() => selectEvent(show.event)}>See Event for {show.title}</button> : ''}
+                                {show.channel !== 'ABCHD' ? <button className="see-event" onClick={() => selectEvent(show.event)}>See Event for {show.title}</button> : ''}
                             </div>
                         ))}
                     </div>
@@ -33,7 +33,7 @@ const TVGuide = ({guide, message}) => {
                         {guide['BBC'].map(show => (
                             <div className="show" key={show.time+show.channel}>
                                 <blockquote>{utilFunctions.showDetails(show)}</blockquote>
-                                <button onClick={() => selectEvent(show.event)}>See Event for {show.title}</button>
+                                <button className="see-event" onClick={() => selectEvent(show.event)}>See Event for {show.title}</button>
                             </div>
                         ))}
                     </div>
@@ -47,7 +47,7 @@ const TVGuide = ({guide, message}) => {
                     {guide[service].map(show => (
                         <div className="show" key={show.time+show.channel}>
                             <blockquote>{utilFunctions.showDetails(show)}</blockquote>
-                            {show.channel !== 'ABCHD' ? <button onClick={() => selectEvent(show.event)}>See Event for {show.title}</button> : ''}
+                            {show.channel !== 'ABCHD' ? <button className="see-event" onClick={() => selectEvent(show.event)}>See Event for {show.title}</button> : ''}
                         </div>
                     ))}
                 </div>
