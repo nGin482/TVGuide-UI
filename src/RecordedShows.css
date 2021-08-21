@@ -1,0 +1,14 @@
+#recorded-shows-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+.recorded-show {
+    border: solid 1px black;
+    margin: 3%;
+}
+
+.recorded-show:hover {
+    background-color: green;
+    color: white;
+}
