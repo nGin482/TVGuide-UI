@@ -1,11 +1,19 @@
 import { useState } from "react";
 // import { useHistory } from "react-router";
+import Event from "./Event.js";
 import utilFunctions from './utils/utils.js';
 import './TVGuide.css';
 
 const TVGuide = ({guide, message}) => {
     const [service, setService] = useState('All')
+    const [openModal, setOpenModal] = useState(false)
+    const [eventForModal, setEventForModal] = useState(null)
     // const history = useHistory()
+
+    const selectEvent = ev => {
+        setOpenModal(true)
+        setEventForModal(ev)
+    }
 
     const renderGuideData = () => {
         if (service === 'All') {
@@ -14,13 +22,19 @@ const TVGuide = ({guide, message}) => {
                     <div className="service" id="Free to Air">
                         <h6 className="service-header">Free to Air</h6>
                         {guide['FTA'].map(show => (
-                            <blockquote className="show" key={show.time+show.channel}>{utilFunctions.showDetails(show)}</blockquote>
+                            <div className="show" key={show.time+show.channel}>
+                                <blockquote>{utilFunctions.showDetails(show)}</blockquote>
+                                {show.channel !== 'ABCHD' ? <button onClick={() => selectEvent(show.event)}>See Event for {show.title}</button> : ''}
+                            </div>
                         ))}
                     </div>
                     <div className="service" id="BBC">
                         <h6 className="service-header">BBC Channels</h6>
                         {guide['BBC'].map(show => (
-                            <blockquote className="show" key={show.time+show.channel}>{utilFunctions.showDetails(show)}</blockquote>
+                            <div className="show" key={show.time+show.channel}>
+                                <blockquote>{utilFunctions.showDetails(show)}</blockquote>
+                                <button onClick={() => selectEvent(show.event)}>See Event for {show.title}</button>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -31,7 +45,10 @@ const TVGuide = ({guide, message}) => {
                 <div className="service" id={service}>
                     {service === 'FTA' ? <h6 className="service-header">Free to Air</h6> : <h6 className="service-header">BBC Channels</h6>}
                     {guide[service].map(show => (
-                        <blockquote className="show" key={show.time+show.channel}>{utilFunctions.showDetails(show)}</blockquote>
+                        <div className="show" key={show.time+show.channel}>
+                            <blockquote>{utilFunctions.showDetails(show)}</blockquote>
+                            {show.channel !== 'ABCHD' ? <button onClick={() => selectEvent(show.event)}>See Event for {show.title}</button> : ''}
+                        </div>
                     ))}
                 </div>
             )
@@ -53,6 +70,7 @@ const TVGuide = ({guide, message}) => {
                 <div id="guide-content">
                     {renderGuideData()}
                     {filters()}
+                    <Event openModal={openModal} setOpenModal={setOpenModal} event={eventForModal}/>
                 </div>
                 
             )
