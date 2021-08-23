@@ -28,9 +28,9 @@ const ShowList = () => {
     return (
         <div id="list-of-shows">
             {showList.map(show => (
-                <div className="show-from-list" key={show}>
-                    <blockquote className="show-header">{show}</blockquote>
-                    <button className="remove-show-from-list" onClick={() => deleteShowFromList(show)}>Delete {show}</button>
+                <div className="show-from-list" key={show.show}>
+                    <blockquote className="show-header">{show.show}</blockquote>
+                    <button className="remove-show-from-list" onClick={() => deleteShowFromList(show.show)}>Delete {show.show}</button>
                 </div>
             ))}
             <Modal isOpen={openResultModal}>
