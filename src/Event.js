@@ -3,8 +3,6 @@ import Modal from 'react-modal';
 
 const Event = ({openModal, setOpenModal, event}) => {
     // Modal.setAppElement('#menu-items')
-    console.log(event)
-    
     if (event) {
         Modal.setAppElement('#navigation-bar')
         return (

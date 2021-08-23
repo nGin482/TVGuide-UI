@@ -27,7 +27,6 @@ const Home = () => {
         })
         
         requests.getEvents().then(data => {
-            console.log(data)
             setEvents(data)
         }).catch(err => {
             console.log(err)
@@ -48,7 +47,6 @@ const Home = () => {
                     }
                 })
             })
-            console.log(filteredGuide)
         }
 
     }
