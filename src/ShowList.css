@@ -5,9 +5,13 @@
 
 .show-from-list {
     border: solid 1px black;
-    margin-left: 3%;
-    margin-right: 3%;
+    margin-left: 5%;
+    margin-right: 5%;
     margin-bottom: 5%;
+}
+
+.show-from-list:hover {
+    background-color: green;
 }
 
 .show-image {
