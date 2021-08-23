@@ -41,14 +41,13 @@ const Home = () => {
             const filteredFTAGuide = guide['FTA'].filter(show => show.channel !== 'ABCHD')
             const filteredGuide = filteredFTAGuide.concat(guide['BBC'])
     
-            if (filteredGuide.length === events.length) {
-                filteredGuide.forEach((show, index) => {
-                    show.event = events[index]
-                });
-            }
-            else {
-                return <blockquote>Unable to link the shows to the events.</blockquote>
-            }
+            filteredGuide.forEach(guide => {
+                events.forEach(event => {
+                    if (guide.time === event.show.time && guide.channel === event.show.channel) {
+                        guide.event = event
+                    }
+                })
+            })
             console.log(filteredGuide)
         }
 
