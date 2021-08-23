@@ -29,6 +29,7 @@ const ShowList = () => {
         <div id="list-of-shows">
             {showList.map(show => (
                 <div className="show-from-list" key={show.show}>
+                    <img className="show-image" src={show.image} alt={'Image for ' + show.show}/>
                     <blockquote className="show-header">{show.show}</blockquote>
                     <button className="remove-show-from-list" onClick={() => deleteShowFromList(show.show)}>Delete {show.show}</button>
                 </div>
