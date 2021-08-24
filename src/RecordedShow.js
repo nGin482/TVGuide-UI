@@ -24,11 +24,11 @@ const RecordedShow = () => {
             <div id={recordedShow.show}>
                 <h1>{recordedShow.show}</h1>
                 <BackButton previous={routeBack}/>
-                {recordedShow.seasons.map(season => (
-                    <div className="seasons">
+                <div className="seasons">
+                    {recordedShow.seasons.map(season => (
                         <SeasonData key={season['season number']} season={season}/>
+                    ))}
                     </div>
-                ))}
             </div>
         )
     }
