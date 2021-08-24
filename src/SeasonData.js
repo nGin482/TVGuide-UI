@@ -6,7 +6,6 @@ const SeasonData = ({season}) => {
     
     const alternateDisplayEpisodes = () => {
         setShowEpisodes(!showEpisodes)
-        console.log(showEpisodes)
     }
     
     const displayEpisodes = () => {
