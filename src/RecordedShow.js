@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router";
 import requests from './requests/requests';
+import SeasonData from './SeasonData';
+import './RecordedShowData.css';
 
 const RecordedShow = () => {
     const urlparameter = useParams().show
@@ -17,7 +19,14 @@ const RecordedShow = () => {
     
     if (recordedShow) {
         return (
-            <h1>{recordedShow.show}</h1>
+            <div id={recordedShow.show}>
+                <h1>{recordedShow.show}</h1>
+                {recordedShow.seasons.map(season => (
+                    <div className="seasons">
+                        <SeasonData key={season['season number']} season={season}/>
+                    </div>
+                ))}
+            </div>
         )
     }
     else {
