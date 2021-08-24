@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from "react-router";
 import requests from './requests/requests';
 import SeasonData from './SeasonData';
+import BackButton from './BackButton';
 import './RecordedShowData.css';
 
 const RecordedShow = () => {
@@ -17,10 +18,12 @@ const RecordedShow = () => {
     }, [urlparameter]
     )
     
+    const routeBack = {route: '/shows', text: 'Recorded Shows'}
     if (recordedShow) {
         return (
             <div id={recordedShow.show}>
                 <h1>{recordedShow.show}</h1>
+                <BackButton previous={routeBack}/>
                 {recordedShow.seasons.map(season => (
                     <div className="seasons">
                         <SeasonData key={season['season number']} season={season}/>
