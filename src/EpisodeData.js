@@ -1,13 +1,14 @@
-
+import './EpisodeData.css';
 
 const EpisodeData = ({episode}) => {
     
     return (
-        <div>
-            <blockquote>Episode Number {episode['episode number']}</blockquote>
-            <blockquote>Episode Title {episode['episode title']}</blockquote>
-            <blockquote>First Air Date {episode['first air date']}</blockquote>
-            <blockquote>Repeat {episode['repeat']}</blockquote>
+        <div className="episode-data">
+            <blockquote className="episode-number">Episode Number: {episode['episode number']}</blockquote>
+            <blockquote className="episode-title">Episode Title: {episode['episode title']}</blockquote>
+            <blockquote className="first-air-date">First Air Date: {episode['first air date']}</blockquote>
+            {episode.repeat ? <blockquote className="repeat">This episode is a repeat</blockquote> : ''}
+            
         </div>
     )
 }
