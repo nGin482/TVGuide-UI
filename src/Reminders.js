@@ -1,4 +1,4 @@
-import Remidner from "./ReminderCard";
+import RemidnerCard from "./ReminderCard";
 
 const Reminders = ({reminders}) => {
     
@@ -6,7 +6,7 @@ const Reminders = ({reminders}) => {
         return (
             <div id="reminders">
                 {reminders.map(reminder => (
-                    <Remidner key={reminder.show} reminder={reminder}/>
+                    <RemidnerCard key={reminder.show} reminder={reminder}/>
                 ))}
             </div>
         )
