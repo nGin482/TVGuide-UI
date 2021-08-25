@@ -27,6 +27,10 @@ const getRecordedShow = show => {
     return axios.get(baseURL + 'recorded-show/' + show).then(response => response.data).catch(err => err.response)
 }
 
+const getReminders = () => {
+    return axios.get(baseURL + 'reminders').then(response => response.data).catch(err => err.response)
+}
+
 const requests = {
     getGuide,
     getShowList,
@@ -34,7 +38,8 @@ const requests = {
     addShowToList,
     removeShowFromList,
     getRecordedShows,
-    getRecordedShow
+    getRecordedShow,
+    getReminders
 }
 
 export default requests;

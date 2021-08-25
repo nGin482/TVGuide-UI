@@ -4,6 +4,7 @@ import Home from "../Home.js";
 import ShowListPage from "../ShowListPage.js";
 import RecordedShowsPage from "../RecordedShowsPage.js";
 import RecordedShow from "../RecordedShow.js";
+import RemindersPage from "../RemindersPage.js";
 
 const NavigationHandle = () => {
     return (
@@ -13,7 +14,7 @@ const NavigationHandle = () => {
                 <Route path='/show-list'><ShowListPage/></Route>
                 <Route exact path='/shows'><RecordedShowsPage/></Route>
                 <Route path='/shows/:show'><RecordedShow/></Route>
-                <Route path='/reminders'></Route>
+                <Route path='/reminders'><RemindersPage/></Route>
                 <Route path='/'><Home/></Route>
             </Switch>
         </BrowserRouter>
