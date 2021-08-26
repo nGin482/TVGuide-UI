@@ -5,6 +5,8 @@
     max-width: 50%;
     margin: 0 auto;
     transition: transform 2s ease;
+    margin-top: 1%;
+    margin-bottom: 1%;
 }
 
 .reminder-card:hover {
