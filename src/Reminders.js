@@ -1,19 +1,21 @@
-import RemidnerCard from "./ReminderCard";
+import ReminderCard from "./ReminderCard";
 
-const Reminders = ({reminders}) => {
+const Reminders = ({reminders, message}) => {
     
     if (reminders) {
         return (
             <div id="reminders">
                 {reminders.map(reminder => (
-                    <RemidnerCard key={reminder.show} reminder={reminder}/>
+                    <ReminderCard key={reminder.show} reminder={reminder}/>
                 ))}
             </div>
         )
     }
     else {
         return (
-            <h1>Waiting for reminders to load ...</h1>
+            <div id="reminders">
+                <h1>{message}</h1>
+            </div>
         )
     }
 }

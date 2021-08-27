@@ -28,7 +28,7 @@ const getRecordedShow = show => {
 }
 
 const getReminders = () => {
-    return axios.get(baseURL + 'reminders').then(response => response.data).catch(err => err.response)
+    return axios.get(baseURL + 'reminders').then(response => response.data)
 }
 const addReminder = reminder => {
     return axios.put(baseURL + 'reminders', reminder).then(response => response.data)

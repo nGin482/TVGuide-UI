@@ -8,13 +8,14 @@ import './RemindersPage.css';
 const RemindersPage = () => {
     const [reminders, setReminders] = useState([])
     const [showAddReminder, setShowAddReminder] = useState(false)
+    const [message, setMessage] = useState('')
     
     
     useEffect(() => {
         requests.getReminders().then(data => {
             setReminders(data)
-        }).catch(errResponse => {
-            console.log(errResponse)
+        }).catch(err => {
+            setMessage(err.response.data.message)
         })
     }, []
     )
@@ -31,6 +32,23 @@ const RemindersPage = () => {
                 <button id="add-reminder-button" onClick={() => setShowAddReminder(true)}>Add Reminder</button>
             )
         }
+    }
+
+    if (reminders.length === 0 && message === '') {
+        return (
+            <div id="reminders-page">
+                <h1>Reminders</h1>
+                <Reminders message="Waiting for Reminders to be retrieved ..."/>
+            </div>
+        )
+    }
+    else if (message !== '') {
+        return (
+            <div id="reminders-page">
+                <h1>Reminders</h1>
+                <Reminders message={message}/>
+            </div>
+        )
     }
     
     return (
