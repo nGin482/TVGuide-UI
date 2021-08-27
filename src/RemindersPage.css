@@ -2,5 +2,20 @@
     background-color: green;
     padding: 5%;
     max-width: 70%;
-    margin: 0 auto;
+    margin: 0 auto;;
+}
+
+#add-reminder-button {
+    position: absolute;
+    left: 15%;
+    margin-top: 2%;
+    border-radius: 12px;
+    background-color: black;
+    color: white;
+    padding: 1%;
+    width: 10%;
+}
+
+#add-reminder-button {
+    cursor: pointer;
 }

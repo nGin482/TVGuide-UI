@@ -19,13 +19,25 @@ const RemindersPage = () => {
     }, []
     )
     console.log(reminders)
+
+    const displayAddReminder = () => {
+        if (showAddReminder) {
+            return (
+                <AddReminder setShowAddReminder={setShowAddReminder}/>
+            )
+        }
+        else {
+            return (
+                <button id="add-reminder-button" onClick={() => setShowAddReminder(true)}>Add Reminder</button>
+            )
+        }
+    }
     
     return (
         <div id="reminders-page">
             <h1>Reminders</h1>
+            {displayAddReminder()}
             <Reminders reminders={reminders}/>
-            <button onClick={() => setShowAddReminder(true)}>Add Reminder</button>
-            {showAddReminder ? <AddReminder setShowAddReminder={setShowAddReminder}/> : ''}
         </div>
     )
 }
