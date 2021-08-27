@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import requests from './requests/requests';
 import './AddReminder.css';
 
-const AddReminder = () => {
+const AddReminder = ({setShowAddReminder}) => {
     const [showToRemind, setShowToRemind] = useState('')
     const [reminderTime, setReminderTime] = useState('')
     const [reminderAlert, setReminderAlert] = useState('')
@@ -68,6 +68,7 @@ const AddReminder = () => {
     return (
         <div id="add-reminder">
             <h4>Add Reminder</h4>
+            <button onClick={() => setShowAddReminder()}>Cancel</button>
             <form id="add-reminder-form" onSubmit={event => addReminder(event)}>
                 <div id="field-inputs">
                     <label>What show would you like to set a reminder for?</label>

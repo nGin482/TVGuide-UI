@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import requests from './requests/requests';
 import Reminders from './Reminders';
+import requests from './requests/requests';
+import AddReminder from './AddReminder';
 import './RemindersPage.css';
 
 
 const RemindersPage = () => {
     const [reminders, setReminders] = useState([])
+    const [showAddReminder, setShowAddReminder] = useState(false)
     
     
     useEffect(() => {
@@ -22,6 +24,8 @@ const RemindersPage = () => {
         <div id="reminders-page">
             <h1>Reminders</h1>
             <Reminders reminders={reminders}/>
+            <button onClick={() => setShowAddReminder(true)}>Add Reminder</button>
+            {showAddReminder ? <AddReminder setShowAddReminder={setShowAddReminder}/> : ''}
         </div>
     )
 }
