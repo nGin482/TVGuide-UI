@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import Modal from 'react-modal';
+import requests from './requests/requests';
 import './AddReminder.css';
 
 const AddReminder = () => {
     const [showToRemind, setShowToRemind] = useState('')
     const [reminderTime, setReminderTime] = useState('')
-    const [beforeAfter, setBeforeAfter] = useState('')
+    const [reminderAlert, setReminderAlert] = useState('')
     const [interval, setReminderInterval] = useState('')
 
     const [displayNote, setDisplayNote] = useState(false)
@@ -24,29 +25,27 @@ const AddReminder = () => {
 
     const addReminder = event => {
         event.preventDefault()
-        if (beforeAfter === 'During') {
-            setReminderTime('0 mins before')
-        }
-        else {
-            const timeChosen = reminderTime
-            setReminderTime(timeChosen + ' mins ' + beforeAfter)
-        }
         const reminderObject = {
             show: showToRemind,
-            beforeAfter: beforeAfter,
+            'reminder alert': reminderAlert,
             'reminder time': reminderTime,
             interval: interval
         }
         console.log(reminderObject)
+        requests.addReminder(reminderObject).then(data => {
+            console.log(data)
+        }).catch(err => {
+            console.log(err)
+        })
         setShowToRemind('')
         setReminderTime('')
-        setBeforeAfter('')
+        setReminderAlert('')
         setReminderInterval('')
     }
 
     const specifyReminderTime = () => {
 
-        if (beforeAfter !== 'During' && beforeAfter !== '') {
+        if (reminderAlert !== 'During' && reminderAlert !== '') {
             return (
                 <input
                     type="number"
@@ -83,9 +82,9 @@ const AddReminder = () => {
                     />
                     <label>When would you like to be reminded?</label><span id="reminder-time-note" onClick={() => setDisplayNote(true)}> <b>Note</b></span>
                     <div id="reminder-time-options">
-                        <input name="reminderTime" className="add-reminder-input" type="button" value="Before" onClick={() => setBeforeAfter('Before')}/>
-                        <input type="button" className="add-reminder-input" value="During" onClick={() => setBeforeAfter('During')}/>
-                        <input type="button" className="add-reminder-input" value="After" onClick={() => setBeforeAfter('After')}/>
+                        <input name="reminderTime" className="add-reminder-input" type="button" value="Before" onClick={() => setReminderAlert('Before')}/>
+                        <input type="button" className="add-reminder-input" value="During" onClick={() => setReminderAlert('During')}/>
+                        <input type="button" className="add-reminder-input" value="After" onClick={() => setReminderAlert('After')}/>
                         <br/>
                     </div>
                     {specifyReminderTime()}
