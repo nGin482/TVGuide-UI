@@ -31,7 +31,7 @@ const getReminders = () => {
     return axios.get(baseURL + 'reminders').then(response => response.data).catch(err => err.response)
 }
 const addReminder = reminder => {
-    return axios.put(baseURL + 'reminders', reminder).then(response => response.data).catch(err => err.response)
+    return axios.put(baseURL + 'reminders', reminder).then(response => response.data)
 }
 
 const requests = {
