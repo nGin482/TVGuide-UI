@@ -112,8 +112,8 @@ const AddReminder = ({setShowAddReminder}) => {
                     <input type="submit" id="submit-reminder" value="Add Reminder"/>
                 }
             </form>
-            <Modal isOpen={displayNote}>
-                <button onClick={() => setDisplayNote(false)}>Close</button>
+            <Modal isOpen={displayNote} id="reminder-note-modal">
+                <CloseButton text="Close" action={setDisplayNote}/>
                 <blockquote id="reminder-time-note">
                     You do not have to specify when you would like to be reminded.
                     <br/><br/>

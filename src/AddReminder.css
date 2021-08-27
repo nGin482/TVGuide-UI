@@ -55,6 +55,11 @@
 #reminder-time-note:hover {
     cursor: pointer;
 }
+#reminder-note-modal {
+    width: 40%;
+    height: 30%;
+    margin: 0 auto;
+}
 
 #add-reminder-response {
     background-color: white;
