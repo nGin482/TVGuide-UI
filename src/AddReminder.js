@@ -10,6 +10,7 @@ const AddReminder = () => {
     const [interval, setReminderInterval] = useState('')
 
     const [displayNote, setDisplayNote] = useState(false)
+    const [reminderResponse, setReminderResponse] = useState('')
     
     const handleInputChange = event => {
         if (event.target.name === 'showToRemind') {
@@ -33,9 +34,9 @@ const AddReminder = () => {
         }
         console.log(reminderObject)
         requests.addReminder(reminderObject).then(data => {
-            console.log(data)
+            setReminderResponse(data.message)
         }).catch(err => {
-            console.log(err)
+            setReminderResponse(err.response.data.message)
         })
         setShowToRemind('')
         setReminderTime('')
@@ -117,6 +118,12 @@ const AddReminder = () => {
                     If left blank, the default is that you will be reminded three minutes before an episode starts.
                 </blockquote>
             </Modal>
+            {reminderResponse !== '' 
+                ?
+                <blockquote id="add-reminder-response">{reminderResponse}</blockquote>
+                :
+                ''
+            }
         </div>
     )
 }
