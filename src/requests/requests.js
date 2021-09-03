@@ -34,6 +34,10 @@ const addReminder = reminder => {
     return axios.put(baseURL + 'reminders', reminder).then(response => response.data)
 }
 
+const registerNewUser = user => {
+    return axios.put(baseURL + 'register', user).then(response => response.data)
+}
+
 const requests = {
     getGuide,
     getShowList,
@@ -43,7 +47,8 @@ const requests = {
     getRecordedShows,
     getRecordedShow,
     getReminders,
-    addReminder
+    addReminder,
+    registerNewUser
 }
 
 export default requests;
