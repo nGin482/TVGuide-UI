@@ -9,7 +9,7 @@ const Event = ({openModal, setOpenModal, event}) => {
             <Modal isOpen={openModal}>
                 <button onClick={() => setOpenModal(false)}>Close</button>
                 <div className="show-event" key={event.show.time+event.show.channel}>
-                    <blockquote className="show_identifier">{utilFunctions.displayShow(event)}</blockquote>
+                    <blockquote className="show_identifier">{utilFunctions.showStringForEvent(event)}</blockquote>
                     {event.repeat ? <blockquote className="repeat">{event.repeat.message}</blockquote> : ''}
                     {event.channel ? <blockquote className="channel">{event.channel.message}</blockquote> : ''}
                     {event.insert_episode_result ? <blockquote className="channel">{event.insert_episode_result.message}</blockquote> : ''}

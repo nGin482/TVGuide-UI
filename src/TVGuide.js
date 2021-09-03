@@ -23,7 +23,7 @@ const TVGuide = ({guide, message}) => {
                         <h6 className="service-header">Free to Air</h6>
                         {guide['FTA'].map(show => (
                             <div className="show" key={show.time+show.channel}>
-                                <blockquote>{utilFunctions.showDetails(show)}</blockquote>
+                                <blockquote>{utilFunctions.showStringForGuide(show)}</blockquote>
                                 {show.event ? <button className="see-event" onClick={() => selectEvent(show.event)}>See Event for {show.title}</button> : ''}
                             </div>
                         ))}
@@ -32,7 +32,7 @@ const TVGuide = ({guide, message}) => {
                         <h6 className="service-header">BBC Channels</h6>
                         {guide['BBC'].map(show => (
                             <div className="show" key={show.time+show.channel}>
-                                <blockquote>{utilFunctions.showDetails(show)}</blockquote>
+                                <blockquote>{utilFunctions.showStringForGuide(show)}</blockquote>
                                 <button className="see-event" onClick={() => selectEvent(show.event)}>See Event for {show.title}</button>
                             </div>
                         ))}
@@ -46,7 +46,7 @@ const TVGuide = ({guide, message}) => {
                     {service === 'FTA' ? <h6 className="service-header">Free to Air</h6> : <h6 className="service-header">BBC Channels</h6>}
                     {guide[service].map(show => (
                         <div className="show" key={show.time+show.channel}>
-                            <blockquote>{utilFunctions.showDetails(show)}</blockquote>
+                            <blockquote>{utilFunctions.showStringForGuide(show)}</blockquote>
                             {show.event ? <button className="see-event" onClick={() => selectEvent(show.event)}>See Event for {show.title}</button> : ''}
                         </div>
                     ))}
