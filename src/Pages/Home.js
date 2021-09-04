@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import TVGuide from "./TVGuide.js";
-import Events from "./Events.js";
-import requests from "./requests/requests.js";
+import TVGuide from "../TVGuide.js";
+import Events from "../Events.js";
+import RegisterUser from "../RegisterUser.js";
+import requests from "../requests/requests.js";
 
 const Home = () => {
     const [guide, setGuide] = useState(null)
@@ -58,6 +59,7 @@ const Home = () => {
             {linkGuidetoEpisode()}
             {showEvents ? <button onClick={() => setShowEvents(false)}>Hide Events</button> : <button onClick={() => setShowEvents(true)}>Show Events</button>}
             {showEvents ? <Events events={events} error={eventsError}/> : ''}
+            <RegisterUser/>
         </div>
     )
 }
