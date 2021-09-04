@@ -1,4 +1,4 @@
-import ReminderCard from "./ReminderCard";
+import ReminderCard from './ReminderCard';
 
 const Reminders = ({reminders, message}) => {
     

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import Reminders from './Reminders';
+import Reminders from '../Reminders/Reminders';
+import AddReminder from '../Reminders/AddReminder/AddReminder';
 import requests from './requests/requests';
-import AddReminder from './AddReminder';
 import './RemindersPage.css';
 
 
