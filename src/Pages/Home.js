@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import TVGuide from "../TVGuide.js";
+import TVGuide from "../TVGuide/TVGuide.js";
 import Events from "../Events.js";
 import RegisterUser from "../RegisterUser.js";
 import requests from "../requests/requests.js";
