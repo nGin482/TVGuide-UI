@@ -33,7 +33,7 @@ const RegisterUser = () => {
                 <label for="password" id="password-label" className="register-label">Password</label>
                 <input
                     type="password"
-                    id="register-username" className="register-input" name="password"
+                    id="register-password" className="register-input" name="password"
                     value={password}
                     onChange={event => setPassword(event.target.value)}
                 />
