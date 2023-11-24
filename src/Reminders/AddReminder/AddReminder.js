@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Modal from 'react-modal';
 import CloseButton from '../../CloseButton';
-import requests from '../requests/requests';
+import requests from '../../requests/requests';
 import './AddReminder.css';
 
 const AddReminder = ({setShowAddReminder}) => {

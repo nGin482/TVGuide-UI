@@ -1,6 +1,6 @@
-import ShowList from "./ShowList";
-import AddShow from "./AddShow";
-import './ShowList.css';
+import ShowList from "../ShowList";
+import AddShow from "../AddShow";
+import '../ShowList.css';
 
 const ShowListPage = () => (
     <div id="show-list-page">

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import RecordedShows from "./RecordedShows";
-import requests from "./requests/requests";
+import RecordedShows from "../RecordedShows";
+import requests from "../requests/requests";
 
 const RecordedShowsPage = () => {
     const [recordedShows, setRecordedShows] = useState([])

@@ -1,7 +1,7 @@
 import { useState } from "react";
 // import { useHistory } from "react-router";
-import Event from "./Event.js";
-import utilFunctions from './utils/utils.js';
+import Event from "../Event.js";
+import utilFunctions from '../utils/utils.js';
 import './TVGuide.css';
 
 const TVGuide = ({guide, message}) => {

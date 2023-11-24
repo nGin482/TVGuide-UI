@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = 'http://192.168.1.120:5000/'
+const baseURL = 'http://127.0.0.1:5000/api/'
 
 const getGuide = () => {
     return axios.get(baseURL + 'guide').then(response => response.data)

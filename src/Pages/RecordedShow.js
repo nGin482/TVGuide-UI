@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router";
-import requests from './requests/requests';
-import SeasonData from './SeasonData';
-import BackButton from './BackButton';
-import './RecordedShowData.css';
+import requests from '../requests/requests';
+import SeasonData from '../SeasonData';
+import BackButton from '../BackButton';
+import '../RecordedShowData.css';
 
 const RecordedShow = () => {
     const urlparameter = useParams().show
