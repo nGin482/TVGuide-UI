@@ -40,4 +40,4 @@ export const showStringForGuide = (show: GuideShow) => {
 };
 
 
-export { Guide } from "./types";
+export { Guide, RecordedShow } from "./types";
