@@ -13,7 +13,7 @@ const getEvents = () => {
 };
 
 const getShowList = () => {
-    return axios.get(`${baseURL}/show-list`).then(response => response.data);
+    return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<string[]>) => response.data);
 };
 const addShowToList = (show: string) => {
     return axios.put(`${baseURL}/show-list`, { show }).then(response => response.data);
@@ -40,7 +40,7 @@ const registerNewUser = user => {
     return axios.put(`${baseURL}/register`, user).then(response => response.data);
 };
 
-const requests = {
+export {
     getGuide,
     getShowList,
     getEvents,
@@ -52,5 +52,3 @@ const requests = {
     addReminder,
     registerNewUser
 };
-
-export default requests;

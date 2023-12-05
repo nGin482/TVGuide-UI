@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
 import { RecordedShow } from "../../utils/types";
-import requests from "../requests/requests";
+import { getRecordedShows } from "../requests/requests";
 import './RecordedShows.css';
 
 const RecordedShowsPage = () => {
@@ -10,7 +10,7 @@ const RecordedShowsPage = () => {
     const history = useHistory();
 
     useEffect(() => {
-        requests.getRecordedShows().then(data => setRecordedShows(data));
+        getRecordedShows().then(data => setRecordedShows(data));
     }, []);
 
     return (

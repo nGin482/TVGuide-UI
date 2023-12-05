@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import TVGuide from "../TVGuide/TVGuide.js";
 import RegisterUser from "../RegisterUser.js";
-import requests from "../requests/requests.js";
+import { getGuide } from "../requests/requests.js";
 
 import { Guide } from "../../utils/types.js";
 
@@ -11,7 +11,7 @@ const Home = () => {
     const [guideError, setGuideError] = useState<string>('');
 
     useEffect(() => {
-        requests.getGuide().then((data: Guide) => {
+        getGuide().then((data: Guide) => {
             console.log(data)
             setGuide(data);
         }).catch(err => {
