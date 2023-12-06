@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 // import { useHistory } from "react-router";
 
-import Event from "../Event.js";
-import { showStringForGuide, Guide } from "../../utils/";
+import Event from "../Event";
+import { showStringForGuide, Guide } from "../utils";
 import './TVGuide.css';
 
 const TVGuide = ({ guide }: { guide: Guide }) => {

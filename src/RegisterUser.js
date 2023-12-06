@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import requests from "./requests/requests";
+
+import { registerNewUser } from './requests/requests';
 import './RegisterUser.css';
 
 const RegisterUser = () => {
@@ -13,7 +14,7 @@ const RegisterUser = () => {
             'password': password
         }
         console.log(user)
-        requests.registerNewUser(user).then(data => {
+        registerNewUser(user).then(data => {
             setUsername('')
             setPassword('')
             console.log(data)

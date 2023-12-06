@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Modal from 'react-modal';
 import CloseButton from '../../CloseButton';
-import requests from '../../requests/requests';
+import { addReminder } from '../../requests/requests';
 import './AddReminder.css';
 
 const AddReminder = ({setShowAddReminder}) => {
@@ -34,7 +34,7 @@ const AddReminder = ({setShowAddReminder}) => {
             interval: interval
         }
         console.log(reminderObject)
-        requests.addReminder(reminderObject).then(data => {
+        addReminder(reminderObject).then(data => {
             setReminderResponse(data.message)
         }).catch(err => {
             setReminderResponse(err.response.data.message)

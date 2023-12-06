@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 
-import TVGuide from "../TVGuide/TVGuide.js";
-import RegisterUser from "../RegisterUser.js";
-import { getGuide } from "../requests/requests.js";
+import TVGuide from "../TVGuide/TVGuide";
+import RegisterUser from "../RegisterUser";
+import { getGuide } from "../requests/requests";
 
-import { Guide } from "../../utils/types.js";
+import { Guide } from "../utils/types.js";
 
 const Home = () => {
     const [guide, setGuide] = useState<Guide | null>(null);

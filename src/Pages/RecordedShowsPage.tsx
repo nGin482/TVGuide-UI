@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
-import { RecordedShow } from "../../utils/types";
+import { RecordedShowModel } from "../utils/types";
 import { getRecordedShows } from "../requests/requests";
-import './RecordedShows.css';
+import '../RecordedShows.css';
 
 const RecordedShowsPage = () => {
-    const [recordedShows, setRecordedShows] = useState<RecordedShow[]>([]);
+    const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
     const history = useHistory();
 
     useEffect(() => {

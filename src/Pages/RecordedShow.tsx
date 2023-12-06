@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router";
 
 import { getRecordedShow } from '../requests/requests';
-import { RecordedShow } from '../../utils';
+import { RecordedShowModel } from '../utils';
 import BackButton from '../BackButton';
 import '../RecordedShowData.css';
-import './EpisodeData.css';
+import '../EpisodeData.css';
 
 const RecordedShow = () => {
     const urlparameter = useParams().show;
-    const [recordedShow, setRecordedShow] = useState<RecordedShow | null>(null);
+    const [recordedShow, setRecordedShow] = useState<RecordedShowModel | null>(null);
     const [showEpisodes, setShowEpisodes] = useState(false);
     
     useEffect(() => {

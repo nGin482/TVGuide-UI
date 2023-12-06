@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import Modal from 'react-modal';
 
-import { showStringForEvent } from '../utils';
+import { showStringForEvent } from './utils';
 
 interface EventProps {
     openModal: boolean

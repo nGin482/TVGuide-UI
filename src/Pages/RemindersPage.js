@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Reminders from '../Reminders/Reminders';
 import AddReminder from '../Reminders/AddReminder/AddReminder';
-import requests from '../requests/requests';
+import { getReminders } from '../requests/requests';
 import './RemindersPage.css';
 
 
@@ -12,7 +12,7 @@ const RemindersPage = () => {
     
     
     useEffect(() => {
-        requests.getReminders().then(data => {
+        getReminders().then(data => {
             setReminders(data)
         }).catch(err => {
             setMessage(err.response.data.message)

@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { Guide, RecordedShow } from "../../utils/types";
+import { Guide, RecordedShowModel } from "../utils/types";
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
@@ -23,10 +23,10 @@ const removeShowFromList = (showToRemove: string) => {
 };
 
 const getRecordedShows = () => {
-    return axios.get(`${baseURL}/recorded-shows`).then((response: AxiosResponse<RecordedShow[]>) => response.data);
+    return axios.get(`${baseURL}/recorded-shows`).then((response: AxiosResponse<RecordedShowModel[]>) => response.data);
 }
 const getRecordedShow = (show: string) => {
-    return axios.get(`${baseURL}/recorded-show/${show}`).then((response: AxiosResponse<RecordedShow>) => response.data);
+    return axios.get(`${baseURL}/recorded-shows/${show}`).then((response: AxiosResponse<RecordedShowModel>) => response.data);
 };
 
 const getReminders = () => {

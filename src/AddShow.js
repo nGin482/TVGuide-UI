@@ -1,5 +1,5 @@
 import { useState } from "react";
-import requests from "./requests/requests";
+import { addShowToList } from "./requests/requests";
 
 import './AddShow.css';
 
@@ -10,7 +10,7 @@ const AddShow = () => {
 
     const addShowSubmission = event => {
         event.preventDefault()
-        requests.addShowToList(showToAdd).then(data => {
+        addShowToList(showToAdd).then(data => {
             setResult(data.message)
         }).catch(err => {
             setResult(err.response.data.message)

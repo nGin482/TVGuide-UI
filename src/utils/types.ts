@@ -15,7 +15,7 @@ interface GuideShow {
     event: string
 };
 
-interface RecordedShow {
+interface RecordedShowModel {
     show: string
     seasons: Season[]
     tvmaze_id: string
@@ -35,8 +35,8 @@ interface Episode {
     air_dates: string[]
 };
 
-export {
+export type {
     Guide,
     GuideShow,
-    RecordedShow
+    RecordedShowModel
 };
