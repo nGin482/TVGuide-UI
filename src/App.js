@@ -1,4 +1,4 @@
-import NavigationHandle from './Navigation/NavigationHandle.js';
+import NavigationHandle from './Navigation/NavigationHandle';
 import './App.css';
 
 function App() {
