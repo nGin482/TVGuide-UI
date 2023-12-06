@@ -7,25 +7,27 @@ import BackButton from '../BackButton';
 import '../RecordedShowData.css';
 import '../EpisodeData.css';
 
+interface RecordedShowParam {
+    show: string
+};
+
 const RecordedShow = () => {
-    const urlparameter = useParams().show;
+    const { show } = useParams<RecordedShowParam>();
     const [recordedShow, setRecordedShow] = useState<RecordedShowModel | null>(null);
     const [showEpisodes, setShowEpisodes] = useState(false);
     
     useEffect(() => {
-        getRecordedShow(urlparameter)
+        getRecordedShow(show)
             .then(data => setRecordedShow(data))
             .catch(response => console.log(response));
-    }, [urlparameter]);
-    
-    const routeBack = {route: '/shows', text: 'Recorded Shows'}
+    }, [show]);
 
 
     return (
         recordedShow ? (
             <div id={recordedShow.show}>
                 <h1>{recordedShow.show}</h1>
-                <BackButton previous={routeBack}/>
+                <BackButton route="/shows" text="Recorded Shows"/>
                 {recordedShow.seasons.map(season => (
                     <div className="season">
                         <div id={`season-${season.season_number}`} onClick={() => setShowEpisodes(prevState => !prevState)}>
@@ -55,7 +57,7 @@ const RecordedShow = () => {
             </div>
         )
         : (
-            <h1>Waiting for data to be retrieved for {urlparameter} ...</h1>
+            <h1>Waiting for data to be retrieved for {show} ...</h1>
         )
     );    
 };
