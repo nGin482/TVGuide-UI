@@ -1,10 +1,11 @@
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-import NavigationMenu from "./NavigationMenu.js";
-import Home from "../Pages/Home.js";
-import ShowListPage from "../Pages/ShowListPage.js";
-import RecordedShowsPage from "../Pages/RecordedShowsPage.js";
-import RecordedShow from "../Pages/RecordedShow.js";
-import RemindersPage from "../Pages/RemindersPage.js";
+
+import NavigationMenu from "./NavigationMenu";
+import Home from "../Pages/Home";
+import ShowListPage from "../Pages/ShowListPage";
+import RecordedShowsPage from "../Pages/RecordedShowsPage";
+import RecordedShow from "../Pages/RecordedShow";
+import RemindersPage from "../Pages/RemindersPage";
 
 const NavigationHandle = () => {
     return (
