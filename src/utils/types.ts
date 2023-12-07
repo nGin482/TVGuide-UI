@@ -35,6 +35,13 @@ interface Episode {
     air_dates: string[]
 };
 
+interface Reminder {
+    show: string
+    reminder_alert: string
+    warning_time: number
+    occasions: string
+};
+
 interface ResponseData {
     message: string
 };
@@ -51,5 +58,6 @@ export type {
     Guide,
     GuideShow,
     RecordedShowModel,
+    Reminder,
     ResponseData
 };
