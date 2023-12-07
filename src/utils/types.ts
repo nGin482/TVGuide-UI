@@ -35,8 +35,21 @@ interface Episode {
     air_dates: string[]
 };
 
+interface ResponseData {
+    message: string
+};
+
+interface ErrorResponse {
+    response: {
+        data: {
+            message: string
+        }
+    }
+}
+
 export type {
     Guide,
     GuideShow,
-    RecordedShowModel
+    RecordedShowModel,
+    ResponseData
 };
