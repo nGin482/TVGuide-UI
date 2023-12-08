@@ -1,9 +1,8 @@
 import { useState, FormEvent, Dispatch, SetStateAction } from 'react';
-import Modal from 'react-modal';
+// import Modal from 'react-modal';
 
-import CloseButton from '../../CloseButton';
 import { addReminder } from '../../requests/requests';
-import { Reminder, ResponseData } from '../../utils';
+import { Reminder } from '../../utils';
 import './AddReminder.css';
 
 const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetStateAction<boolean>> }) => {
@@ -15,7 +14,7 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
     const [displayNote, setDisplayNote] = useState(false);
     const [reminderResponse, setReminderResponse] = useState('');
     
-    const handleAddReminder = (event: FormEvent<HTMLFormElement>) => {
+    const handleAddReminder = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const reminderObject: Reminder = {
             show: showToRemind,
@@ -24,22 +23,18 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
             occasions: occasions
         };
         console.log(reminderObject)
-        addReminder(reminderObject).then((data: ResponseData) => {
-            setReminderResponse(data.message);
-        }).catch(err => {
-            setReminderResponse(err.response?.data.message);
-        })
+        const response = await addReminder(reminderObject);
+        response.result === 'success' ? setReminderResponse(response.message) : setReminderResponse(response.payload.message);
         setShowToRemind('');
         setReminderTime('');
         setReminderAlert('');
         setOccasions('');
     };
 
-    Modal.setAppElement('#root')
+    // Modal.setAppElement('#root')
     return (
         <div id="add-reminder">
             <h4>Add Reminder</h4>
-            <CloseButton label="Cancel" callback={setShowAddReminder}/>
             <form id="add-reminder-form" onSubmit={event => handleAddReminder(event)}>
                 <div id="field-inputs">
                     <label>What show would you like to set a reminder for?</label>
@@ -89,14 +84,14 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
                 </div>
                 <input type="submit" id="submit-reminder" value={showToRemind ? `Add Reminder for ${showToRemind}` : 'Add Reminder'} />
             </form>
-            <Modal isOpen={displayNote} id="reminder-note-modal">
-                <CloseButton label="Close" callback={setDisplayNote}/>
+            {/* <Modal isOpen={displayNote} id="reminder-note-modal">
                 <blockquote id="reminder-time-note">
                     You do not have to specify when you would like to be reminded.
                     <br/><br/>
                     If left blank, the default is that you will be reminded three minutes before an episode starts.
                 </blockquote>
-            </Modal>
+            </Modal> */}
+            {/* This will be a tooltip */}
             {reminderResponse !== '' && <blockquote id="add-reminder-response">{reminderResponse}</blockquote>}
         </div>
     )

@@ -1,25 +1,39 @@
 import axios, { AxiosResponse } from "axios";
 
-import { Guide, RecordedShowModel } from "../utils/types";
+import { Guide, RecordedShowModel, Reminder, buildResponseValue } from "../utils";
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
-const getGuide = () => {
-    return axios.get(`${baseURL}/guide`).then((response: AxiosResponse<Guide>) => response.data);
+const getGuide = async () => {
+    const response = await axios.get(`${baseURL}/guide`);
+    if (response.status === 200) {
+        return response.data as Guide;
+    }
+    throw Error(`${response.status} ${response.statusText}`);
 };
 
-const getEvents = () => {
-    return axios.get(`${baseURL}/events`).then(response => response.data);
+const getEvents = async () => {
+    const response = await axios.get(`${baseURL}/events`);
+    if (response.status === 200) {
+        return response.data as string[];
+    }
+
+    throw Error(`${response.status} ${response.statusText}`);
 };
 
 const getShowList = () => {
     return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<string[]>) => response.data);
 };
-const addShowToList = (show: string) => {
-    return axios.put(`${baseURL}/show-list`, { show }).then(response => response.data);
+const addShowToList = async (show: string) => {
+    const response = await axios.post(`${baseURL}/show-list`, { show });
+
+    const result = buildResponseValue(response);
+    return result;
 };
-const removeShowFromList = (showToRemove: string) => {
-    return axios.delete(`${baseURL}/show-list/${showToRemove}`).then(response => response.data);
+const removeShowFromList = async (showToRemove: string) => {
+    const response = await axios.delete(`${baseURL}/show-list/${showToRemove}`);
+
+    return buildResponseValue(response);
 };
 
 const getRecordedShows = () => {
@@ -32,12 +46,16 @@ const getRecordedShow = (show: string) => {
 const getReminders = () => {
     return axios.get(`${baseURL}/reminders`).then(response => response.data);
 };
-const addReminder = reminder => {
-    return axios.put(`${baseURL}/reminders`, reminder).then(response => response.data);
+const addReminder = async (reminder: Reminder) => {
+    const response = await axios.post(`${baseURL}/reminders`, reminder);
+
+    return buildResponseValue(response);
 };
 
-const registerNewUser = user => {
-    return axios.put(`${baseURL}/register`, user).then(response => response.data);
+const registerNewUser = async (user: any) => {
+    const response = await axios.post(`${baseURL}/register`, user);
+
+    return buildResponseValue(response);
 };
 
 export {

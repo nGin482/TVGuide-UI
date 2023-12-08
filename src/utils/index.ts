@@ -1,4 +1,5 @@
-import { GuideShow } from "./types";
+import { GuideShow, ResponseData, ErrorResponse } from "./types";
+import { AxiosResponse } from "axios";
 
 export const showStringForEvent = (show_event) => {
     if (show_event.show) {
@@ -39,5 +40,22 @@ export const showStringForGuide = (show: GuideShow) => {
     return showString;
 };
 
+export const buildResponseValue = (response: AxiosResponse<any>) => {
+    if (response.status === 200) {
+        const successResponse: ResponseData = {
+            result: 'success',
+            message: response.data
+        }
+        return successResponse;
+    }
+    const badResponse: ErrorResponse = {
+        result: 'error',
+        status: response.status,
+        statusText: response.statusText,
+        payload: response.data
+    };
+    return badResponse;
+}
 
-export type { Guide, RecordedShowModel, Reminder, ResponseData } from "./types";
+
+export type { Guide, RecordedShowModel, Reminder } from "./types";

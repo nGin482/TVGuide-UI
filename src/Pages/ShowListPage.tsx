@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Modal from "react-modal";
 
 import AddShow from "../AddShow";
 import { getShowList, removeShowFromList } from "../requests/requests";
@@ -8,20 +7,15 @@ import '../ShowList.css';
 const ShowListPage = () => {
     const [showList, setShowList] = useState<string[]>([]);
     const [result, setResult] = useState('');
-    const [openResultModal, setOpenResultModal] = useState(false);
 
     useEffect(() => {
         getShowList().then(showList => setShowList(showList));
     }, []);
 
-    const deleteShowFromList = (show: string) => {
-        removeShowFromList(show).then(data => {
-            setResult(data.message);
-            setOpenResultModal(true);
-        })
-        .catch(error => {
-            setResult(error.response?.data.message)
-        });
+    const deleteShowFromList = async (show: string) => {
+        const response = await removeShowFromList(show);
+
+        response.result === 'success' ? setResult(response.message) : setResult(response.payload.message);
     };
 
 
@@ -36,10 +30,7 @@ const ShowListPage = () => {
                         <button className="remove-show-from-list" onClick={() => deleteShowFromList(show)}>Delete {show}</button>
                     </div>
                 ))}
-                <Modal isOpen={openResultModal}>
-                    <button onClick={() => setOpenResultModal(false)}>Close</button>
-                    <blockquote>{result}</blockquote>
-                </Modal>
+                <blockquote>{result}</blockquote>
             </div>
             <AddShow/>
         </div>
