@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { Guide, RecordedShowModel } from "../utils/types";
+import { Guide, RecordedShowModel, Reminder } from "../utils/types";
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
@@ -32,11 +32,11 @@ const getRecordedShow = (show: string) => {
 const getReminders = () => {
     return axios.get(`${baseURL}/reminders`).then(response => response.data);
 };
-const addReminder = reminder => {
+const addReminder = (reminder: Reminder) => {
     return axios.put(`${baseURL}/reminders`, reminder).then(response => response.data);
 };
 
-const registerNewUser = user => {
+const registerNewUser = (user: any) => {
     return axios.put(`${baseURL}/register`, user).then(response => response.data);
 };
 

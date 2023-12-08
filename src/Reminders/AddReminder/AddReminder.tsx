@@ -1,5 +1,5 @@
 import { useState, FormEvent, Dispatch, SetStateAction } from 'react';
-import Modal from 'react-modal';
+// import Modal from 'react-modal';
 
 import CloseButton from '../../CloseButton';
 import { addReminder } from '../../requests/requests';
@@ -35,11 +35,11 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
         setOccasions('');
     };
 
-    Modal.setAppElement('#root')
+    // Modal.setAppElement('#root')
     return (
         <div id="add-reminder">
             <h4>Add Reminder</h4>
-            <CloseButton label="Cancel" callback={setShowAddReminder}/>
+            {/* <CloseButton label="Cancel" callback={setShowAddReminder}/> */}
             <form id="add-reminder-form" onSubmit={event => handleAddReminder(event)}>
                 <div id="field-inputs">
                     <label>What show would you like to set a reminder for?</label>
@@ -89,14 +89,14 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
                 </div>
                 <input type="submit" id="submit-reminder" value={showToRemind ? `Add Reminder for ${showToRemind}` : 'Add Reminder'} />
             </form>
-            <Modal isOpen={displayNote} id="reminder-note-modal">
+            {/* <Modal isOpen={displayNote} id="reminder-note-modal">
                 <CloseButton label="Close" callback={setDisplayNote}/>
                 <blockquote id="reminder-time-note">
                     You do not have to specify when you would like to be reminded.
                     <br/><br/>
                     If left blank, the default is that you will be reminded three minutes before an episode starts.
                 </blockquote>
-            </Modal>
+            </Modal> */}
             {reminderResponse !== '' && <blockquote id="add-reminder-response">{reminderResponse}</blockquote>}
         </div>
     )
