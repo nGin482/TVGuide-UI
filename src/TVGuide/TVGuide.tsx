@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, TableColumnsType } from "antd";
+import { Button, Table, TableColumnsType, Tag } from "antd";
 // import { useHistory } from "react-router";
 
 import Event from "../Event";
@@ -65,7 +65,7 @@ const TVGuide = ({ guide }: { guide: Guide }) => {
             title: 'Repeat?',
             dataIndex: 'repeat',
             key: 'repeat',
-            render: (repeat: boolean) => repeat && 'Repeat'
+            render: (repeat: boolean) => repeat && <Tag color="orange">Repeat</Tag>
         }
     ];
 
