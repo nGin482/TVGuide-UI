@@ -3,7 +3,7 @@ import { useState, FormEvent, Dispatch, SetStateAction } from 'react';
 
 import CloseButton from '../../CloseButton';
 import { addReminder } from '../../requests/requests';
-import { Reminder, ResponseData } from '../../utils';
+import { Reminder } from '../../utils';
 import './AddReminder.css';
 
 const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetStateAction<boolean>> }) => {
@@ -15,7 +15,7 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
     const [displayNote, setDisplayNote] = useState(false);
     const [reminderResponse, setReminderResponse] = useState('');
     
-    const handleAddReminder = (event: FormEvent<HTMLFormElement>) => {
+    const handleAddReminder = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const reminderObject: Reminder = {
             show: showToRemind,
@@ -24,11 +24,8 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
             occasions: occasions
         };
         console.log(reminderObject)
-        addReminder(reminderObject).then((data: ResponseData) => {
-            setReminderResponse(data.message);
-        }).catch(err => {
-            setReminderResponse(err.response?.data.message);
-        })
+        const response = await addReminder(reminderObject);
+        response.result === 'success' ? setReminderResponse(response.message) : setReminderResponse(response.payload.message);
         setShowToRemind('');
         setReminderTime('');
         setReminderAlert('');

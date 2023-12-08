@@ -3,25 +3,21 @@ import React, { useState, useEffect } from "react";
 import TVGuide from "../TVGuide/TVGuide";
 import RegisterUser from "../RegisterUser";
 import { getGuide } from "../requests/requests";
-
-import { Guide } from "../utils/types.js";
+import { Guide } from "../utils";
 
 const Home = () => {
     const [guide, setGuide] = useState<Guide | null>(null);
     const [guideError, setGuideError] = useState<string>('');
 
     useEffect(() => {
-        getGuide().then((data: Guide) => {
-            console.log(data)
+        getGuide().then((data) => {
             setGuide(data);
-        }).catch(err => {
-            if (err.response) {
-                if (err.response.status === 404) {
-                    setGuideError(err.response.data.message);
-                }
+        }).catch((err: any) => {
+            if (err.response?.data.message) {
+                setGuideError(err.response.data.message);
             }
             else {
-                setGuideError('There is an error happening');
+                setGuideError('There is a problem communicating with the server');
             }
         })
     }, []);

@@ -1,25 +1,26 @@
 import React, { useState, FormEvent } from 'react';
 
 import { registerNewUser } from './requests/requests';
-import { ResponseData } from './utils';
 import './RegisterUser.css';
 
 const RegisterUser = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     
-    const registerUser = (event: FormEvent<HTMLFormElement>) => {
+    const registerUser = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const user = {
             username,
             password
         };
         console.log(user)
-        registerNewUser(user).then((data: ResponseData) => {
-            setUsername('')
-            setPassword('')
-            console.log(data.message)
-        });
+        const response = await registerNewUser(user);
+
+        if (response.result === 'success') {
+            console.log(response.message)
+        }
+        setUsername('');
+        setPassword('');
     };
     
     return (

@@ -43,21 +43,24 @@ interface Reminder {
 };
 
 interface ResponseData {
+    result: 'success'
     message: string
 };
 
 interface ErrorResponse {
-    response: {
-        data: {
-            message: string
-        }
+    result: 'error'
+    status: number
+    statusText: string
+    payload: {
+        message: string
     }
-}
+};
 
 export type {
     Guide,
     GuideShow,
     RecordedShowModel,
     Reminder,
-    ResponseData
+    ResponseData,
+    ErrorResponse
 };

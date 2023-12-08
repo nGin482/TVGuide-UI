@@ -14,11 +14,8 @@ const ShowListPage = () => {
 
     const deleteShowFromList = async (show: string) => {
         const response = await removeShowFromList(show);
-        
-        
-        removeShowFromList(show)
-            .then(data => setResult(data.message))
-            .catch(error => setResult(error.response?.data.message));
+
+        response.result === 'success' ? setResult(response.message) : setResult(response.payload.message);
     };
 
 
