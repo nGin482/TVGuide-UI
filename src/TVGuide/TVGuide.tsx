@@ -1,82 +1,86 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Button, Table, TableColumnsType } from "antd";
 // import { useHistory } from "react-router";
 
 import Event from "../Event";
-import { showStringForGuide, Guide } from "../utils";
+import { showStringForGuide, Guide, GuideShow } from "../utils";
 import './TVGuide.css';
 
 const TVGuide = ({ guide }: { guide: Guide }) => {
     const [service, setService] = useState('All');
     const [openModal, setOpenModal] = useState(false);
     const [eventForModal, setEventForModal] = useState('');
+    const [guideShows, setGuideShows] = useState(guide.FTA.concat(guide.BBC));
     // const history = useHistory()
+
+    useEffect(() => {
+        if (service === 'FTA') {
+            setGuideShows(guide.FTA);
+        }
+        if (service === 'BBC') {
+            setGuideShows(guide.BBC);
+        }
+        else {
+            setGuideShows(guide.FTA.concat(guide.BBC));
+        }
+    }, [service]);
 
     const selectEvent = (event: string) => {
         setOpenModal(true);
         setEventForModal(event);
     };
 
-    const renderGuideData = () => {
-        if (service === 'All') {
-            return (
-                <div id="guide-data">
-                    <div className="service" id="Free to Air">
-                        <h6 className="service-header">Free to Air</h6>
-                        {guide['FTA'].map(show => (
-                            <div className="show" key={show.time+show.channel}>
-                                <blockquote>{showStringForGuide(show)}</blockquote>
-                                {show.event && <button className="see-event" onClick={() => selectEvent(show.event)}>See Event for {show.title}</button>}
-                            </div>
-                        ))}
-                    </div>
-                    <div className="service" id="BBC">
-                        <h6 className="service-header">BBC Channels</h6>
-                        {guide['BBC'].map(show => (
-                            <div className="show" key={show.time+show.channel}>
-                                <blockquote>{showStringForGuide(show)}</blockquote>
-                                <button className="see-event" onClick={() => selectEvent(show.event)}>See Event for {show.title}</button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            );
+    const tableColumns: TableColumnsType<GuideShow> = [
+        {
+            title: 'Show',
+            dataIndex: 'title',
+            key: 'show'
+        },
+        {
+            title: 'Time',
+            dataIndex: 'time',
+            key: 'time'
+        },
+        {
+            title: 'Channel',
+            dataIndex: 'channel',
+            key: 'channel'
+        },
+        {
+            title: 'Season Number',
+            dataIndex: 'season_number',
+            key: 'season_number'
+        },
+        {
+            title: 'Episode Number',
+            dataIndex: 'episode_number',
+            key: 'episode_number'
+        },
+        {
+            title: 'Episode Title',
+            dataIndex: 'episode_title',
+            key: 'episode_title'
+        },
+        {
+            title: 'Repeat?',
+            dataIndex: 'repeat',
+            key: 'repeat',
+            render: (repeat: boolean) => repeat && 'Repeat'
         }
-        else {
-            return (
-                <div className="service" id={service}>
-                    {service === 'FTA' ? <h6 className="service-header">Free to Air</h6> : <h6 className="service-header">BBC Channels</h6>}
-                    {guide[service].map(show => (
-                        <div className="show" key={show.time+show.channel}>
-                            <blockquote>{showStringForGuide(show)}</blockquote>
-                            {show.event ? <button className="see-event" onClick={() => selectEvent(show.event)}>See Event for {show.title}</button> : ''}
-                        </div>
-                    ))}
-                </div>
-            );
-        }
-    }
-
-    // const handleClick = () => {
-    //     history.push('/shows')
-    // }
+    ];
 
     return (
         <div id="tv-guide">
-            <h4 id="tv-guide-header">Guide</h4>
+            <div id="service-filter">
+                <Button className="service-switch" type="primary" onClick={() => setService('FTA')}>Free to Air</Button>
+                <Button className="service-switch" type="primary" onClick={() => setService('BBC')}>BBC Channels</Button>
+                <Button className="service-switch" type="primary" onClick={() => setService('All')}>All</Button>
+            </div>
             <div id="guide-content">
-                {renderGuideData()}
-                <div id="service-filter">
-                    <div className="select-service" id="select-fta" onClick={() => setService('FTA')}>
-                        Free to Air
-                    </div>
-                    <div className="select-service" id="select-bbc" onClick={() => setService('BBC')}>
-                        BBC Channels
-                    </div>
-                    <div className="select-service" id="select-bbc" onClick={() => setService('All')}>
-                        All
-                    </div>
-                </div>
-                <Event openModal={openModal} setOpenModal={setOpenModal} event={eventForModal}/>
+                <Table columns={tableColumns} dataSource={guideShows} bordered={true} />
+                {/* <Table columns={tableColumns} dataSource={guideShows} bordered={true} pagination={{position: 'bottomLeft'}} /> */}
+
+                {/* <Event openModal={openModal} setOpenModal={setOpenModal} event={eventForModal}/> */}
             </div>
         </div>
     );
