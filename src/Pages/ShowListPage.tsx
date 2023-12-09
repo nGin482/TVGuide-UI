@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { Card, Image, Tooltip } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 import AddShow from "../AddShow";
 import { getShowList, removeShowFromList } from "../requests/requests";
+import { SearchItem } from "../utils";
 import '../ShowList.css';
 
 const ShowListPage = () => {
-    const [showList, setShowList] = useState<string[]>([]);
+    const [showList, setShowList] = useState<SearchItem[]>([]);
     const [result, setResult] = useState('');
 
     useEffect(() => {
@@ -24,11 +27,17 @@ const ShowListPage = () => {
             <h1>List of Shows</h1>
             <div id="list-of-shows">
                 {showList.map(show => (
-                    <div className="show-from-list" key={show}>
-                        {/* <img className="show-image" src={show.image} alt={`Image for ${show}`}/> */}
-                        <blockquote className="show-header">{show}</blockquote>
-                        <button className="remove-show-from-list" onClick={() => deleteShowFromList(show)}>Delete {show}</button>
-                    </div>
+                    <Card
+                        title={show.show}
+                        actions={[
+                            <Tooltip title={`Delete ${show.show}`}>
+                                <DeleteOutlined onClick={() => deleteShowFromList(show.show)} />
+                            </Tooltip>
+                        ]}
+                        cover={<Image alt={show.show} src={show.image} height={400} preview={false} />}
+                        className="search-card"
+                    >
+                    </Card>
                 ))}
                 <blockquote>{result}</blockquote>
             </div>
