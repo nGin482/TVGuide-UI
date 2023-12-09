@@ -6,17 +6,17 @@ import './TVGuide.css';
 
 const TVGuide = ({ guide }: { guide: Guide }) => {
     const [service, setService] = useState('All');
-    const [guideShows, setGuideShows] = useState(guide.FTA.concat(guide.BBC));
+    const [guideShows, setGuideShows] = useState([...guide.FTA, ...guide.BBC]);
 
     useEffect(() => {
         if (service === 'FTA') {
-            setGuideShows(guide.FTA);
+            setGuideShows([...guide.FTA]);
         }
-        if (service === 'BBC') {
+        else if (service === 'BBC') {
             setGuideShows(guide.BBC);
         }
         else {
-            setGuideShows(guide.FTA.concat(guide.BBC));
+            setGuideShows([...guide.FTA, ...guide.BBC]);
         }
     }, [service, guide]);
 
