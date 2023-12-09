@@ -18,7 +18,7 @@ const TVGuide = ({ guide }: { guide: Guide }) => {
         else {
             setGuideShows(guide.FTA.concat(guide.BBC));
         }
-    }, [service]);
+    }, [service, guide]);
 
     const tableColumns: TableColumnsType<GuideShow> = [
         {
