@@ -12,8 +12,7 @@
     text-align: left;
 }
 
-#guide-content {
-    /* display: flex; */
+#guide-table {
     margin: 0 auto;
 }
 
@@ -25,9 +24,6 @@
 }
 #service-filter :last-child {
     margin: 0 2%;
-}
-#service-switch {
-    background-color: #0f0 !important;
 }
 
 .select-service {

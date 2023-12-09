@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table, TableColumnsType, Tag } from "antd";
-// import { useHistory } from "react-router";
 
-import Event from "../Event";
-import { showStringForGuide, Guide, GuideShow } from "../utils";
+import { Guide, GuideShow } from "../utils";
 import './TVGuide.css';
 
 const TVGuide = ({ guide }: { guide: Guide }) => {
     const [service, setService] = useState('All');
-    const [openModal, setOpenModal] = useState(false);
-    const [eventForModal, setEventForModal] = useState('');
     const [guideShows, setGuideShows] = useState(guide.FTA.concat(guide.BBC));
-    // const history = useHistory()
 
     useEffect(() => {
         if (service === 'FTA') {
@@ -24,11 +19,6 @@ const TVGuide = ({ guide }: { guide: Guide }) => {
             setGuideShows(guide.FTA.concat(guide.BBC));
         }
     }, [service]);
-
-    const selectEvent = (event: string) => {
-        setOpenModal(true);
-        setEventForModal(event);
-    };
 
     const tableColumns: TableColumnsType<GuideShow> = [
         {
@@ -76,21 +66,19 @@ const TVGuide = ({ guide }: { guide: Guide }) => {
                 <Button className="service-switch" type="primary" onClick={() => setService('BBC')}>BBC Channels</Button>
                 <Button className="service-switch" type="primary" onClick={() => setService('All')}>All</Button>
             </div>
-            <div id="guide-content">
-                <Table
-                    columns={tableColumns}
-                    dataSource={guideShows}
-                    bordered={true}
-                    pagination={
-                        {
-                            position: ['bottomCenter'],
-                            pageSize: 50,
-                            hideOnSinglePage: true
-                        }
-                    } />
-
-                {/* <Event openModal={openModal} setOpenModal={setOpenModal} event={eventForModal}/> */}
-            </div>
+            <Table
+                className="guide-table"
+                columns={tableColumns}
+                dataSource={guideShows}
+                bordered={true}
+                pagination={
+                    {
+                        position: ['bottomCenter'],
+                        pageSize: 50,
+                        hideOnSinglePage: true
+                    }
+                }
+            />
         </div>
     );
 };
