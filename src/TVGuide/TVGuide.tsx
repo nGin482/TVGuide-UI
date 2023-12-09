@@ -77,8 +77,17 @@ const TVGuide = ({ guide }: { guide: Guide }) => {
                 <Button className="service-switch" type="primary" onClick={() => setService('All')}>All</Button>
             </div>
             <div id="guide-content">
-                <Table columns={tableColumns} dataSource={guideShows} bordered={true} />
-                {/* <Table columns={tableColumns} dataSource={guideShows} bordered={true} pagination={{position: 'bottomLeft'}} /> */}
+                <Table
+                    columns={tableColumns}
+                    dataSource={guideShows}
+                    bordered={true}
+                    pagination={
+                        {
+                            position: ['bottomCenter'],
+                            pageSize: 50,
+                            hideOnSinglePage: true
+                        }
+                    } />
 
                 {/* <Event openModal={openModal} setOpenModal={setOpenModal} event={eventForModal}/> */}
             </div>
