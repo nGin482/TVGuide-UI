@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { Guide, RecordedShowModel, Reminder, buildResponseValue } from "../utils";
+import { Guide, RecordedShowModel, Reminder, SearchItem, buildResponseValue } from "../utils";
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
@@ -22,7 +22,7 @@ const getEvents = async () => {
 };
 
 const getShowList = () => {
-    return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<string[]>) => response.data);
+    return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<SearchItem[]>) => response.data);
 };
 const addShowToList = async (show: string) => {
     const response = await axios.post(`${baseURL}/show-list`, { show });

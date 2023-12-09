@@ -42,6 +42,17 @@ interface Reminder {
     occasions: string
 };
 
+interface SearchItem {
+    show: string
+    image: string
+    conditions: {
+        minimum: number
+        maximum: number
+        exclude_titles: string[]
+    }
+    searchActive: boolean
+};
+
 interface ResponseData {
     result: 'success'
     message: string
@@ -61,6 +72,7 @@ export type {
     GuideShow,
     RecordedShowModel,
     Reminder,
+    SearchItem,
     ResponseData,
     ErrorResponse
 };
