@@ -1,12 +1,26 @@
 #reminders {
-    background-color: green;
-    padding: 5%;
-    max-width: 70%;
-    margin: 0 auto;;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    width: 80%;
+}
+
+.reminder-card {
+    margin-left: 20px;
+    box-shadow: 8px 8px #aaa;
+    border: solid 5px #555;
+}
+.reminder-card:first-of-type {
+    margin-left: 0;
+}
+
+.reminder-card:hover {
+    background-color: #0f0;
 }
 
 #add-reminder-button {
-    position: absolute;
+    /* position: absolute; */
+    float: left;
     left: 15%;
     margin-top: 2%;
     border-radius: 12px;
@@ -14,8 +28,5 @@
     color: white;
     padding: 1%;
     width: 10%;
-}
-
-#add-reminder-button {
     cursor: pointer;
 }

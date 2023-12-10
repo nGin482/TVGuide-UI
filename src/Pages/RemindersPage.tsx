@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Card } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import ReminderCard from '../Reminders/ReminderCard';
 import AddReminder from '../Reminders/AddReminder/AddReminder';
@@ -13,7 +15,7 @@ const RemindersPage = () => {
     const [error, setError] = useState('');
     
     useEffect(() => {
-        getReminders().then((data: Reminder[]) => {
+        getReminders().then(data => {
             setReminders(data);
         }).catch(err => {
             setError(err.response?.data.message);
@@ -22,7 +24,7 @@ const RemindersPage = () => {
 
     useEffect(() => {
         console.log(reminders)
-    }, reminders);
+    }, [reminders]);
 
     return (
         <div id="reminders-page">
@@ -33,7 +35,20 @@ const RemindersPage = () => {
             }
             <div id="reminders">
                 {reminders.length > 0 && !error ? (
-                    reminders.map(reminder => <ReminderCard reminder={reminder} />)
+                    reminders.map(reminder => 
+                        <Card
+                            title={reminder.show}
+                            className="reminder-card"
+                            actions={[
+                                <EditOutlined />,
+                                <DeleteOutlined />
+                            ]}
+                        >
+                            <blockquote>Reminder time: {reminder.reminder_alert}</blockquote>
+                            <blockquote>Warning time: {reminder.warning_time}</blockquote>
+                            <blockquote>Occasions: {reminder.occasions}</blockquote>
+                        </Card>
+                    )
                 ) : error ? (
                     <h1>{error}</h1>
                 ) : (
