@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router";
+import { Table, TableColumnsType } from 'antd';
 
 import { getRecordedShow } from '../requests/requests';
 import { RecordedShowModel } from '../utils';
@@ -22,38 +23,64 @@ const RecordedShow = () => {
             .catch(response => console.log(response));
     }, [show]);
 
+    const episodeColumns: TableColumnsType = [
+        {
+            key: 'episode_number',
+            dataIndex: 'episode_number',
+            title: 'Episode Number'
+        },
+        {
+            key: 'episode_title',
+            dataIndex: 'episode_title',
+            title: 'Episode Title'
+        },
+        {
+            key: 'alternative_titles',
+            dataIndex: 'alternative_titles',
+            title: 'Alternative Titles'
+        },
+        {
+            key: 'summary',
+            dataIndex: 'summary',
+            title: 'Summary',
+            render: (summary: string) => <div dangerouslySetInnerHTML={{__html: summary}} />
+        },
+        {
+            key: 'channels',
+            dataIndex: 'channels',
+            className: 'episode-channels',
+            title: 'Channels',
+            render: (channels: string[]) => <ul>{channels.map(channel => <li>{channel}</li>)}</ul>
+        },
+        {
+            key: 'air_dates',
+            dataIndex: 'air_dates',
+            className: 'episode-air-dates',
+            title: 'Air Dates',
+            render: (air_dates: string[]) => <ul>{air_dates.map(air_date => <li>{air_date}</li>)}</ul>
+        }
+    ];
+
 
     return (
         recordedShow ? (
             <div id={recordedShow.show}>
                 <h1>{recordedShow.show}</h1>
                 <BackButton route="/shows" text="Recorded Shows"/>
-                {recordedShow.seasons.map(season => (
-                    <div className="season">
-                        <div id={`season-${season.season_number}`} onClick={() => setShowEpisodes(prevState => !prevState)}>
-                            <blockquote>Season {season.season_number}</blockquote>
-                            {showEpisodes && (
-                                season.episodes.map(episode => (
-                                    <div className="episode-data">
-                                        <blockquote className="episode-number">Episode Number: {episode.episode_number}</blockquote>
-                                        <blockquote className="episode-title">Episode Title: {episode.episode_title}</blockquote>
-                                        <div className="episode-channels">
-                                            <blockquote>Channels:</blockquote>
-                                            {episode.channels.map(channel => (
-                                                <blockquote key={'channel-' + channel} className="channel">{channel}</blockquote>
-                                            ))}
-                                        </div>
-                                        Air Dates:
-                                        <ul>
-                                            {episode.air_dates.map(date => <li>{date}</li>)}
-                                        </ul>
-                                        {episode.air_dates.length > 2 && <blockquote className="repeat">This episode is a repeat</blockquote>}
-                                    </div>                                    
-                                ))
-                            )}
-                        </div>
-                    </div>
-                ))}
+
+                <Table
+                    columns={episodeColumns}
+                    dataSource={recordedShow.seasons[0].episodes}
+                    className='season-table'
+                    bordered={true}
+                    pagination={
+                        {
+                            position: ['bottomCenter'],
+                            pageSize: 50,
+                            hideOnSinglePage: true
+                        }
+                    }
+                />
             </div>
         )
         : (

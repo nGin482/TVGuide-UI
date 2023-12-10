@@ -7,3 +7,15 @@
     color: white;
     margin-bottom: 1%;
 }
+
+.season-table {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.episode-channels li, .episode-air-dates li {
+    list-style: none;
+}
+.episode-channels ul, .episode-air-dates ul {
+    padding: 0px;
+}
