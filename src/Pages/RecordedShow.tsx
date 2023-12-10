@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router";
-import { Table, TableColumnsType } from 'antd';
+import { Table, TableColumnsType, Tag } from 'antd';
 
 import { getRecordedShow } from '../requests/requests';
 import { RecordedShowModel } from '../utils';
@@ -50,14 +50,18 @@ const RecordedShow = () => {
             dataIndex: 'channels',
             className: 'episode-channels',
             title: 'Channels',
-            render: (channels: string[]) => <ul>{channels.map(channel => <li>{channel}</li>)}</ul>
+            render: (channels: string[]) => channels.map(channel =>
+                <Tag color="geekblue" className="episode-channel">{channel}</Tag>
+            )
         },
         {
             key: 'air_dates',
             dataIndex: 'air_dates',
             className: 'episode-air-dates',
             title: 'Air Dates',
-            render: (air_dates: string[]) => <ul>{air_dates.map(air_date => <li>{air_date}</li>)}</ul>
+            render: (air_dates: string[]) => air_dates.map(air_date =>
+                <Tag color="geekblue" className="episode-channel">{air_date}</Tag>
+            )
         }
     ];
 
