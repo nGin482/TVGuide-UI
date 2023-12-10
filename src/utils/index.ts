@@ -58,4 +58,4 @@ export const buildResponseValue = (response: AxiosResponse<any>) => {
 }
 
 
-export type { Guide, RecordedShowModel, Reminder, GuideShow } from "./types";
+export type { Guide, RecordedShowModel, Reminder, GuideShow, SearchItem } from "./types";
