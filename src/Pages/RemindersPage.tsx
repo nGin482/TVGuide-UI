@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Card } from "antd";
+import { Alert, Button, Card } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import AddReminder from '../Reminders/AddReminder/AddReminder';
@@ -28,32 +28,36 @@ const RemindersPage = () => {
     return (
         <div id="reminders-page">
             <h1>Reminders</h1>
-            {showAddReminder
+            {reminders.length > 0 && showAddReminder
                 ? <AddReminder setShowAddReminder={setShowAddReminder}/>
                 : <Button id="add-reminder-button" onClick={() => setShowAddReminder(true)}>Add Reminder</Button>
             }
             <div id="reminders">
-                {reminders.length > 0 && !error ? (
-                    reminders.map(reminder => 
-                        <Card
-                            title={reminder.show}
-                            className="reminder-card"
-                            actions={[
-                                <EditOutlined />,
-                                <DeleteOutlined />
-                            ]}
-                        >
-                            <blockquote>Reminder time: {reminder.reminder_alert}</blockquote>
-                            <blockquote>Warning time: {reminder.warning_time}</blockquote>
-                            <blockquote>Occasions: {reminder.occasions}</blockquote>
-                        </Card>
-                    )
-                ) : error ? (
-                    <h1>{error}</h1>
-                ) : (
-                    <h1>Waiting for Reminders to be retrieved...</h1>
+                {reminders.length > 0 && !error && (
+                    <>
+                        {reminders.map(reminder => 
+                            <Card
+                                title={reminder.show}
+                                className="reminder-card"
+                                actions={[
+                                    <EditOutlined />,
+                                    <DeleteOutlined />
+                                ]}
+                            >
+                                <blockquote>Reminder time: {reminder.reminder_alert}</blockquote>
+                                <blockquote>Warning time: {reminder.warning_time}</blockquote>
+                                <blockquote>Occasions: {reminder.occasions}</blockquote>
+                            </Card>
+                        )}
+                    </>
                 )}
             </div>
+            {reminders.length === 0 && !error && (
+                <Alert type="info" message="Waiting for reminders to be retrieved ..." className="reminders-loading" />
+            )}
+            {error && (
+                <Alert type="error" message={error} />
+            )}
         </div>
     );
 };

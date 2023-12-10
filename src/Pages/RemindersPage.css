@@ -18,6 +18,12 @@
     background-color: #0f0;
 }
 
+.reminders-loading {
+    width: 60%;
+    margin: 0 auto;
+    height: 90px;
+}
+
 #add-reminder-button {
     float: right;
     right: 25px;
