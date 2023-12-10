@@ -1,4 +1,4 @@
-import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 import './BackButton.css';
 
 interface BackButtonProps {
@@ -6,17 +6,9 @@ interface BackButtonProps {
     text: string
 }
 
-const BackButton = ({ route, text }: BackButtonProps) => {
-    
-    const history = useHistory();
-    const goBack = () => {
-        history.push(route)
-    }
-    
-    return (
-        <button id="back-button" onClick={() => goBack()}>Back to {text}</button>
-    );
-};
+const BackButton = ({ route, text }: BackButtonProps) => (
+    <Link to={route}><button id="back-button">Back to {text}</button></Link>
+);
 
 
 export default BackButton;

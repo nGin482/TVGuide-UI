@@ -7,3 +7,13 @@
     color: white;
     margin-bottom: 1%;
 }
+
+.season-table {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.episode-channel {
+    display: block;
+    margin-bottom: 3px;
+}

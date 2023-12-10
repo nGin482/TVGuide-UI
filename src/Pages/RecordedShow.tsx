@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router";
+import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
 
 import { getRecordedShow } from '../requests/requests';
 import { RecordedShowModel } from '../utils';
@@ -14,7 +15,7 @@ interface RecordedShowParam {
 const RecordedShow = () => {
     const { show } = useParams<RecordedShowParam>();
     const [recordedShow, setRecordedShow] = useState<RecordedShowModel | null>(null);
-    const [showEpisodes, setShowEpisodes] = useState(false);
+    const [season, setSeason] = useState(1);
     
     useEffect(() => {
         getRecordedShow(show)
@@ -22,42 +23,95 @@ const RecordedShow = () => {
             .catch(response => console.log(response));
     }, [show]);
 
+    const changeSeasons = (season_number: number | string) => {
+        if (typeof season_number === 'string') {
+            const index = recordedShow.seasons.findIndex(season => typeof season.season_number === 'string');
+            setSeason(index + 1);
+        }
+        else {
+            setSeason(season_number);
+        }
+    };
+
+    const episodeColumns: TableColumnsType = [
+        {
+            key: 'episode_number',
+            dataIndex: 'episode_number',
+            title: 'Episode Number'
+        },
+        {
+            key: 'episode_title',
+            dataIndex: 'episode_title',
+            title: 'Episode Title'
+        },
+        {
+            key: 'alternative_titles',
+            dataIndex: 'alternative_titles',
+            title: 'Alternative Titles'
+        },
+        {
+            key: 'summary',
+            dataIndex: 'summary',
+            title: 'Summary',
+            render: (summary: string) => <div dangerouslySetInnerHTML={{__html: summary}} />
+        },
+        {
+            key: 'channels',
+            dataIndex: 'channels',
+            className: 'episode-channels',
+            title: 'Channels',
+            render: (channels: string[]) => channels.map((channel, index) =>
+                <Tag key={`tag-${index}-${channel}`} color="geekblue" className="episode-channel">{channel}</Tag>
+            )
+        },
+        {
+            key: 'air_dates',
+            dataIndex: 'air_dates',
+            className: 'episode-air-dates',
+            title: 'Air Dates',
+            render: (air_dates: string[]) => air_dates.map((air_date, index) =>
+                <Tag key={`tag-${index}-${air_date}`} color="geekblue" className="episode-channel">{air_date}</Tag>
+            )
+        }
+    ];
 
     return (
         recordedShow ? (
             <div id={recordedShow.show}>
                 <h1>{recordedShow.show}</h1>
                 <BackButton route="/shows" text="Recorded Shows"/>
-                {recordedShow.seasons.map(season => (
-                    <div className="season">
-                        <div id={`season-${season.season_number}`} onClick={() => setShowEpisodes(prevState => !prevState)}>
-                            <blockquote>Season {season.season_number}</blockquote>
-                            {showEpisodes && (
-                                season.episodes.map(episode => (
-                                    <div className="episode-data">
-                                        <blockquote className="episode-number">Episode Number: {episode.episode_number}</blockquote>
-                                        <blockquote className="episode-title">Episode Title: {episode.episode_title}</blockquote>
-                                        <div className="episode-channels">
-                                            <blockquote>Channels:</blockquote>
-                                            {episode.channels.map(channel => (
-                                                <blockquote key={'channel-' + channel} className="channel">{channel}</blockquote>
-                                            ))}
-                                        </div>
-                                        Air Dates:
-                                        <ul>
-                                            {episode.air_dates.map(date => <li>{date}</li>)}
-                                        </ul>
-                                        {episode.air_dates.length > 2 && <blockquote className="repeat">This episode is a repeat</blockquote>}
-                                    </div>                                    
-                                ))
-                            )}
-                        </div>
-                    </div>
-                ))}
+
+                {recordedShow.seasons.map(season => 
+                    <Button
+                        className="change-season"
+                        onClick={() => changeSeasons(season.season_number)}
+                        key={season.season_number}
+                    >
+                        Season {season.season_number}
+                    </Button>
+                )}
+                <Table
+                    key={`${recordedShow.show}-table`}
+                    rowKey="id"
+                    columns={episodeColumns}
+                    dataSource={recordedShow.seasons[season-1].episodes}
+                    className='season-table'
+                    bordered={true}
+                    pagination={
+                        {
+                            position: ['bottomCenter'],
+                            pageSize: 50,
+                            hideOnSinglePage: true
+                        }
+                    }
+                />
             </div>
         )
         : (
-            <h1>Waiting for data to be retrieved for {show} ...</h1>
+            <>
+                <h1>{show}</h1>
+                <Alert type="info" message={`Retrieving data for ${show} ...`} className="show-loading" />
+            </>
         )
     );    
 };
