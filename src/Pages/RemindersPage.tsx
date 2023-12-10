@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Card } from "antd";
+import { Button, Card } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
-import ReminderCard from '../Reminders/ReminderCard';
 import AddReminder from '../Reminders/AddReminder/AddReminder';
 import { getReminders } from '../requests/requests';
 import { Reminder } from '../utils';
@@ -31,7 +30,7 @@ const RemindersPage = () => {
             <h1>Reminders</h1>
             {showAddReminder
                 ? <AddReminder setShowAddReminder={setShowAddReminder}/>
-                : <button id="add-reminder-button" onClick={() => setShowAddReminder(true)}>Add Reminder</button>
+                : <Button id="add-reminder-button" onClick={() => setShowAddReminder(true)}>Add Reminder</Button>
             }
             <div id="reminders">
                 {reminders.length > 0 && !error ? (

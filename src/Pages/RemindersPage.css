@@ -19,14 +19,14 @@
 }
 
 #add-reminder-button {
-    /* position: absolute; */
-    float: left;
-    left: 15%;
-    margin-top: 2%;
+    float: right;
+    right: 25px;
     border-radius: 12px;
-    background-color: black;
-    color: white;
-    padding: 1%;
-    width: 10%;
+    height: 60px;
+    width: 9%;
     cursor: pointer;
+    border: solid 3px #888;
+}
+#add-reminder-button:hover {
+    box-shadow: 0 0 8px 8px #aaa;
 }
