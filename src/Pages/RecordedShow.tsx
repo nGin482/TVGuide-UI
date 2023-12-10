@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router";
-import { Table, TableColumnsType, Tag } from 'antd';
+import { Alert, Table, TableColumnsType, Tag } from 'antd';
 
 import { getRecordedShow } from '../requests/requests';
 import { RecordedShowModel } from '../utils';
@@ -88,7 +88,10 @@ const RecordedShow = () => {
             </div>
         )
         : (
-            <h1>Waiting for data to be retrieved for {show} ...</h1>
+            <>
+                <h1>{show}</h1>
+                <Alert type="info" message={`Retrieving data for ${show} ...`} className="show-loading" />
+            </>
         )
     );    
 };
