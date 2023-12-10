@@ -10,16 +10,16 @@ const Home = () => {
     const [guideError, setGuideError] = useState<string>('');
 
     useEffect(() => {
-        getGuide().then((data) => {
-            setGuide(data);
-        }).catch((err: any) => {
-            if (err.response?.data.message) {
-                setGuideError(err.response.data.message);
-            }
-            else {
-                setGuideError('There is a problem communicating with the server');
-            }
-        })
+        getGuide()
+            .then((data) => setGuide(data))
+            .catch((err: any) => {
+                if (err.response?.data.message) {
+                    setGuideError(err.response.data.message);
+                }
+                else {
+                    setGuideError('There is a problem communicating with the server');
+                }
+            })
     }, []);
 
     return (
