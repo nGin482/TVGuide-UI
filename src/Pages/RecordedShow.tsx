@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from "react-router";
-import { Alert, Table, TableColumnsType, Tag } from 'antd';
+import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
 
 import { getRecordedShow } from '../requests/requests';
 import { RecordedShowModel } from '../utils';
@@ -15,13 +15,23 @@ interface RecordedShowParam {
 const RecordedShow = () => {
     const { show } = useParams<RecordedShowParam>();
     const [recordedShow, setRecordedShow] = useState<RecordedShowModel | null>(null);
-    const [showEpisodes, setShowEpisodes] = useState(false);
+    const [season, setSeason] = useState(1);
     
     useEffect(() => {
         getRecordedShow(show)
             .then(data => setRecordedShow(data))
             .catch(response => console.log(response));
     }, [show]);
+
+    const changeSeasons = (season_number: number | string) => {
+        if (typeof season_number === 'string') {
+            const index = recordedShow.seasons.findIndex(season => typeof season.season_number === 'string');
+            setSeason(index + 1);
+        }
+        else {
+            setSeason(season_number);
+        }
+    };
 
     const episodeColumns: TableColumnsType = [
         {
@@ -50,8 +60,8 @@ const RecordedShow = () => {
             dataIndex: 'channels',
             className: 'episode-channels',
             title: 'Channels',
-            render: (channels: string[]) => channels.map(channel =>
-                <Tag color="geekblue" className="episode-channel">{channel}</Tag>
+            render: (channels: string[]) => channels.map((channel, index) =>
+                <Tag key={`tag-${index}-${channel}`} color="geekblue" className="episode-channel">{channel}</Tag>
             )
         },
         {
@@ -59,12 +69,11 @@ const RecordedShow = () => {
             dataIndex: 'air_dates',
             className: 'episode-air-dates',
             title: 'Air Dates',
-            render: (air_dates: string[]) => air_dates.map(air_date =>
-                <Tag color="geekblue" className="episode-channel">{air_date}</Tag>
+            render: (air_dates: string[]) => air_dates.map((air_date, index) =>
+                <Tag key={`tag-${index}-${air_date}`} color="geekblue" className="episode-channel">{air_date}</Tag>
             )
         }
     ];
-
 
     return (
         recordedShow ? (
@@ -72,9 +81,20 @@ const RecordedShow = () => {
                 <h1>{recordedShow.show}</h1>
                 <BackButton route="/shows" text="Recorded Shows"/>
 
+                {recordedShow.seasons.map(season => 
+                    <Button
+                        className="change-season"
+                        onClick={() => changeSeasons(season.season_number)}
+                        key={season.season_number}
+                    >
+                        Season {season.season_number}
+                    </Button>
+                )}
                 <Table
+                    key={`${recordedShow.show}-table`}
+                    rowKey="id"
                     columns={episodeColumns}
-                    dataSource={recordedShow.seasons[0].episodes}
+                    dataSource={recordedShow.seasons[season-1].episodes}
                     className='season-table'
                     bordered={true}
                     pagination={

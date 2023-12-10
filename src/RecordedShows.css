@@ -22,3 +22,10 @@
     margin: 0 auto;
     height: 90px;
 }
+
+.change-season {
+    margin-left: 5px;
+}
+.change-season:first-of-type {
+    margin-left: 0;
+}
