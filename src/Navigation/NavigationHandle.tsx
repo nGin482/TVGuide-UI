@@ -6,6 +6,8 @@ import ShowListPage from "../Pages/ShowListPage";
 import RecordedShowsPage from "../Pages/RecordedShowsPage";
 import RecordedShow from "../Pages/RecordedShow";
 import RemindersPage from "../Pages/RemindersPage";
+import RegisterUser from "../RegisterUser";
+import Login from "../components/Login/Login";
 
 const NavigationHandle = () => {
     return (
@@ -16,6 +18,7 @@ const NavigationHandle = () => {
                 <Route exact path='/shows'><RecordedShowsPage/></Route>
                 <Route path='/shows/:show'><RecordedShow/></Route>
                 <Route path='/reminders'><RemindersPage/></Route>
+                <Route path="/login"><Login /></Route>
                 <Route path='/'><Home/></Route>
             </Switch>
         </BrowserRouter>
