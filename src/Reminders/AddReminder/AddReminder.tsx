@@ -24,7 +24,8 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
         };
         console.log(reminderObject)
         const response = await addReminder(reminderObject);
-        response.result === 'success' ? setReminderResponse(response.message) : setReminderResponse(response.payload.message);
+        const message = response.result === 'success' ? response.message : response.payload.message;
+        setReminderResponse(message);
         setShowToRemind('');
         setReminderTime('');
         setReminderAlert('');
