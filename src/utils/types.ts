@@ -63,7 +63,7 @@ interface User {
 
 interface UserContextModel {
     user: User
-    setUser: React.Dispatch<User>
+    setUser: React.Dispatch<React.SetStateAction<User>>
 };
 
 interface ResponseData {
