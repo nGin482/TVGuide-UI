@@ -53,9 +53,19 @@ const addReminder = async (reminder: Reminder) => {
 };
 
 const registerNewUser = async (user: any) => {
-    const response = await axios.post(`${baseURL}/register`, user);
+    const response = await axios.post(`${baseURL}/auth/register`, user);
 
     return buildResponseValue(response);
+};
+
+const login = async (loginDetails: { username: string, password: string }) => {
+    try {
+        const response = await axios.post(`${baseURL}/auth/login`, loginDetails);
+        return buildResponseValue(response);
+    }
+    catch(err) {
+        return buildResponseValue(err.response);
+    }
 };
 
 export {
@@ -68,5 +78,6 @@ export {
     getRecordedShow,
     getReminders,
     addReminder,
-    registerNewUser
+    registerNewUser,
+    login
 };

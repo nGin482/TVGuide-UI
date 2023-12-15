@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Input } from "antd";
+import { Alert, Button, Form, Input } from "antd";
 import type { FormRule } from "antd";
 import { ValidateErrorEntity } from "rc-field-form/lib/interface";
+
+import { login } from "../../requests/requests";
 
 import "./login.css";
 
 interface LoginForm {
-    username?: string
-    password?: string
+    username: string
+    password: string
 };
 
 const rules: FormRule[] = [
@@ -17,14 +19,24 @@ const rules: FormRule[] = [
 ];
 
 const Login = () => {
+    const [loginError, setLoginError] = useState('');
     const [ form ] = Form.useForm();
 
     const loginHandle = async (values: LoginForm) => {
         console.log(values)
+        const response = await login(values);
+        if (response.result === 'success') {
+            console.log(response.message)
+        }
+        else {
+            setLoginError(response.payload.message);
+        }
     };
 
     const loginFailed = async (values: ValidateErrorEntity) => {
         values.errorFields.forEach(field => field.errors.forEach(error => console.log(error)))
+        console.log(values)
+        setLoginError('Please enter values for all fields');
     };
 
 
@@ -38,11 +50,11 @@ const Login = () => {
                 <Form.Item<LoginForm> label="Password" name="password" rules={rules}>
                     <Input.Password />
                 </Form.Item>
-                {/* pw = Optimus, I tried */}
                 
                 <Form.Item>
                     <Button htmlType="submit" type="primary">Submit</Button>
                 </Form.Item>
+                {loginError && <Alert type="error" message="Login Failed!" description={loginError} />}
             </Form>
         </>
     );
