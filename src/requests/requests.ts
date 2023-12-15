@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { Guide, RecordedShowModel, Reminder, SearchItem, buildResponseValue } from "../utils";
+import { Guide, RecordedShowModel, Reminder, SearchItem, buildResponseValue, buildLoginResponseValue } from "../utils";
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
@@ -61,10 +61,10 @@ const registerNewUser = async (user: any) => {
 const login = async (loginDetails: { username: string, password: string }) => {
     try {
         const response = await axios.post(`${baseURL}/auth/login`, loginDetails);
-        return buildResponseValue(response);
+        return buildLoginResponseValue(response);
     }
     catch(err) {
-        return buildResponseValue(err.response);
+        return buildLoginResponseValue(err.response);
     }
 };
 
