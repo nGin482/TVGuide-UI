@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import TVGuide from "../TVGuide/TVGuide";
-import RegisterUser from "../RegisterUser";
+import RegisterUser from "../components/Registration/RegisterUser";
 import { getGuide } from "../requests/requests";
 import { Guide } from "../utils";
 

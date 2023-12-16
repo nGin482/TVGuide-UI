@@ -6,7 +6,7 @@ import ShowListPage from "../Pages/ShowListPage";
 import RecordedShowsPage from "../Pages/RecordedShowsPage";
 import RecordedShow from "../Pages/RecordedShow";
 import RemindersPage from "../Pages/RemindersPage";
-import RegisterUser from "../RegisterUser";
+import RegisterUser from "../components/Registration/RegisterUser";
 import Login from "../components/Login/Login";
 
 const NavigationHandle = () => {
