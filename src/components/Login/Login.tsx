@@ -55,7 +55,7 @@ const Login = () => {
 
     return (
         <>
-            <Form form={form} onFinish={loginHandle} id="login-form" onFinishFailed={loginFailed}>
+            <Form form={form} onFinish={loginHandle} id="login-form" onFinishFailed={loginFailed} className="auth-form">
                 <Form.Item<LoginForm> label="Username" name="username" rules={rules}>
                     <Input />
                 </Form.Item>
@@ -69,6 +69,7 @@ const Login = () => {
                 </Form.Item>
                 {loginError && <Alert type="error" message="Login Failed!" description={loginError} />}
             </Form>
+            <br />
             <Button onClick={logout}>Logout</Button>
         </>
     );

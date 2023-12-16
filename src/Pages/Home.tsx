@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import TVGuide from "../TVGuide/TVGuide";
-import RegisterUser from "../components/Registration/RegisterUser";
 import { getGuide } from "../requests/requests";
 import { Guide } from "../utils";
 
@@ -26,7 +25,6 @@ const Home = () => {
         <div id="home">
             <h1>TV Guide</h1>
             {guide ? <TVGuide guide={guide} /> : <blockquote id="message">{guideError}</blockquote>}
-            <RegisterUser/>
         </div>
     );
 };
