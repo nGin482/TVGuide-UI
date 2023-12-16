@@ -4,7 +4,6 @@ import { ConfigProvider } from 'antd';
 import NavigationHandle from './Navigation/NavigationHandle';
 import { UserContext } from "./contexts/UserContext";
 import { User } from "./utils";
-import './App.css';
 
 const theme = {
     token: {
