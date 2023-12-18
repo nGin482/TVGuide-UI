@@ -53,10 +53,28 @@ interface SearchItem {
     searchActive: boolean
 };
 
+interface User {
+    user: string
+    searchList: string[]
+    reminders: string[]
+    token: string
+    role: string,
+};
+
+interface UserContextModel {
+    user: User
+    setUser: React.Dispatch<React.SetStateAction<User>>
+};
+
 interface ResponseData {
     result: 'success'
     message: string
 };
+
+interface LoginResponse {
+    result: 'success'
+    message: User
+}
 
 interface ErrorResponse {
     result: 'error'
@@ -74,5 +92,8 @@ export type {
     Reminder,
     SearchItem,
     ResponseData,
-    ErrorResponse
+    ErrorResponse,
+    LoginResponse,
+    User,
+    UserContextModel
 };

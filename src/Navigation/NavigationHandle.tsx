@@ -6,6 +6,7 @@ import ShowListPage from "../Pages/ShowListPage";
 import RecordedShowsPage from "../Pages/RecordedShowsPage";
 import RecordedShow from "../Pages/RecordedShow";
 import RemindersPage from "../Pages/RemindersPage";
+import LoginPage from "../Pages/LoginPage";
 
 const NavigationHandle = () => {
     return (
@@ -16,6 +17,7 @@ const NavigationHandle = () => {
                 <Route exact path='/shows'><RecordedShowsPage/></Route>
                 <Route path='/shows/:show'><RecordedShow/></Route>
                 <Route path='/reminders'><RemindersPage/></Route>
+                <Route path="/login"><LoginPage /></Route>
                 <Route path='/'><Home/></Route>
             </Switch>
         </BrowserRouter>

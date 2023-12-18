@@ -1,6 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 
-import { registerNewUser } from './requests/requests';
+import { registerNewUser } from '../../requests/requests';
 import './RegisterUser.css';
 
 const RegisterUser = () => {

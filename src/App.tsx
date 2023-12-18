@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { ConfigProvider } from 'antd';
 
 import NavigationHandle from './Navigation/NavigationHandle';
-import './App.css';
+import { UserContext } from "./contexts/UserContext";
+import { User } from "./utils";
 
 const theme = {
     token: {
@@ -10,11 +12,15 @@ const theme = {
 };
 
 function App() {
+    const [user, setUser] = useState<User>(null);
+    
     return (
         <ConfigProvider theme={theme}>
-            <div className="App">
-                <NavigationHandle/>
-            </div>
+            <UserContext.Provider value={{ user, setUser }}>
+                <div className="App">
+                    <NavigationHandle/>
+                </div>
+            </UserContext.Provider>
         </ConfigProvider>
     );
 };

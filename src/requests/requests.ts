@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { Guide, RecordedShowModel, Reminder, SearchItem, buildResponseValue } from "../utils";
+import { Guide, RecordedShowModel, Reminder, SearchItem, buildResponseValue, buildLoginResponseValue } from "../utils";
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
@@ -53,9 +53,19 @@ const addReminder = async (reminder: Reminder) => {
 };
 
 const registerNewUser = async (user: any) => {
-    const response = await axios.post(`${baseURL}/register`, user);
+    const response = await axios.post(`${baseURL}/auth/register`, user);
 
     return buildResponseValue(response);
+};
+
+const login = async (loginDetails: { username: string, password: string }) => {
+    try {
+        const response = await axios.post(`${baseURL}/auth/login`, loginDetails);
+        return buildLoginResponseValue(response);
+    }
+    catch(err) {
+        return buildLoginResponseValue(err.response);
+    }
 };
 
 export {
@@ -68,5 +78,6 @@ export {
     getRecordedShow,
     getReminders,
     addReminder,
-    registerNewUser
+    registerNewUser,
+    login
 };
