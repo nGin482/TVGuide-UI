@@ -4,6 +4,16 @@ import { Guide, RecordedShowModel, Reminder, SearchItem, buildResponseValue, bui
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
+const headers = (token: string) => {
+    return {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    }
+}
+
 const getGuide = async () => {
     const response = await axios.get(`${baseURL}/guide`);
     if (response.status === 200) {
@@ -24,14 +34,14 @@ const getEvents = async () => {
 const getShowList = () => {
     return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<SearchItem[]>) => response.data);
 };
-const addShowToList = async (show: string) => {
-    const response = await axios.post(`${baseURL}/show-list`, { show });
+const addShowToList = async (show: string, token: string) => {
+    const response = await axios.post(`${baseURL}/show-list`, { show }, headers(token));
 
     const result = buildResponseValue(response);
     return result;
 };
-const removeShowFromList = async (showToRemove: string) => {
-    const response = await axios.delete(`${baseURL}/show-list/${showToRemove}`);
+const removeShowFromList = async (showToRemove: string, token: string) => {
+    const response = await axios.delete(`${baseURL}/show-list/${showToRemove}`, headers(token));
 
     return buildResponseValue(response);
 };
@@ -46,8 +56,13 @@ const getRecordedShow = (show: string) => {
 const getReminders = () => {
     return axios.get(`${baseURL}/reminders`).then((response: AxiosResponse<Reminder[]>) => response.data);
 };
-const addReminder = async (reminder: Reminder) => {
-    const response = await axios.post(`${baseURL}/reminders`, reminder);
+const addReminder = async (reminder: Reminder, token: string) => {
+    const response = await axios.post(`${baseURL}/reminders`, reminder, headers(token));
+
+    return buildResponseValue(response);
+};
+const deleteReminder = async (reminder: string, token: string) => {
+    const response = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
 
     return buildResponseValue(response);
 };
@@ -78,6 +93,7 @@ export {
     getRecordedShow,
     getReminders,
     addReminder,
+    deleteReminder,
     registerNewUser,
     login
 };
