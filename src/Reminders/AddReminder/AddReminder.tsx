@@ -1,6 +1,7 @@
-import { useState, FormEvent, Dispatch, SetStateAction } from 'react';
+import { useState, useContext, FormEvent, Dispatch, SetStateAction } from 'react';
 // import Modal from 'react-modal';
 
+import { UserContext } from '../../contexts/UserContext';
 import { addReminder } from '../../requests/requests';
 import { Reminder } from '../../utils';
 import './AddReminder.css';
@@ -13,6 +14,8 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
 
     const [displayNote, setDisplayNote] = useState(false);
     const [reminderResponse, setReminderResponse] = useState('');
+
+    const { user } = useContext(UserContext);
     
     const handleAddReminder = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -23,7 +26,7 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
             occasions: occasions
         };
         console.log(reminderObject)
-        const response = await addReminder(reminderObject);
+        const response = await addReminder(reminderObject, user.token);
         const message = response.result === 'success' ? response.message : response.payload.message;
         setReminderResponse(message);
         setShowToRemind('');

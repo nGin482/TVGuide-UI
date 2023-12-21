@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Card, Image, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
 import AddShow from "../AddShow";
+import { UserContext } from "../contexts/UserContext";
 import { getShowList, removeShowFromList } from "../requests/requests";
 import { SearchItem } from "../utils";
 import '../ShowList.css';
@@ -10,13 +11,14 @@ import '../ShowList.css';
 const ShowListPage = () => {
     const [showList, setShowList] = useState<SearchItem[]>([]);
     const [result, setResult] = useState('');
+    const { user } = useContext(UserContext)
 
     useEffect(() => {
         getShowList().then(showList => setShowList(showList));
     }, []);
 
     const deleteShowFromList = async (show: string) => {
-        const response = await removeShowFromList(show);
+        const response = await removeShowFromList(show, user.token);
 
         response.result === 'success' ? setResult(response.message) : setResult(response.payload.message);
     };

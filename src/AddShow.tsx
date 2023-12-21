@@ -1,5 +1,6 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, useContext, FormEvent } from "react";
 
+import { UserContext } from "./contexts/UserContext";
 import { addShowToList } from "./requests/requests";
 import './AddShow.css';
 
@@ -7,10 +8,11 @@ import './AddShow.css';
 const AddShow = () => {
     const [showToAdd, setShowToAdd] = useState('');
     const [result, setResult] = useState('');
+    const { user } = useContext(UserContext);
 
     const addShowSubmission = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const response = await addShowToList(showToAdd);
+        const response = await addShowToList(showToAdd, user.token);
         if (response.result === 'success') {
             setResult(response.message);
             setShowToAdd('');
