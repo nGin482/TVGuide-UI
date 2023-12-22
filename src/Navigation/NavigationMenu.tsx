@@ -1,25 +1,46 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import routes from "./routes";
+import { Menu } from "antd";
+import type { MenuProps } from "antd";
+
 import './navigationMenu.css';
 
 const NavigationMenu = () => {
-    return (
-        <nav>
-            <ul id="navigation-bar">
-                {routes.map(route => (
-                    <li className="nav-link" key={route.text}>
-                        <NavLink
-                            activeClassName="active"
-                            exact={route.path === '/'}
-                            to={route.path}
-                        >
-                            {route.text}
-                        </NavLink> 
-                    </li>
-                ))}
-            </ul>
-        </nav>
-    )
-}
+    const [activeItem, setActiveItem] = useState(window.location.pathname.replace('/', ''));
 
-export default NavigationMenu
+    const items: MenuProps['items'] = [
+        {
+            label: <NavLink to="/" exact={true}>Home</NavLink>,
+            key: 'home'
+        },
+        {
+            label: <NavLink to="/show-list" exact={false}>Search List</NavLink>,
+            key: 'show-list'
+        },
+        {
+            label: <NavLink to="/shows" exact={true}>Recorded Shows</NavLink>,
+            key: 'shows'
+        },
+        {
+            label: <NavLink to="/reminders" exact={false}>Reminders</NavLink>,
+            key: 'reminders'
+        },
+        {
+            label: <NavLink to="/login" exact={false}>Login</NavLink>,
+            key: 'login'
+        }
+    ];
+
+    return (
+        <Menu 
+            onClick={menuItem => setActiveItem(menuItem.key)}
+            mode="horizontal"
+            items={items}
+            selectedKeys={[activeItem]}
+            theme="dark"
+            style={{justifyContent: "center"}}
+        />
+    );
+};
+
+export default NavigationMenu;
