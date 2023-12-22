@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Alert, Button, Card } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import AddReminder from '../Reminders/AddReminder/AddReminder';
-import { getReminders } from '../requests/requests';
+import { UserContext } from '../contexts/UserContext';
+import { getReminders, deleteReminder } from '../requests/requests';
 import { Reminder } from '../utils';
 import './RemindersPage.css';
 
@@ -12,6 +13,8 @@ const RemindersPage = () => {
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [showAddReminder, setShowAddReminder] = useState(false);
     const [error, setError] = useState('');
+
+    const { user } = useContext(UserContext);
     
     useEffect(() => {
         getReminders().then(data => {
@@ -21,9 +24,10 @@ const RemindersPage = () => {
         });
     }, []);
 
-    useEffect(() => {
-        console.log(reminders)
-    }, [reminders]);
+    const deleteReminderHandle = async (reminder: string) => {
+        const response = await deleteReminder(reminder, user.token);
+        console.log(response)
+    }
 
     return (
         <div id="reminders-page">
@@ -39,10 +43,10 @@ const RemindersPage = () => {
                             <Card
                                 title={reminder.show}
                                 className="reminder-card"
-                                actions={[
+                                actions={user ? [
                                     <EditOutlined />,
-                                    <DeleteOutlined />
-                                ]}
+                                    <DeleteOutlined onClick={() => deleteReminderHandle(reminder.show)} />
+                                ] : []}
                             >
                                 <blockquote>Reminder time: {reminder.reminder_alert}</blockquote>
                                 <blockquote>Warning time: {reminder.warning_time}</blockquote>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ConfigProvider } from 'antd';
+import Cookies from "universal-cookie";
 
 import NavigationHandle from './Navigation/NavigationHandle';
 import { UserContext } from "./contexts/UserContext";
@@ -12,7 +13,10 @@ const theme = {
 };
 
 function App() {
-    const [user, setUser] = useState<User>(null);
+    const cookies = new Cookies('user', { path: '/' });
+    const userCookie = cookies.get('user')
+
+    const [user, setUser] = useState<User>(userCookie);
     
     return (
         <ConfigProvider theme={theme}>
