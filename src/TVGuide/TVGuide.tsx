@@ -16,9 +16,19 @@ const TVGuide = ({ guide }: { guide: Guide }) => {
             setGuideShows(guide.BBC);
         }
         else {
-            setGuideShows([...guide.FTA, ...guide.BBC]);
+            setGuideShows([...guide.FTA, ...guide.BBC].sort((a, b) => sortServices(a, b)));
         }
     }, [service, guide]);
+
+    const sortServices = (a: GuideShow, b: GuideShow) => {
+        if (a.time > b.time) {
+            return 1;
+        }
+        if (a.time < b.time) {
+            return -1;
+        }
+        return 0;
+    };
 
     const tableColumns: TableColumnsType<GuideShow> = [
         {

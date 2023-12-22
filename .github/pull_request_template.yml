@@ -1,7 +1,5 @@
 ### Ticket
-[TVGUI-5](https://natalie-g-projects.atlassian.net/browse/TVGUI-5)
+[TVGUI-?](https://natalie-g-projects.atlassian.net/browse/TVGUI-?)
 
 ### Description
-This PR updates the presentation and layout for the Show List page.
-
-Ant Design's Card component has been used to present the information about each show being searched, and provides the custom typing for the search item.
+Provide a description for what was changed and the reason for the change
