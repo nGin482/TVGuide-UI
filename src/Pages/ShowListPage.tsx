@@ -11,14 +11,14 @@ import '../ShowList.css';
 const ShowListPage = () => {
     const [showList, setShowList] = useState<SearchItem[]>([]);
     const [result, setResult] = useState('');
-    const { user } = useContext(UserContext)
+    const { currentUser } = useContext(UserContext)
 
     useEffect(() => {
         getShowList().then(showList => setShowList(showList));
     }, []);
 
     const deleteShowFromList = async (show: string) => {
-        const response = await removeShowFromList(show, user.token);
+        const response = await removeShowFromList(show, currentUser.token);
 
         response.result === 'success' ? setResult(response.message) : setResult(response.payload.message);
     };

@@ -14,7 +14,7 @@ const RemindersPage = () => {
     const [showAddReminder, setShowAddReminder] = useState(false);
     const [error, setError] = useState('');
 
-    const { user } = useContext(UserContext);
+    const { currentUser } = useContext(UserContext);
     
     useEffect(() => {
         getReminders().then(data => {
@@ -25,7 +25,7 @@ const RemindersPage = () => {
     }, []);
 
     const deleteReminderHandle = async (reminder: string) => {
-        const response = await deleteReminder(reminder, user.token);
+        const response = await deleteReminder(reminder, currentUser.token);
         console.log(response)
     }
 
@@ -43,7 +43,7 @@ const RemindersPage = () => {
                             <Card
                                 title={reminder.show}
                                 className="reminder-card"
-                                actions={user ? [
+                                actions={currentUser ? [
                                     <EditOutlined />,
                                     <DeleteOutlined onClick={() => deleteReminderHandle(reminder.show)} />
                                 ] : []}

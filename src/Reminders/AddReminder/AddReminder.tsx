@@ -15,7 +15,7 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
     const [displayNote, setDisplayNote] = useState(false);
     const [reminderResponse, setReminderResponse] = useState('');
 
-    const { user } = useContext(UserContext);
+    const { currentUser } = useContext(UserContext);
     
     const handleAddReminder = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -26,7 +26,7 @@ const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetS
             occasions: occasions
         };
         console.log(reminderObject)
-        const response = await addReminder(reminderObject, user.token);
+        const response = await addReminder(reminderObject, currentUser.token);
         const message = response.result === 'success' ? response.message : response.payload.message;
         setReminderResponse(message);
         setShowToRemind('');

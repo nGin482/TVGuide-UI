@@ -16,11 +16,11 @@ function App() {
     const cookies = new Cookies('user', { path: '/' });
     const userCookie = cookies.get('user')
 
-    const [user, setUser] = useState<User>(userCookie);
+    const [currentUser, setUser] = useState<User>(userCookie);
     
     return (
         <ConfigProvider theme={theme}>
-            <UserContext.Provider value={{ user, setUser }}>
+            <UserContext.Provider value={{ currentUser, setUser }}>
                 <div className="App">
                     <NavigationHandle/>
                 </div>

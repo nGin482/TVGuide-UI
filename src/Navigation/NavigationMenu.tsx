@@ -11,7 +11,7 @@ const NavigationMenu = () => {
     const [activeItem, setActiveItem] = useState(window.location.pathname.replace('/', ''));
     const [menuItems, setMenuItems] = useState<MenuProps['items']>([]);
 
-    const { user, setUser } = useContext(UserContext);
+    const { currentUser, setUser } = useContext(UserContext);
     const cookies = new Cookies('user', { path: '/' });
 
     const items: MenuProps['items'] = [
@@ -47,7 +47,7 @@ const NavigationMenu = () => {
     }, []);
 
     useEffect(() => {
-        if (user) {
+        if (currentUser) {
             setMenuItems(prevMenuItems => {
                 const menuItems = [...prevMenuItems];
 
@@ -57,7 +57,7 @@ const NavigationMenu = () => {
                     key: 'profile',
                     children: [
                         {
-                            label: 'Your Profile',
+                            label: <NavLink to={`/profile/${currentUser.user}`}>Your Profile</NavLink>,
                             key: 'profile-page'
                         },
                         {
@@ -72,7 +72,7 @@ const NavigationMenu = () => {
         else {
             setMenuItems(items);
         }
-    }, [user]);
+    }, [currentUser]);
 
     return (
         <Menu 

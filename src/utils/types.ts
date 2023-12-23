@@ -62,7 +62,7 @@ interface User {
 };
 
 interface UserContextModel {
-    user: User
+    currentUser: User
     setUser: React.Dispatch<React.SetStateAction<User>>
 };
 
