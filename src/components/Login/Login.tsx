@@ -46,13 +46,6 @@ const Login = () => {
         setLoginError('Please enter values for all fields');
     };
 
-    const logout = () => {
-        cookies.remove('user');
-        setUser(null);
-        window.location.reload();
-    };
-
-
     return (
         <>
             <Form form={form} onFinish={loginHandle} id="login-form" onFinishFailed={loginFailed} className="auth-form">
@@ -69,8 +62,6 @@ const Login = () => {
                 </Form.Item>
                 {loginError && <Alert type="error" message="Login Failed!" description={loginError} />}
             </Form>
-            <br />
-            <Button onClick={logout}>Logout</Button>
         </>
     );
 };
