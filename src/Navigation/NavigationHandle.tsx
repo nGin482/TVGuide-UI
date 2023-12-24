@@ -7,17 +7,19 @@ import RecordedShowsPage from "../Pages/RecordedShowsPage";
 import RecordedShow from "../Pages/RecordedShow";
 import RemindersPage from "../Pages/RemindersPage";
 import LoginPage from "../Pages/LoginPage";
+import ProfilePage from "../Pages/ProfilePage";
 
 const NavigationHandle = () => {
     return (
         <BrowserRouter>
             <NavigationMenu/>
             <Switch>
-                <Route path='/show-list'><ShowListPage/></Route>
-                <Route exact path='/shows'><RecordedShowsPage/></Route>
-                <Route path='/shows/:show'><RecordedShow/></Route>
-                <Route path='/reminders'><RemindersPage/></Route>
+                <Route path='/show-list'><ShowListPage /></Route>
+                <Route exact path='/shows'><RecordedShowsPage /></Route>
+                <Route path='/shows/:show'><RecordedShow /></Route>
+                <Route path='/reminders'><RemindersPage /></Route>
                 <Route path="/login"><LoginPage /></Route>
+                <Route path="/profile/:user"><ProfilePage /></Route>
                 <Route path='/'><Home/></Route>
             </Switch>
         </BrowserRouter>
