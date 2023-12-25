@@ -1,6 +1,5 @@
 #subscription-list-container {
     display: flex;
-    /* width: 80%; */
     margin: 0 auto;
     justify-content: space-evenly;
 }
@@ -16,4 +15,7 @@
 
 .subscription-list .ant-list-header {
     border-bottom: solid 3px #00b96b;
+}
+.subscription-list .ant-list-footer {
+    border-top: solid 3px #00b96b;
 }

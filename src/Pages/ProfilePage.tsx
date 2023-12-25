@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router";
-import { Alert, List } from "antd";
+import { Alert, Button, List } from "antd";
 
 import { UserContext } from "../contexts/UserContext";
 import { User } from "../utils";
@@ -19,11 +19,14 @@ const ProfilePage = () => {
         }
     }, [user, currentUser]);
 
+    const resetAllSubscriptions = () => {
+        console.log('resetting all subscriptions')
+    }
+
 
     return (
         userDetails ? (
             <>
-                
                 <h1>{userDetails.user} - {user}</h1>
                 <p><strong>{userDetails.role}</strong></p>
                 <div id="subscription-list-container">
@@ -37,6 +40,7 @@ const ProfilePage = () => {
                         )}
                         header={<strong>Your Show Subscriptions</strong>}
                         className="subscription-list"
+                        footer={<Button onClick={resetAllSubscriptions}>Reset all subscriptions</Button>}
                     />
                     <List
                         bordered
@@ -48,6 +52,7 @@ const ProfilePage = () => {
                         )}
                         header={<strong>Your Reminder Subscriptions</strong>}
                         className="subscription-list"
+                        footer={<Button onClick={resetAllSubscriptions}>Reset all subscriptions</Button>}
                     />
                 </div>
             </>
