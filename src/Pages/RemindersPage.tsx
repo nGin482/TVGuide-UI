@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import { Alert, Button, Card } from "antd";
+import { Alert, Button, Card, Modal } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import AddReminder from '../Reminders/AddReminder/AddReminder';
@@ -12,6 +12,7 @@ import './RemindersPage.css';
 const RemindersPage = () => {
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [showAddReminder, setShowAddReminder] = useState(false);
+    const [showModal, setShowModal] = useState(false);
     const [error, setError] = useState('');
 
     const { user } = useContext(UserContext);
@@ -26,8 +27,11 @@ const RemindersPage = () => {
 
     const deleteReminderHandle = async (reminder: string) => {
         const response = await deleteReminder(reminder, user.token);
-        console.log(response)
-    }
+        setShowModal(true);
+        if (response.result === 'error') {
+            setError(response.payload?.message || response.payload?.msg);
+        }
+    };
 
     return (
         <div id="reminders-page">
@@ -37,10 +41,11 @@ const RemindersPage = () => {
                 : <Button id="add-reminder-button" onClick={() => setShowAddReminder(true)}>Add Reminder</Button>
             }
             <div id="reminders">
-                {reminders.length > 0 && !error && (
+                {reminders.length > 0 && (
                     <>
                         {reminders.map(reminder => 
                             <Card
+                                key={`reminder-${reminder.show}`}
                                 title={reminder.show}
                                 className="reminder-card"
                                 actions={user ? [
@@ -59,9 +64,14 @@ const RemindersPage = () => {
             {reminders.length === 0 && !error && (
                 <Alert type="info" message="Waiting for reminders to be retrieved ..." className="reminders-loading" />
             )}
-            {error && (
-                <Alert type="error" message={error} />
-            )}
+            <Modal
+                open={showModal}
+                onOk={() => setShowModal(false)}
+                onCancel={() => setShowModal(false)}
+                closable={false}
+            >
+                {error && <Alert type="error" message={error} />}
+            </Modal>
         </div>
     );
 };
