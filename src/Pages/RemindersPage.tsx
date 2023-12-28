@@ -4,7 +4,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import AddReminder from '../Reminders/AddReminder/AddReminder';
 import { UserContext } from '../contexts/UserContext';
-import { getReminders, deleteReminder } from '../requests/requests';
+import { getReminders, deleteReminder, editReminder } from '../requests/requests';
 import { Reminder } from '../utils';
 import './RemindersPage.css';
 
@@ -13,7 +13,7 @@ const RemindersPage = () => {
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [showAddReminder, setShowAddReminder] = useState(false);
     const [editingReminder, setEditingReminder] = useState(false);
-    const [editReminder, setEditReminder] = useState<Reminder>(null);
+    const [reminderChosen, setReminderChosen] = useState<Reminder>(null);
     const [showModal, setShowModal] = useState(false);
     const [error, setError] = useState('');
 
@@ -30,23 +30,26 @@ const RemindersPage = () => {
 
     const toggleEditReminderModal = (reminder: Reminder) => {
         setEditingReminder(true);
-        setEditReminder(reminder);
+        setReminderChosen(reminder);
     };
 
     const updateReminder = (field: string, value: string) => {
         if (field === 'reminder_alert') {
-            setEditReminder(prevState => ({ ...prevState, reminder_alert: value }) )
+            setReminderChosen(prevState => ({ ...prevState, reminder_alert: value }) )
         }
         else if (field === 'warning_time') {
-            setEditReminder(prevState => ({ ...prevState, warning_time: Number(value) }) )
+            setReminderChosen(prevState => ({ ...prevState, warning_time: Number(value) }) )
         }
         else {
-            setEditReminder(prevState => ({ ...prevState, occasions: value }) )
+            setReminderChosen(prevState => ({ ...prevState, occasions: value }) )
         }
     };
 
-    const editReminderHandle = async () => {
-
+    const editReminderHandle = () => {
+        form.validateFields().then(async () => {
+            const response = await editReminder(reminderChosen, user.token);
+            console.log(response)
+        });
     };
 
     const deleteReminderHandle = async (reminder: string) => {
@@ -96,12 +99,12 @@ const RemindersPage = () => {
             >
                 {error && <Alert type="error" message={error} />}
             </Modal>
-            {editingReminder && editReminder && (
+            {editingReminder && reminderChosen && (
                 <Modal
-                    open={editingReminder && editReminder != null}
+                    open={editingReminder && reminderChosen != null}
                     onCancel={() => setEditingReminder(false)}
-                    onOk={event => console.log(event)}
-                    title={`Edit the reminder for ${editReminder.show}`}
+                    onOk={editReminderHandle}
+                    title={`Edit the reminder for ${reminderChosen.show}`}
                 >
                     <Form
                         form={form}
@@ -109,6 +112,7 @@ const RemindersPage = () => {
                     >
                         <Form.Item
                             label="Reminder Alert"
+                            name="reminder_alert"
                         >
                             <Select
                                 options={[
@@ -116,30 +120,32 @@ const RemindersPage = () => {
                                     { label: 'When the episode starts', value: 'During' },
                                     { label: 'After the episode starts', value: 'After' }
                                 ]}
-                                defaultValue={editReminder.reminder_alert}
+                                defaultValue={reminderChosen.reminder_alert}
                                 onChange={(value) => updateReminder('reminder_alert', value)}
                             />
                         </Form.Item>
                         <Form.Item
                             label="Warning Time"
+                            name="warning_time"
                         >
                             <Input
-                                value={editReminder.warning_time}
-                                disabled={editReminder.reminder_alert === 'During'}
-                                addonAfter={editReminder.reminder_alert !== 'During' && `minutes ${editReminder.reminder_alert.toLowerCase()} `}
+                                value={reminderChosen.reminder_alert === 'During' ? 0 : reminderChosen.warning_time}
+                                disabled={reminderChosen.reminder_alert === 'During'}
+                                addonAfter={reminderChosen.reminder_alert !== 'During' && `minutes ${reminderChosen.reminder_alert.toLowerCase()} `}
                                 onChange={(event) => updateReminder('warning_time', event.currentTarget.value)}
                             />
-                            {editReminder.reminder_alert === 'During' && 'This does not need to be set if you wish to be reminded when the episode starts.'}
+                            {reminderChosen.reminder_alert === 'During' && 'This does not need to be set if you wish to be reminded when the episode starts.'}
                         </Form.Item>
                         <Form.Item
                             label="Occasions"
+                            name="occasions"
                         >
                             <Select
                                 options={[
                                     { label: 'Every episode', value: 'All' },
                                     { label: 'Only the latest seasons', value: 'Latest' }
                                 ]}
-                                defaultValue={editReminder.occasions}
+                                defaultValue={reminderChosen.occasions}
                                 onChange={(value) => updateReminder('occasions', value)}
                             />
                         </Form.Item>
