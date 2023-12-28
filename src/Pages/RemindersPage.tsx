@@ -129,7 +129,7 @@ const RemindersPage = () => {
                             name="warning_time"
                         >
                             <Input
-                                value={reminderChosen.reminder_alert === 'During' ? 0 : reminderChosen.warning_time}
+                                defaultValue={reminderChosen.reminder_alert === 'During' ? 0 : reminderChosen.warning_time}
                                 disabled={reminderChosen.reminder_alert === 'During'}
                                 addonAfter={reminderChosen.reminder_alert !== 'During' && `minutes ${reminderChosen.reminder_alert.toLowerCase()} `}
                                 onChange={(event) => updateReminder('warning_time', event.currentTarget.value)}
