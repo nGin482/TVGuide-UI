@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, FormEvent } from 'react';
 import { Alert, Button, Card, Form, Input, Modal, Select } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
@@ -32,6 +32,18 @@ const RemindersPage = () => {
         setEditingReminder(true);
         setReminderChosen(reminder);
     };
+
+    const convertWarningTimeToNumber = (event: FormEvent<HTMLInputElement>) => {
+        let warningTimeString = event.currentTarget.value;
+        const lastCharIndex = warningTimeString.length - 1;
+        if (warningTimeString.charCodeAt(lastCharIndex) < 48 || warningTimeString.charCodeAt(lastCharIndex) > 58) {
+            warningTimeString = warningTimeString.replace(warningTimeString.slice(-1), '');
+        }
+        if (warningTimeString === '') {
+            return '';
+        }
+        return Number(warningTimeString);
+    }
 
     const updateReminder = (field: string, value: string) => {
         if (field === 'reminder_alert') {
@@ -113,6 +125,7 @@ const RemindersPage = () => {
                         <Form.Item
                             label="Reminder Alert"
                             name="reminder_alert"
+                            initialValue={reminderChosen.reminder_alert}
                         >
                             <Select
                                 options={[
@@ -120,16 +133,24 @@ const RemindersPage = () => {
                                     { label: 'When the episode starts', value: 'During' },
                                     { label: 'After the episode starts', value: 'After' }
                                 ]}
-                                defaultValue={reminderChosen.reminder_alert}
                                 onChange={(value) => updateReminder('reminder_alert', value)}
                             />
                         </Form.Item>
                         <Form.Item
                             label="Warning Time"
                             name="warning_time"
+                            rules={[
+                                {
+                                    type: "number",
+                                    min: 0,
+                                    max: 60,
+                                    message: 'Please enter a value between 0 and 60'
+                                }
+                            ]}
+                            initialValue={reminderChosen.warning_time}
+                            getValueFromEvent={convertWarningTimeToNumber}
                         >
                             <Input
-                                defaultValue={reminderChosen.reminder_alert === 'During' ? 0 : reminderChosen.warning_time}
                                 disabled={reminderChosen.reminder_alert === 'During'}
                                 addonAfter={reminderChosen.reminder_alert !== 'During' && `minutes ${reminderChosen.reminder_alert.toLowerCase()} `}
                                 onChange={(event) => updateReminder('warning_time', event.currentTarget.value)}
@@ -139,13 +160,13 @@ const RemindersPage = () => {
                         <Form.Item
                             label="Occasions"
                             name="occasions"
+                            initialValue={reminderChosen.occasions}
                         >
                             <Select
                                 options={[
                                     { label: 'Every episode', value: 'All' },
                                     { label: 'Only the latest seasons', value: 'Latest' }
                                 ]}
-                                defaultValue={reminderChosen.occasions}
                                 onChange={(value) => updateReminder('occasions', value)}
                             />
                         </Form.Item>
