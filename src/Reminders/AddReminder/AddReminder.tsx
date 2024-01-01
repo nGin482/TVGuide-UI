@@ -1,9 +1,9 @@
-import { useState, useContext, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect, useContext, Dispatch, SetStateAction } from 'react';
 import { Form, Input, Modal, Select } from "antd";
 
 import { UserContext } from '../../contexts/UserContext';
-import { addReminder } from '../../requests/requests';
-import { Reminder } from '../../utils';
+import { addReminder, getRecordedShows } from '../../requests/requests';
+import { RecordedShowModel, Reminder } from '../../utils';
 import './AddReminder.css';
 
 interface AddReminderProps {
@@ -13,9 +13,14 @@ interface AddReminderProps {
 
 const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) => {
     const [reminderAlert, setReminderAlert] = useState('');
+    const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
     
     const [form] = Form.useForm();
     const { user } = useContext(UserContext);
+
+    useEffect(() => {
+        getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
+    }, []);
 
     const handleAddReminder = async () => {
         form.validateFields().then(() => {
@@ -41,7 +46,10 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
                     name="show"
                     label="Set a reminder for:"
                 >
-                    <Input />
+                    <Select
+                        options={recordedShows.length > 0 ? recordedShows.map(show => ({ label: show.show, value: show.show }) ) : [] }
+                        showSearch
+                    />
                 </Form.Item>
                 <Form.Item
                     name="reminder_alert"
