@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext, FormEvent, SetStateAction, Dispatch } from "react";
-import { Form, Input, Modal, Select } from "antd";
+import { useState, useContext, FormEvent, SetStateAction, Dispatch } from "react";
+import { Alert, Form, Input, Modal, Select } from "antd";
 
 import { editReminder } from "../requests/requests";
 import { UserContext } from "../contexts/UserContext";
@@ -14,6 +14,8 @@ interface EditReminderProps {
 
 const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setEditingReminder }: EditReminderProps) => {
     const [submitted, setSubmitted] = useState(false);
+    const [result, setResult] = useState('');
+    const [editSuccess, setEditSuccess] = useState(false);
 
     const [form] = Form.useForm();
     const { user } = useContext(UserContext);
@@ -24,6 +26,19 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
         form.validateFields().then(async () => {
             const response = await editReminder(reminderChosen, user.token);
             console.log(response)
+            if (response.result === 'success') {
+                setResult(`The reminder for ${reminderChosen.show} has been updated!`);
+                setEditSuccess(true);
+            }
+            else {
+                if (response.payload?.msg === 'Token has expired') {
+                    setResult('You have been signed out. Please sign in again to edit this reminder');
+                }
+                else {
+                    setResult(response.payload.message || response.payload.msg);
+                }
+                setSubmitted(false);
+            }
         });
     };
 
@@ -55,7 +70,7 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
         <Modal
             open={editingReminder}
             onCancel={() => setEditingReminder(false)}
-            onOk={editReminderHandle}
+            onOk={() => submitted ? setEditingReminder(false) : editReminderHandle()}
             okText={submitted ? 'Close' : 'Submit'}
             title={`Edit the reminder for ${reminderChosen.show}`}
         >
@@ -111,6 +126,7 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
                         onChange={(value) => updateReminder('occasions', value)}
                     />
                 </Form.Item>
+                {result && <Alert type={editSuccess ? "success" : "error"} message={result} />}
             </Form>
         </Modal>
     );
