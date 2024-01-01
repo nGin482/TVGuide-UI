@@ -33,7 +33,7 @@ const RemindersPage = () => {
         <div id="reminders-page">
             <h1>Reminders</h1>
             {reminders.length > 0 && showAddReminder
-                ? <AddReminder setShowAddReminder={setShowAddReminder}/>
+                ? <AddReminder showAddReminder setShowAddReminder={setShowAddReminder}/>
                 : <Button id="add-reminder-button" onClick={() => setShowAddReminder(true)}>Add Reminder</Button>
             }
             <div id="reminders">
