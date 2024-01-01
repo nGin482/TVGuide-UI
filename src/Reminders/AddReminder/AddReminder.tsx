@@ -1,4 +1,4 @@
-import { useState, useContext, FormEvent, Dispatch, SetStateAction } from 'react';
+import { useState, useContext, Dispatch, SetStateAction } from 'react';
 import { Form, Input, Modal, Select } from "antd";
 
 import { UserContext } from '../../contexts/UserContext';
@@ -12,62 +12,72 @@ interface AddReminderProps {
 };
 
 const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) => {
-    const [showToRemind, setShowToRemind] = useState('');
-    const [reminderTime, setReminderTime] = useState('');
     const [reminderAlert, setReminderAlert] = useState('');
-    const [occasions, setOccasions] = useState('');
-
-    const [displayNote, setDisplayNote] = useState(false);
-    const [reminderResponse, setReminderResponse] = useState('');
-
+    
     const [form] = Form.useForm();
     const { user } = useContext(UserContext);
-    
-    const handleAddReminder = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const reminderObject: Reminder = {
-            show: showToRemind,
-            reminder_alert: reminderAlert,
-            warning_time: Number(reminderTime),
-            occasions: occasions
-        };
-        console.log(reminderObject)
-        const response = await addReminder(reminderObject, user.token);
-        const message = response.result === 'success' ? response.message : response.payload.message;
-        setReminderResponse(message);
-        setShowToRemind('');
-        setReminderTime('');
-        setReminderAlert('');
-        setOccasions('');
+
+    const handleAddReminder = async () => {
+        form.validateFields().then(() => {
+            const newReminder: Reminder = form.getFieldsValue();
+            console.log(newReminder)
+        });
+        // const response = await addReminder(reminderObject, user.token);
+        // const message = response.result === 'success' ? response.message : response.payload.message;
     };
 
     return (
         <Modal
             open={showAddReminder}
-            onOk={() => console.log('done')}
+            onOk={handleAddReminder}
             onCancel={() => setShowAddReminder(false)}
-            title="Add Reminder"
+            title="Add a new Reminder"
         >
             <Form
                 form={form}
+                name="add-reminder"
             >
                 <Form.Item
                     name="show"
                     label="Set a reminder for:"
                 >
-
+                    <Input />
                 </Form.Item>
                 <Form.Item
-                    name="warningTime"
-                    label="When would you like to be reminded"
+                    name="reminder_alert"
+                    label="Remind me"
+                    initialValue="Before"
                 >
-
+                    <Select
+                        options={[
+                            { label: 'Before the episode starts', value: 'Before' },
+                            { label: 'When the episode starts', value: 'During' },
+                            { label: 'After the episode starts', value: 'After' }
+                        ]}
+                        onChange={(value) => setReminderAlert(value)}
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="warning_time"
+                    label="How much warning time"
+                >
+                    <Input
+                        disabled={reminderAlert === 'During'}
+                        addonAfter="minutes"
+                    />
+                    {reminderAlert === 'During' && 'This does not need to be set if you wish to be reminded when the episode starts.'}
                 </Form.Item>
                 <Form.Item
                     name="occasions"
-                    label="The number of occasions to be reminded"
+                    label="Remind me for"
                     initialValue="All"
                 >
+                    <Select
+                        options={[
+                            { label: 'Every episode', value: 'All' },
+                            { label: 'Only the latest seasons', value: 'Latest' }
+                        ]}
+                    />
                 </Form.Item>
             </Form>
         </Modal>
