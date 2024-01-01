@@ -51,21 +51,19 @@ const RemindersPage = () => {
             <div id="reminders">
                 {reminders.length > 0 && (
                     reminders.map(reminder =>
-                        <>
-                            <Card
-                                key={`reminder-${reminder.show}`}
-                                title={reminder.show}
-                                className="reminder-card"
-                                actions={user ? [
-                                    <EditOutlined onClick={() => toggleEditReminderModal(reminder)} />,
-                                    <DeleteOutlined onClick={() => deleteReminderHandle(reminder.show)} />
-                                ] : []}
-                            >
-                                <blockquote>Reminder time: {reminder.reminder_alert}</blockquote>
-                                <blockquote>Warning time: {reminder.warning_time}</blockquote>
-                                <blockquote>Occasions: {reminder.occasions}</blockquote>
-                            </Card>
-                        </>
+                        <Card
+                            key={`reminder-${reminder.show}`}
+                            title={reminder.show}
+                            className="reminder-card"
+                            actions={user ? [
+                                <EditOutlined onClick={() => toggleEditReminderModal(reminder)} />,
+                                <DeleteOutlined onClick={() => deleteReminderHandle(reminder.show)} />
+                            ] : []}
+                        >
+                            <blockquote>Reminder time: {reminder.reminder_alert}</blockquote>
+                            <blockquote>Warning time: {reminder.warning_time}</blockquote>
+                            <blockquote>Occasions: {reminder.occasions}</blockquote>
+                        </Card>
                     )
                 )}
             </div>
