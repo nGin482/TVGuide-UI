@@ -82,6 +82,7 @@ interface ErrorResponse {
     statusText: string
     payload: {
         message: string
+        msg: string
     }
 };
 

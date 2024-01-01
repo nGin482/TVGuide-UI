@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, Dispatch, SetStateAction } from 'react';
-import { Form, Input, Modal, Select } from "antd";
+import { Alert, Form, Input, Modal, Select } from "antd";
 
 import { UserContext } from '../../contexts/UserContext';
 import { addReminder, getRecordedShows } from '../../requests/requests';
@@ -14,6 +14,8 @@ interface AddReminderProps {
 const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) => {
     const [reminderAlert, setReminderAlert] = useState('');
     const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
+    const [createReminderStatus, setCreateReminderStatus] = useState(false);
+    const [result, setResult] = useState('');
     
     const [form] = Form.useForm();
     const { user } = useContext(UserContext);
@@ -23,12 +25,21 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
     }, []);
 
     const handleAddReminder = async () => {
-        form.validateFields().then(() => {
+        form.validateFields().then(async () => {
             const newReminder: Reminder = form.getFieldsValue();
             console.log(newReminder)
+            const response = await addReminder(newReminder, user.token);
+            if (response.result === 'success') {
+                setCreateReminderStatus(true);
+                setResult(response.message);
+            }
+            else {
+                setResult(response.payload.message || response.payload.msg)
+            }
+        })
+        .catch(errors => {
+            console.log(errors)
         });
-        // const response = await addReminder(reminderObject, user.token);
-        // const message = response.result === 'success' ? response.message : response.payload.message;
     };
 
     return (
@@ -45,6 +56,7 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
                 <Form.Item
                     name="show"
                     label="Set a reminder for:"
+                    rules={[{ required: true, message: 'Please select the show to create a reminder for' }]}
                 >
                     <Select
                         options={recordedShows.length > 0 ? recordedShows.map(show => ({ label: show.show, value: show.show }) ) : [] }
@@ -68,6 +80,7 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
                 <Form.Item
                     name="warning_time"
                     label="How much warning time"
+                    rules={[{ required: true, message: 'Please enter a value between 0 and 60' }]}
                 >
                     <Input
                         disabled={reminderAlert === 'During'}
@@ -87,6 +100,7 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
                         ]}
                     />
                 </Form.Item>
+                {result && <Alert type={createReminderStatus ? "success" : "error"} message={result} />}
             </Form>
         </Modal>
     )

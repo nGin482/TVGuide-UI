@@ -57,9 +57,15 @@ const getReminders = () => {
     return axios.get(`${baseURL}/reminders`).then((response: AxiosResponse<Reminder[]>) => response.data);
 };
 const addReminder = async (reminder: Reminder, token: string) => {
-    const response = await axios.post(`${baseURL}/reminders`, reminder, headers(token));
-
-    return buildResponseValue(response);
+    try {
+        const response = await axios.post(`${baseURL}/reminders`, reminder, headers(token));
+        return buildResponseValue(response);
+    }
+    catch(error) {
+        if (error?.response) {
+            return buildResponseValue(error.response)
+        }
+    }
 };
 const deleteReminder = async (reminder: string, token: string) => {
     const response = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
