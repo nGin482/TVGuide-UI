@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect, useContext, Dispatch, SetStateAction, FormEvent } from 'react';
 import { Alert, Form, Input, Modal, Select } from "antd";
 
 import { UserContext } from '../../contexts/UserContext';
@@ -48,6 +48,18 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
         });
     };
 
+    const convertWarningTimeToNumber = (event: FormEvent<HTMLInputElement>) => {
+        let warningTimeString = event.currentTarget.value;
+        const lastCharIndex = warningTimeString.length - 1;
+        if (warningTimeString.charCodeAt(lastCharIndex) < 48 || warningTimeString.charCodeAt(lastCharIndex) > 58) {
+            warningTimeString = warningTimeString.replace(warningTimeString.slice(-1), '');
+        }
+        if (warningTimeString === '') {
+            return '';
+        }
+        return Number(warningTimeString);
+    };
+
     return (
         <Modal
             open={showAddReminder}
@@ -87,7 +99,16 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
                 <Form.Item
                     name="warning_time"
                     label="How much warning time"
-                    rules={[{ required: true, message: 'Please enter a value between 0 and 60' }]}
+                    rules={[
+                        {
+                            required: true,
+                            min: 0,
+                            max: 60,
+                            type: 'number',
+                            message: 'Please enter a value between 0 and 60'
+                        }
+                    ]}
+                    getValueFromEvent={convertWarningTimeToNumber}
                 >
                     <Input
                         disabled={reminderAlert === 'During'}
