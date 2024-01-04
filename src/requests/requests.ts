@@ -1,6 +1,16 @@
 import axios, { AxiosResponse } from "axios";
 
-import { Guide, RecordedShowModel, Reminder, SearchItem, buildResponseValue, buildLoginResponseValue } from "../utils";
+import {
+    Guide,
+    RecordedShowModel,
+    Reminder,
+    SearchItem,
+    AddReminderResponse,
+    ErrorResponse,
+    buildResponseValue,
+    buildLoginResponseValue,
+    buildResponse
+} from "../utils";
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
@@ -57,14 +67,37 @@ const getReminders = () => {
     return axios.get(`${baseURL}/reminders`).then((response: AxiosResponse<Reminder[]>) => response.data);
 };
 const addReminder = async (reminder: Reminder, token: string) => {
-    const response = await axios.post(`${baseURL}/reminders`, reminder, headers(token));
-
-    return buildResponseValue(response);
+    try {
+        const response = await axios.post(`${baseURL}/reminders`, reminder, headers(token));
+        return buildResponse<AddReminderResponse>(response);
+    }
+    catch(error) {
+        if (error?.response) {
+            return buildResponse<ErrorResponse>(error.response)
+        }
+    }
 };
+const editReminder = async (reminderDetails: Reminder, token: string) => {
+    try {
+        const response = await axios.put(`${baseURL}/reminder/${reminderDetails.show}`, reminderDetails, headers(token));
+        return buildResponseValue(response);
+    }
+    catch(err) {
+        if (err?.response) {
+            return buildResponseValue(err.response);
+        }
+    }
+}
 const deleteReminder = async (reminder: string, token: string) => {
-    const response = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
-
-    return buildResponseValue(response);
+    try {
+        const response = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
+        return buildResponseValue(response);
+    }
+    catch(err) {
+        if (err?.response) {
+            return buildResponseValue(err.response);
+        }
+    }
 };
 
 const registerNewUser = async (user: any) => {
@@ -93,6 +126,7 @@ export {
     getRecordedShow,
     getReminders,
     addReminder,
+    editReminder,
     deleteReminder,
     registerNewUser,
     login
