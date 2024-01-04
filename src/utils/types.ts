@@ -74,14 +74,15 @@ interface ResponseData {
 interface LoginResponse {
     result: 'success'
     message: User
-}
+};
 
 interface ErrorResponse {
     result: 'error'
     status: number
     statusText: string
     payload: {
-        message: string
+        message?: string
+        msg?: string
     }
 };
 
