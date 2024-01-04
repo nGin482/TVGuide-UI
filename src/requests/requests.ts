@@ -1,7 +1,16 @@
 import axios, { AxiosResponse } from "axios";
 
-import { Guide, RecordedShowModel, Reminder, SearchItem, buildResponseValue, buildLoginResponseValue, buildResponse } from "../utils";
-import { AddReminderResponse, ErrorResponse } from "../utils/types";
+import {
+    Guide,
+    RecordedShowModel,
+    Reminder,
+    SearchItem,
+    AddReminderResponse,
+    ErrorResponse,
+    buildResponseValue,
+    buildLoginResponseValue,
+    buildResponse
+} from "../utils";
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
