@@ -91,11 +91,11 @@ const editReminder = async (reminderDetails: Reminder, token: string) => {
 const deleteReminder = async (reminder: string, token: string) => {
     try {
         const response = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
-        return buildResponseValue(response);
+        return buildResponse<AddReminderResponse>(response);
     }
     catch(err) {
         if (err?.response) {
-            return buildResponseValue(err.response);
+            return buildResponse<ErrorResponse>(err.response);
         }
     }
 };
