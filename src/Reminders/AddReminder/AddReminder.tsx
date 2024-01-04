@@ -51,8 +51,9 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
     return (
         <Modal
             open={showAddReminder}
-            onOk={handleAddReminder}
+            onOk={() => createReminderStatus ? setShowAddReminder(false) : handleAddReminder()}
             onCancel={() => setShowAddReminder(false)}
+            okText={createReminderStatus ? 'Close' : 'Submit'}
             title="Add a new Reminder"
         >
             <Form
