@@ -4,7 +4,7 @@ import Cookies from "universal-cookie";
 
 import NavigationHandle from './Navigation/NavigationHandle';
 import { UserContext } from "./contexts/UserContext";
-import { User } from "./utils";
+import { CurrentUser } from "./utils";
 
 const theme = {
     token: {
@@ -16,7 +16,7 @@ function App() {
     const cookies = new Cookies('user', { path: '/' });
     const userCookie = cookies.get('user')
 
-    const [currentUser, setUser] = useState<User>(userCookie);
+    const [currentUser, setUser] = useState<CurrentUser>(userCookie);
     
     return (
         <ConfigProvider theme={theme}>

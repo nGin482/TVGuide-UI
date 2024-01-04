@@ -57,13 +57,16 @@ interface User {
     user: string
     searchList: string[]
     reminders: string[]
-    token: string
-    role: string,
+    role: string
 };
 
+interface CurrentUser extends User {
+    token: string
+}
+
 interface UserContextModel {
-    currentUser: User
-    setUser: React.Dispatch<React.SetStateAction<User>>
+    currentUser: CurrentUser
+    setUser: React.Dispatch<React.SetStateAction<CurrentUser>>
 };
 
 interface ResponseData {
@@ -73,7 +76,7 @@ interface ResponseData {
 
 interface LoginResponse {
     result: 'success'
-    message: User
+    message: CurrentUser
 }
 
 interface ErrorResponse {
@@ -95,5 +98,6 @@ export type {
     ErrorResponse,
     LoginResponse,
     User,
-    UserContextModel
+    UserContextModel,
+    CurrentUser
 };

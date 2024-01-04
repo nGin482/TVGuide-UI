@@ -75,4 +75,4 @@ export const buildLoginResponseValue = (response: AxiosResponse<any>) => {
 };
 
 
-export type { Guide, RecordedShowModel, Reminder, GuideShow, SearchItem, User, UserContextModel } from "./types";
+export type { Guide, RecordedShowModel, Reminder, GuideShow, SearchItem, User, UserContextModel, CurrentUser } from "./types";
