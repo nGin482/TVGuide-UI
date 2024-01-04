@@ -29,12 +29,18 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
             const newReminder: Reminder = form.getFieldsValue();
             console.log(newReminder)
             const response = await addReminder(newReminder, user.token);
-            if (response.result === 'success') {
+            if (response.payload.result === 'success') {
                 setCreateReminderStatus(true);
-                setResult(response.message);
+                setResult(response.payload.message);
             }
             else {
-                setResult(response.payload.message || response.payload.msg)
+                setCreateReminderStatus(false);
+                if (response.payload?.msg === 'Token has expired') {
+                    setResult('You have been signed out. Please sign in again to create a new reminder');
+                }
+                else {
+                    setResult(response.payload.message || response.payload.msg);
+                }
             }
         })
         .catch(errors => {
