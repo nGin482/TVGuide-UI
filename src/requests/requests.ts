@@ -7,6 +7,7 @@ import {
     SearchItem,
     AddReminderResponse,
     ErrorResponse,
+    User,
     buildResponseValue,
     buildLoginResponseValue,
     buildResponse
@@ -100,6 +101,17 @@ const deleteReminder = async (reminder: string, token: string) => {
     }
 };
 
+const getUser = async (username: string) => {
+    try {
+        const response = await axios.get(`${baseURL}/user/${username}`);
+        return buildResponse<User>(response);
+    }
+    catch(error) {
+        if (error?.response) {
+            return buildResponse<ErrorResponse>(error.response);
+        }
+    }
+};
 const registerNewUser = async (user: any) => {
     const response = await axios.post(`${baseURL}/auth/register`, user);
 
@@ -128,6 +140,7 @@ export {
     addReminder,
     editReminder,
     deleteReminder,
+    getUser,
     registerNewUser,
     login
 };

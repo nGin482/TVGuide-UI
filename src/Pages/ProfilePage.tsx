@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 import { Alert, Button, List } from "antd";
 
 import { UserContext } from "../contexts/UserContext";
+import { getUser } from "../requests/requests";
 import { User } from "../utils";
 import "../styles/ProfilePage.css";
 
@@ -12,10 +13,21 @@ const ProfilePage = () => {
     const { currentUser } = useContext(UserContext);
 
     const [userDetails, setUserDetails] = useState<User>(null);
+    const [userNotExists, setUserNotExists] = useState(false);
 
     useEffect(() => {
         if (user === currentUser.user) {
             setUserDetails(currentUser);
+        }
+        else {
+            getUser(user).then(response => {
+                if (response.payload.result === 'success') {
+                    setUserDetails(response.payload);
+                }
+                else {
+                    setUserNotExists(true);
+                }
+            });
         }
     }, [user, currentUser]);
 
@@ -57,8 +69,15 @@ const ProfilePage = () => {
                 </div>
             </>
         )
-        : (
-            <Alert type="info" message="Retrieving user..." />
+        : userNotExists ? (
+            <Alert
+                type="error"
+                className="user-alert"
+                message="Error!"
+                description={`An account with the username ${user} could not be found`}
+            />
+        ) : (
+            <Alert type="info" className="user-alert" message="Retrieving user..." />
         )
     );
 };

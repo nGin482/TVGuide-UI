@@ -19,3 +19,11 @@
 .subscription-list .ant-list-footer {
     border-top: solid 3px #00b96b;
 }
+
+.user-alert {
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 25vh;
+    align-items: center;
+    height: 200px;
+}
