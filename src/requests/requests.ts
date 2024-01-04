@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from "axios";
 
-import { Guide, RecordedShowModel, Reminder, SearchItem, buildResponseValue, buildLoginResponseValue } from "../utils";
+import { Guide, RecordedShowModel, Reminder, SearchItem, buildResponseValue, buildLoginResponseValue, buildResponse } from "../utils";
+import { AddReminderResponse, ErrorResponse } from "../utils/types";
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
@@ -59,11 +60,11 @@ const getReminders = () => {
 const addReminder = async (reminder: Reminder, token: string) => {
     try {
         const response = await axios.post(`${baseURL}/reminders`, reminder, headers(token));
-        return buildResponseValue(response);
+        return buildResponse<AddReminderResponse>(response);
     }
     catch(error) {
         if (error?.response) {
-            return buildResponseValue(error.response)
+            return buildResponse<ErrorResponse>(error.response)
         }
     }
 };

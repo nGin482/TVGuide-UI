@@ -71,19 +71,25 @@ interface ResponseData {
     message: string
 };
 
+interface BaseResponse {
+    message: string
+};
+
+interface AddReminderResponse extends BaseResponse {
+    result: 'success'
+    reminders: Reminder[]
+};
+
 interface LoginResponse {
     result: 'success'
     message: User
-}
+};
 
-interface ErrorResponse {
+interface ErrorResponse extends BaseResponse {
     result: 'error'
     status: number
     statusText: string
-    payload: {
-        message: string
-        msg: string
-    }
+    msg: string
 };
 
 export type {
@@ -96,5 +102,6 @@ export type {
     ErrorResponse,
     LoginResponse,
     User,
-    UserContextModel
+    UserContextModel,
+    AddReminderResponse
 };
