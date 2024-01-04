@@ -1,4 +1,4 @@
-import { GuideShow, ResponseData, ErrorResponse, User, LoginResponse } from "./types";
+import { GuideShow, ErrorResponse, LoginResponse } from "./types";
 import { AxiosResponse } from "axios";
 
 export const showStringForEvent = (show_event) => {
@@ -40,19 +40,40 @@ export const showStringForGuide = (show: GuideShow) => {
     return showString;
 };
 
+export function buildResponse<Type>(response: AxiosResponse<Type>) {
+    if (response.status === 200) {
+        return {
+            payload: {
+                result: 'success',
+                ...response.data
+            }
+        };
+    }
+    const badResponse = {
+        status: response.status,
+        statusText: response.statusText,
+        payload: {
+            result: 'error',
+            ...response.data
+        }
+    };
+    return badResponse;
+};
+
 export const buildResponseValue = (response: AxiosResponse<any>) => {
     if (response.status === 200) {
-        const successResponse: ResponseData = {
+        const successResponse = {
             result: 'success',
-            message: response.data
-        }
+            payload: response.data
+        };
         return successResponse;
     }
     const badResponse: ErrorResponse = {
         result: 'error',
         status: response.status,
         statusText: response.statusText,
-        payload: response.data
+        message: response.data.message,
+        msg: response.data.msg
     };
     return badResponse;
 };
@@ -69,10 +90,21 @@ export const buildLoginResponseValue = (response: AxiosResponse<any>) => {
         result: 'error',
         status: response.status,
         statusText: response.statusText,
-        payload: response.data
+        message: response.data.message,
+        msg: response.data.msg
     };
     return badResponse;
 };
 
 
-export type { Guide, RecordedShowModel, Reminder, GuideShow, SearchItem, User, UserContextModel } from "./types";
+export type {
+    Guide,
+    RecordedShowModel,
+    Reminder,
+    GuideShow,
+    SearchItem,
+    User,
+    UserContextModel,
+    ErrorResponse,
+    AddReminderResponse
+} from "./types";

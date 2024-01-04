@@ -1,105 +1,138 @@
-import { useState, useContext, FormEvent, Dispatch, SetStateAction } from 'react';
-// import Modal from 'react-modal';
+import { useState, useEffect, useContext, Dispatch, SetStateAction, FormEvent } from 'react';
+import { Alert, Form, Input, Modal, Select } from "antd";
 
 import { UserContext } from '../../contexts/UserContext';
-import { addReminder } from '../../requests/requests';
-import { Reminder } from '../../utils';
+import { addReminder, getRecordedShows } from '../../requests/requests';
+import { RecordedShowModel, Reminder } from '../../utils';
 import './AddReminder.css';
 
-const AddReminder = ({ setShowAddReminder }: { setShowAddReminder: Dispatch<SetStateAction<boolean>> }) => {
-    const [showToRemind, setShowToRemind] = useState('');
-    const [reminderTime, setReminderTime] = useState('');
+interface AddReminderProps {
+    showAddReminder: boolean
+    setShowAddReminder: Dispatch<SetStateAction<boolean>>
+};
+
+const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) => {
     const [reminderAlert, setReminderAlert] = useState('');
-    const [occasions, setOccasions] = useState('');
-
-    const [displayNote, setDisplayNote] = useState(false);
-    const [reminderResponse, setReminderResponse] = useState('');
-
-    const { user } = useContext(UserContext);
+    const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
+    const [createReminderStatus, setCreateReminderStatus] = useState(false);
+    const [result, setResult] = useState('');
     
-    const handleAddReminder = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const reminderObject: Reminder = {
-            show: showToRemind,
-            reminder_alert: reminderAlert,
-            warning_time: Number(reminderTime),
-            occasions: occasions
-        };
-        console.log(reminderObject)
-        const response = await addReminder(reminderObject, user.token);
-        const message = response.result === 'success' ? response.message : response.payload.message;
-        setReminderResponse(message);
-        setShowToRemind('');
-        setReminderTime('');
-        setReminderAlert('');
-        setOccasions('');
+    const [form] = Form.useForm();
+    const { user } = useContext(UserContext);
+
+    useEffect(() => {
+        getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
+    }, []);
+
+    const handleAddReminder = async () => {
+        form.validateFields().then(async () => {
+            const newReminder: Reminder = form.getFieldsValue();
+            console.log(newReminder)
+            const response = await addReminder(newReminder, user.token);
+            if (response.payload.result === 'success') {
+                setCreateReminderStatus(true);
+                setResult(response.payload.message);
+            }
+            else {
+                setCreateReminderStatus(false);
+                if (response.payload?.msg === 'Token has expired') {
+                    setResult('You have been signed out. Please sign in again to create a new reminder');
+                }
+                else {
+                    setResult(response.payload.message || response.payload.msg);
+                }
+            }
+        })
+        .catch(errors => {
+            console.log(errors)
+        });
     };
 
-    // Modal.setAppElement('#root')
+    const convertWarningTimeToNumber = (event: FormEvent<HTMLInputElement>) => {
+        let warningTimeString = event.currentTarget.value;
+        const lastCharIndex = warningTimeString.length - 1;
+        if (warningTimeString.charCodeAt(lastCharIndex) < 48 || warningTimeString.charCodeAt(lastCharIndex) > 58) {
+            warningTimeString = warningTimeString.replace(warningTimeString.slice(-1), '');
+        }
+        if (warningTimeString === '') {
+            return '';
+        }
+        return Number(warningTimeString);
+    };
+
     return (
-        <div id="add-reminder">
-            <h4>Add Reminder</h4>
-            <form id="add-reminder-form" onSubmit={event => handleAddReminder(event)}>
-                <div id="field-inputs">
-                    <label>What show would you like to set a reminder for?</label>
-                    <input
-                        type="text"
-                        name="showToRemind"
-                        className="add-reminder-input"
-                        id="add-reminder-show"
-                        onChange={event => setShowToRemind(event.target.value)}
-                        placeholder="Show"
-                        value={showToRemind}
-                        required={true}
+        <Modal
+            open={showAddReminder}
+            onOk={() => createReminderStatus ? setShowAddReminder(false) : handleAddReminder()}
+            onCancel={() => setShowAddReminder(false)}
+            okText={createReminderStatus ? 'Close' : 'Submit'}
+            title="Add a new Reminder"
+        >
+            <Form
+                form={form}
+                name="add-reminder"
+            >
+                <Form.Item
+                    name="show"
+                    label="Set a reminder for:"
+                    rules={[{ required: true, message: 'Please select the show to create a reminder for' }]}
+                >
+                    <Select
+                        options={recordedShows.length > 0 ? recordedShows.map(show => ({ label: show.show, value: show.show }) ) : [] }
+                        showSearch
                     />
-                    <label>When would you like to be reminded?</label>
-                    <span id="reminder-time-note" onClick={() => setDisplayNote(true)}> <b>Note</b></span>
-                    <div id="reminder-time-options">
-                        <input type="button" className="add-reminder-input" value="Before" onClick={() => setReminderAlert('Before')} name="reminderTime"/>
-                        <input type="button" className="add-reminder-input" value="During" onClick={() => setReminderAlert('During')}/>
-                        <input type="button" className="add-reminder-input" value="After" onClick={() => setReminderAlert('After')}/>
-                        <br/>
-                    </div>
-                    {reminderAlert && reminderAlert !== 'During' && (
-                        <input
-                            type="number"
-                            id="reminder-time-number"
-                            placeholder="Specify a time"
-                            min="1"
-                            max="59"
-                            onChange={event => setReminderTime(event.target.value)}
-                            value={reminderTime}    
-                        />
-                    )}
-                    <label>How many times would you like to be reminded this show is on?</label>
-                    <select
-                        name="interval"
-                        onChange={event => setInterval(event.target.value)}
-                        className="add-reminder-input"
-                        id="add-reminder-interval"
-                        value={occasions}
-                        required
-                    >
-                        <option value="">Select an option</option>
-                        <option value="All" onSelect={() => setOccasions('All')}>All</option>
-                        <option value="Latest" onSelect={() => setOccasions('Latest')}>Latest</option>
-                        <option value="Once" onSelect={() => setOccasions('Once')}>Once</option>
-                    </select>
-                </div>
-                <input type="submit" id="submit-reminder" value={showToRemind ? `Add Reminder for ${showToRemind}` : 'Add Reminder'} />
-            </form>
-            {/* <Modal isOpen={displayNote} id="reminder-note-modal">
-                <blockquote id="reminder-time-note">
-                    You do not have to specify when you would like to be reminded.
-                    <br/><br/>
-                    If left blank, the default is that you will be reminded three minutes before an episode starts.
-                </blockquote>
-            </Modal> */}
-            {/* This will be a tooltip */}
-            {reminderResponse !== '' && <blockquote id="add-reminder-response">{reminderResponse}</blockquote>}
-        </div>
+                </Form.Item>
+                <Form.Item
+                    name="reminder_alert"
+                    label="Remind me"
+                    initialValue="Before"
+                >
+                    <Select
+                        options={[
+                            { label: 'Before the episode starts', value: 'Before' },
+                            { label: 'When the episode starts', value: 'During' },
+                            { label: 'After the episode starts', value: 'After' }
+                        ]}
+                        onChange={(value) => setReminderAlert(value)}
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="warning_time"
+                    label="How much warning time"
+                    rules={[
+                        {
+                            required: true,
+                            min: 0,
+                            max: 60,
+                            type: 'number',
+                            message: 'Please enter a value between 0 and 60'
+                        }
+                    ]}
+                    getValueFromEvent={convertWarningTimeToNumber}
+                >
+                    <Input
+                        disabled={reminderAlert === 'During'}
+                        addonAfter="minutes"
+                    />
+                    {reminderAlert === 'During' && 'This does not need to be set if you wish to be reminded when the episode starts.'}
+                </Form.Item>
+                <Form.Item
+                    name="occasions"
+                    label="Remind me for"
+                    initialValue="All"
+                >
+                    <Select
+                        options={[
+                            { label: 'Every episode', value: 'All' },
+                            { label: 'Only the latest seasons', value: 'Latest' }
+                        ]}
+                    />
+                </Form.Item>
+                {result && <Alert type={createReminderStatus ? "success" : "error"} message={result} />}
+            </Form>
+        </Modal>
     )
-}
+};
 
 
 export default AddReminder;
