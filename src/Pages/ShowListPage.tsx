@@ -30,6 +30,7 @@ const ShowListPage = () => {
             <div id="list-of-shows">
                 {showList.map(show => (
                     <Card
+                        key={show.show}
                         title={show.show}
                         actions={[
                             <Tooltip title={`Delete ${show.show}`}>

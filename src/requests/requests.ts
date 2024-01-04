@@ -77,10 +77,27 @@ const addReminder = async (reminder: Reminder, token: string) => {
         }
     }
 };
+const editReminder = async (reminderDetails: Reminder, token: string) => {
+    try {
+        const response = await axios.put(`${baseURL}/reminder/${reminderDetails.show}`, reminderDetails, headers(token));
+        return buildResponseValue(response);
+    }
+    catch(err) {
+        if (err?.response) {
+            return buildResponseValue(err.response);
+        }
+    }
+}
 const deleteReminder = async (reminder: string, token: string) => {
-    const response = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
-
-    return buildResponseValue(response);
+    try {
+        const response = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
+        return buildResponseValue(response);
+    }
+    catch(err) {
+        if (err?.response) {
+            return buildResponseValue(err.response);
+        }
+    }
 };
 
 const registerNewUser = async (user: any) => {
@@ -109,6 +126,7 @@ export {
     getRecordedShow,
     getReminders,
     addReminder,
+    editReminder,
     deleteReminder,
     registerNewUser,
     login
