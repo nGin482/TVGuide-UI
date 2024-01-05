@@ -1,4 +1,4 @@
-import { GuideShow, ErrorResponse, LoginResponse } from "./types";
+import { GuideShow, ErrorResponse } from "./types";
 import { AxiosResponse } from "axios";
 
 export const showStringForEvent = (show_event) => {
@@ -78,24 +78,6 @@ export const buildResponseValue = (response: AxiosResponse<any>) => {
     return badResponse;
 };
 
-export const buildLoginResponseValue = (response: AxiosResponse<any>) => {
-    if (response.status === 200) {
-        const successResponse: LoginResponse = {
-            result: 'success',
-            message: response.data
-        }
-        return successResponse;
-    }
-    const badResponse: ErrorResponse = {
-        result: 'error',
-        status: response.status,
-        statusText: response.statusText,
-        message: response.data.message,
-        msg: response.data.msg
-    };
-    return badResponse;
-};
-
 
 export type {
     Guide,
@@ -108,5 +90,6 @@ export type {
     ErrorResponse,
     AddReminderResponse,
     CurrentUser,
-    AddSearchItemResponse
+    AddSearchItemResponse,
+    SubscriptionsPayload
 } from "./types";

@@ -10,9 +10,9 @@ import {
     ErrorResponse,
     User,
     buildResponseValue,
-    buildLoginResponseValue,
     buildResponse,
-    CurrentUser
+    CurrentUser,
+    SubscriptionsPayload
 } from "../utils";
 
 const baseURL = 'http://127.0.0.1:5000/api';
@@ -24,8 +24,8 @@ const headers = (token: string) => {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         }
-    }
-}
+    };
+};
 
 const getGuide = async () => {
     const response = await axios.get(`${baseURL}/guide`);
@@ -119,10 +119,21 @@ const getUser = async (username: string) => {
         }
     }
 };
-const registerNewUser = async (user: any) => {
+const registerNewUser = async (user: User) => {
     const response = await axios.post(`${baseURL}/auth/register`, user);
 
     return buildResponseValue(response);
+};
+const updateSubscriptions = async (username: string, subscriptions: SubscriptionsPayload, token: string) => {
+    try {
+        const response = await axios.put(`${baseURL}/user/${username}/subscriptions`, subscriptions, headers(token));
+        return buildResponse<User>(response);
+    }
+    catch(error) {
+        if (error?.response) {
+            return buildResponse<ErrorResponse>(error.response);
+        }
+    }
 };
 
 const login = async (loginDetails: { username: string, password: string }) => {
@@ -149,5 +160,6 @@ export {
     deleteReminder,
     getUser,
     registerNewUser,
+    updateSubscriptions,
     login
 };

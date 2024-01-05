@@ -53,14 +53,15 @@ interface SearchItem {
     searchActive: boolean
 };
 
-interface User {
+interface User extends BaseResponse {
+    result: 'success'
     user: string
     searchList: string[]
     reminders: string[]
     role: string
 };
 
-interface CurrentUser extends User, BaseResponse {
+interface CurrentUser extends User {
     token: string
 }
 
@@ -100,6 +101,11 @@ interface ErrorResponse extends BaseResponse {
     msg: string
 };
 
+interface SubscriptionsPayload {
+    show_subscriptions?: string[],
+    reminder_subscriptions?: string[]
+};
+
 export type {
     Guide,
     GuideShow,
@@ -113,5 +119,6 @@ export type {
     UserContextModel,
     CurrentUser,
     AddReminderResponse,
-    AddSearchItemResponse
+    AddSearchItemResponse,
+    SubscriptionsPayload
 };

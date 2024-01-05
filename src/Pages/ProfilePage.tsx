@@ -1,12 +1,17 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router";
-import { Alert, Button, List } from "antd";
+import { Alert, Button, List, Modal } from "antd";
 
 import { UserContext } from "../contexts/UserContext";
-import { getUser } from "../requests/requests";
-import { User } from "../utils";
+import { getUser, updateSubscriptions } from "../requests/requests";
+import { User, SubscriptionsPayload } from "../utils";
 import "../styles/ProfilePage.css";
 
+interface ResponseResult {
+    submitted: boolean
+    result: boolean
+    message: string
+};
 
 const ProfilePage = () => {
     const { user } = useParams<{user: string}>();
@@ -14,6 +19,9 @@ const ProfilePage = () => {
 
     const [userDetails, setUserDetails] = useState<User>(null);
     const [userNotExists, setUserNotExists] = useState(false);
+    const [responseResult, setResponseResult] = useState<ResponseResult>({ submitted: false, result: false, message: '' });
+
+    const viewingOwnProfile = user === currentUser.user;
 
     useEffect(() => {
         if (viewingOwnProfile) {
@@ -29,12 +37,47 @@ const ProfilePage = () => {
                 }
             });
         }
-    }, [user, currentUser]);
+    }, [user, currentUser, viewingOwnProfile]);
 
-    const viewingOwnProfile = user === currentUser.user;
+    const resetAllSubscriptions = async (resource: 'searchList' | 'reminders') => {
+        let subscriptions: SubscriptionsPayload;
+        if (resource === 'searchList') {
+            subscriptions = {
+                show_subscriptions: []
+            };
+        }
+        else {
+            subscriptions = {
+                reminder_subscriptions: []
+            };
+        }
+        const response = await updateSubscriptions(user, subscriptions, currentUser.token);
+        if (response.payload.result === 'success') {
+            delete response.payload.result;
+            delete response.payload.message;
+            setResponseResult({
+                submitted: true,
+                result: true,
+                message: `You have unsubscribed reset your ${resource === 'searchList' ? 'Search List' : 'Reminder'} subscriptions`
+            });
+            setUserDetails(response.payload);
+        }
+        else {
+            console.log(response.payload.message || response.payload.msg);
+            setResponseResult({
+                submitted: true,
+                result: false,
+                message: response.payload.message || response.payload.msg
+            });
+        }
+    };
 
-    const resetAllSubscriptions = () => {
-        console.log('resetting all subscriptions')
+    const closeModal = () => {
+        setResponseResult({
+            submitted: false,
+            result: false,
+            message: ''
+        });
     };
 
 
@@ -58,7 +101,9 @@ const ProfilePage = () => {
                         )}
                         header={<strong>Your Show Subscriptions</strong>}
                         className="subscription-list"
-                        footer={viewingOwnProfile && <Button onClick={resetAllSubscriptions}>Unsubscribe from all</Button>}
+                        footer={viewingOwnProfile && (
+                            <Button onClick={() => resetAllSubscriptions('searchList')}>Unsubscribe from all</Button>
+                        )}
                     />
                     <List
                         bordered
@@ -74,8 +119,18 @@ const ProfilePage = () => {
                         )}
                         header={<strong>Your Reminder Subscriptions</strong>}
                         className="subscription-list"
-                        footer={viewingOwnProfile && <Button onClick={resetAllSubscriptions}>Unsubscribe from all</Button>}
+                        footer={viewingOwnProfile && (
+                            <Button onClick={() => resetAllSubscriptions('reminders')}>Unsubscribe from all</Button>
+                        )}
                     />
+                    <Modal
+                        open={responseResult.submitted}
+                        onOk={closeModal}
+                        closeIcon={false}
+                        cancelButtonProps={{style: { display: 'none' } }}
+                    >
+                        <Alert type={responseResult.result ? "success" : "error"} message={responseResult.message} />
+                    </Modal>
                 </div>
             </>
         )
