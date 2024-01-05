@@ -16,7 +16,7 @@ const ProfilePage = () => {
     const [userNotExists, setUserNotExists] = useState(false);
 
     useEffect(() => {
-        if (user === currentUser.user) {
+        if (viewingOwnProfile) {
             setUserDetails(currentUser);
         }
         else {
@@ -31,9 +31,11 @@ const ProfilePage = () => {
         }
     }, [user, currentUser]);
 
+    const viewingOwnProfile = user === currentUser.user;
+
     const resetAllSubscriptions = () => {
         console.log('resetting all subscriptions')
-    }
+    };
 
 
     return (
@@ -46,25 +48,33 @@ const ProfilePage = () => {
                         bordered
                         dataSource={userDetails.searchList}
                         renderItem={item => (
-                            <List.Item>
+                            <List.Item
+                                actions={viewingOwnProfile ? [
+                                    <Button onClick={() => console.log('clicked this')}>Unsubscribe</Button>
+                                ] : []}
+                            >
                                 <span>{item}</span>
                             </List.Item>
                         )}
                         header={<strong>Your Show Subscriptions</strong>}
                         className="subscription-list"
-                        footer={<Button onClick={resetAllSubscriptions}>Reset all subscriptions</Button>}
+                        footer={viewingOwnProfile && <Button onClick={resetAllSubscriptions}>Unsubscribe from all</Button>}
                     />
                     <List
                         bordered
                         dataSource={userDetails.reminders}
                         renderItem={item => (
-                            <List.Item>
+                            <List.Item
+                                actions={viewingOwnProfile ? [
+                                    <Button onClick={() => console.log('clicked this')}>Unsubscribe</Button>
+                                ] : []}
+                            >
                                 <span>{item}</span>
                             </List.Item>
                         )}
                         header={<strong>Your Reminder Subscriptions</strong>}
                         className="subscription-list"
-                        footer={<Button onClick={resetAllSubscriptions}>Reset all subscriptions</Button>}
+                        footer={viewingOwnProfile && <Button onClick={resetAllSubscriptions}>Unsubscribe from all</Button>}
                     />
                 </div>
             </>
