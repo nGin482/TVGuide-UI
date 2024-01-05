@@ -1,4 +1,5 @@
-import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { useContext } from "react";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 
 import NavigationMenu from "./NavigationMenu";
 import Home from "../Pages/Home";
@@ -8,8 +9,10 @@ import RecordedShow from "../Pages/RecordedShow";
 import RemindersPage from "../Pages/RemindersPage";
 import LoginPage from "../Pages/LoginPage";
 import ProfilePage from "../Pages/ProfilePage";
+import { UserContext } from "../contexts/UserContext";
 
 const NavigationHandle = () => {
+    const { currentUser } = useContext(UserContext);
     return (
         <BrowserRouter>
             <NavigationMenu/>
@@ -18,12 +21,12 @@ const NavigationHandle = () => {
                 <Route exact path='/shows'><RecordedShowsPage /></Route>
                 <Route path='/shows/:show'><RecordedShow /></Route>
                 <Route path='/reminders'><RemindersPage /></Route>
-                <Route path="/login"><LoginPage /></Route>
                 <Route path="/profile/:user"><ProfilePage /></Route>
+                <Route path="/login">{currentUser ? <Redirect to={`/profile/${currentUser.user}`} /> : <LoginPage />}</Route>
                 <Route path='/'><Home/></Route>
             </Switch>
         </BrowserRouter>
-    )
-}
+    );
+};
 
 export default NavigationHandle;
