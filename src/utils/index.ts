@@ -107,5 +107,6 @@ export type {
     UserContextModel,
     ErrorResponse,
     AddReminderResponse,
-    CurrentUser
+    CurrentUser,
+    AddSearchItemResponse
 } from "./types";

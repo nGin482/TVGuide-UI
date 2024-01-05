@@ -6,11 +6,13 @@ import {
     Reminder,
     SearchItem,
     AddReminderResponse,
+    AddSearchItemResponse,
     ErrorResponse,
     User,
     buildResponseValue,
     buildLoginResponseValue,
-    buildResponse
+    buildResponse,
+    CurrentUser
 } from "../utils";
 
 const baseURL = 'http://127.0.0.1:5000/api';
@@ -46,10 +48,15 @@ const getShowList = () => {
     return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<SearchItem[]>) => response.data);
 };
 const addShowToList = async (show: string, token: string) => {
-    const response = await axios.post(`${baseURL}/show-list`, { show }, headers(token));
-
-    const result = buildResponseValue(response);
-    return result;
+    try {
+        const response = await axios.post(`${baseURL}/show-list`, { show }, headers(token));
+        return buildResponse<AddSearchItemResponse>(response);
+    }
+    catch(error) {
+        if (error?.response) {
+            return buildResponse<ErrorResponse>(error.response);
+        }
+    }
 };
 const removeShowFromList = async (showToRemove: string, token: string) => {
     const response = await axios.delete(`${baseURL}/show-list/${showToRemove}`, headers(token));
@@ -121,10 +128,10 @@ const registerNewUser = async (user: any) => {
 const login = async (loginDetails: { username: string, password: string }) => {
     try {
         const response = await axios.post(`${baseURL}/auth/login`, loginDetails);
-        return buildLoginResponseValue(response);
+        return buildResponse<CurrentUser>(response);
     }
     catch(err) {
-        return buildLoginResponseValue(err.response);
+        return buildResponse<ErrorResponse>(err.response);
     }
 };
 

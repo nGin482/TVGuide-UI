@@ -13,8 +13,8 @@ const AddShow = () => {
     const addShowSubmission = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const response = await addShowToList(showToAdd, currentUser.token);
-        if (response.result === 'success') {
-            setResult(response.message);
+        if (response.payload.result === 'success') {
+            setResult(response.payload.message);
             setShowToAdd('');
             setResult('');
         }

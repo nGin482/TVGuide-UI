@@ -60,7 +60,7 @@ interface User {
     role: string
 };
 
-interface CurrentUser extends User {
+interface CurrentUser extends User, BaseResponse {
     token: string
 }
 
@@ -81,6 +81,11 @@ interface BaseResponse {
 interface AddReminderResponse extends BaseResponse {
     result: 'success'
     reminders: Reminder[]
+};
+
+interface AddSearchItemResponse extends BaseResponse {
+    result: 'success'
+    searchList: SearchItem[]
 };
 
 interface LoginResponse {
@@ -107,5 +112,6 @@ export type {
     User,
     UserContextModel,
     CurrentUser,
-    AddReminderResponse
+    AddReminderResponse,
+    AddSearchItemResponse
 };
