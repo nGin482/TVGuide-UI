@@ -15,29 +15,42 @@ interface ResponseResult {
 
 const ProfilePage = () => {
     const { user } = useParams<{user: string}>();
-    const { currentUser } = useContext(UserContext);
+    const { currentUser, setUser } = useContext(UserContext);
 
     const [userDetails, setUserDetails] = useState<User>(null);
     const [userNotExists, setUserNotExists] = useState(false);
     const [responseResult, setResponseResult] = useState<ResponseResult>({ submitted: false, result: false, message: '' });
 
-    const viewingOwnProfile = user === currentUser.user;
+    const viewingOwnProfile = user === currentUser.username;
 
     useEffect(() => {
         if (viewingOwnProfile) {
             setUserDetails(currentUser);
         }
         else {
-            getUser(user).then(response => {
-                if (response.payload.result === 'success') {
-                    setUserDetails(response.payload);
-                }
-                else {
-                    setUserNotExists(true);
-                }
-            });
+            if (user !== 'undefined') {
+                getUser(user).then(response => {
+                    if (response.result === 'success') {
+                        setUserDetails(response.payload);
+                    }
+                    else {
+                        setUserNotExists(true);
+                    }
+                });
+            }
         }
     }, [user, currentUser, viewingOwnProfile]);
+
+    const unsubscribe = (resource: 'searchList' | 'reminders', show: string) => {
+        if (resource === 'searchList') {
+            const updatedSearchList = userDetails.show_subscriptions.filter(searchItem => searchItem !== show);
+            updateSubscriptionsHandle(resource, { show_subscriptions: updatedSearchList });
+        }
+        else {
+            const updatedReminders = userDetails.reminder_subscriptions.filter(reminder => reminder !== show);
+            updateSubscriptionsHandle(resource, { reminder_subscriptions: updatedReminders });
+        }
+    };
 
     const resetAllSubscriptions = async (resource: 'searchList' | 'reminders') => {
         let subscriptions: SubscriptionsPayload;
@@ -51,23 +64,33 @@ const ProfilePage = () => {
                 reminder_subscriptions: []
             };
         }
+        updateSubscriptionsHandle(resource, subscriptions);
+    };
+
+    const updateSubscriptionsHandle = async (resource: 'searchList' | 'reminders', subscriptions: SubscriptionsPayload) => {
         const response = await updateSubscriptions(user, subscriptions, currentUser.token);
-        if (response.payload.result === 'success') {
-            delete response.payload.result;
-            delete response.payload.message;
+        console.log(response)
+        if (response.result === 'success') {
             setResponseResult({
                 submitted: true,
                 result: true,
-                message: `You have unsubscribed reset your ${resource === 'searchList' ? 'Search List' : 'Reminder'} subscriptions`
+                message: response.payload.message
             });
-            setUserDetails(response.payload);
+            setUserDetails(response.payload.user);
+            if (viewingOwnProfile) {
+                console.log('hey hey hey happy halloween everybody')
+                console.log(response.payload.user)
+                setUser(prevState => ({ token: prevState.token, ...response.payload.user }));
+            }
         }
         else {
-            console.log(response.payload.message || response.payload.msg);
+            const message = response?.msg
+                ? 'You have been signed out. Please sign in again to unsubscribe'
+                : response.message;
             setResponseResult({
                 submitted: true,
                 result: false,
-                message: response.payload.message || response.payload.msg
+                message: message
             });
         }
     };
@@ -84,16 +107,16 @@ const ProfilePage = () => {
     return (
         userDetails ? (
             <>
-                <h1>{userDetails.user} - {user}</h1>
+                <h1>{userDetails.username} - {user}</h1>
                 <p><strong>{userDetails.role}</strong></p>
                 <div id="subscription-list-container">
                     <List
                         bordered
-                        dataSource={userDetails.searchList}
+                        dataSource={userDetails.show_subscriptions}
                         renderItem={item => (
                             <List.Item
                                 actions={viewingOwnProfile ? [
-                                    <Button onClick={() => console.log('clicked this')}>Unsubscribe</Button>
+                                    <Button onClick={() => unsubscribe('searchList', item)}>Unsubscribe</Button>
                                 ] : []}
                             >
                                 <span>{item}</span>
@@ -107,11 +130,11 @@ const ProfilePage = () => {
                     />
                     <List
                         bordered
-                        dataSource={userDetails.reminders}
+                        dataSource={userDetails.reminder_subscriptions}
                         renderItem={item => (
                             <List.Item
                                 actions={viewingOwnProfile ? [
-                                    <Button onClick={() => console.log('clicked this')}>Unsubscribe</Button>
+                                    <Button onClick={() => unsubscribe('reminders', item)}>Unsubscribe</Button>
                                 ] : []}
                             >
                                 <span>{item}</span>
