@@ -57,7 +57,7 @@ const NavigationMenu = () => {
                     key: 'profile',
                     children: [
                         {
-                            label: <NavLink to={`/profile/${currentUser.user}`}>Your Profile</NavLink>,
+                            label: <NavLink to={`/profile/${currentUser.username}`}>Your Profile</NavLink>,
                             key: 'profile-page'
                         },
                         {

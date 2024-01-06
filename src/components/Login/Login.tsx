@@ -33,7 +33,7 @@ const Login = () => {
         console.log(values)
         const response = await login(values);
         if (response.result === 'success') {
-            cookies.set('user', JSON.stringify(response));
+            cookies.set('user', JSON.stringify(response.payload.user));
             setUser(response.payload.user);
             history.push(`/profile/${values.username}`);
         }

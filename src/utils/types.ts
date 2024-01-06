@@ -54,15 +54,15 @@ interface SearchItem {
 };
 
 interface User {
-    user: string
-    searchList: string[]
-    reminders: string[]
+    username: string
+    show_subscriptions: string[]
+    reminder_subscriptions: string[]
     role: string
 };
 
 interface CurrentUser extends User {
     token: string
-}
+};
 
 interface UserContextModel {
     currentUser: CurrentUser
