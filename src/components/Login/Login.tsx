@@ -32,14 +32,13 @@ const Login = () => {
     const loginHandle = async (values: LoginForm) => {
         console.log(values)
         const response = await login(values);
-        if (response.payload.result === 'success') {
-            delete response.payload.result;
-            cookies.set('user', JSON.stringify(response.payload));
-            setUser(response.payload);
+        if (response.result === 'success') {
+            cookies.set('user', JSON.stringify(response));
+            setUser(response.payload.user);
             history.push(`/profile/${values.username}`);
         }
         else {
-            setLoginError(response.payload.message);
+            setLoginError(response.message);
         }
     };
 

@@ -6,13 +6,16 @@ import {
     Reminder,
     SearchItem,
     AddReminderResponse,
-    AddSearchItemResponse,
-    ErrorResponse,
     User,
     buildResponseValue,
     buildResponse,
     CurrentUser,
-    SubscriptionsPayload
+    SubscriptionsPayload,
+    FailedResponse,
+    SuccessResponse,
+    UserResponses,
+    SearchItemResponses,
+    NewUserDetails
 } from "../utils";
 
 const baseURL = 'http://127.0.0.1:5000/api';
@@ -49,12 +52,20 @@ const getShowList = () => {
 };
 const addShowToList = async (show: string, token: string) => {
     try {
-        const response = await axios.post(`${baseURL}/show-list`, { show }, headers(token));
-        return buildResponse<AddSearchItemResponse>(response);
+        const response: AxiosResponse<SearchItemResponses> = await axios.post(`${baseURL}/show-list`, { show }, headers(token));
+        return { result: 'success', payload: response.data } as SuccessResponse<SearchItemResponses>;
     }
     catch(error) {
         if (error?.response) {
-            return buildResponse<ErrorResponse>(error.response);
+            const response: AxiosResponse<{message: string, msg: string}> = error.response;
+            const result: FailedResponse = {
+                result: 'error',
+                status: response.status,
+                statusText: response.statusText,
+                message: response.data.message,
+                msg: response.data?.msg
+            };
+            return result;
         }
     }
 };
@@ -81,7 +92,7 @@ const addReminder = async (reminder: Reminder, token: string) => {
     }
     catch(error) {
         if (error?.response) {
-            return buildResponse<ErrorResponse>(error.response)
+            return buildResponse<FailedResponse>(error.response)
         }
     }
 };
@@ -103,46 +114,87 @@ const deleteReminder = async (reminder: string, token: string) => {
     }
     catch(err) {
         if (err?.response) {
-            return buildResponse<ErrorResponse>(err.response);
+            return buildResponse<FailedResponse>(err.response);
         }
     }
 };
 
 const getUser = async (username: string) => {
     try {
-        const response = await axios.get(`${baseURL}/user/${username}`);
-        return buildResponse<User>(response);
+        const response: AxiosResponse<User> = await axios.get(`${baseURL}/user/${username}`);
+        return { result: 'success', payload: response.data } as SuccessResponse<User>;
     }
     catch(error) {
         if (error?.response) {
-            return buildResponse<ErrorResponse>(error.response);
+            const response: AxiosResponse<{message: string, msg: string}> = error.response;
+            const result: FailedResponse = {
+                result: 'error',
+                status: response.status,
+                statusText: response.statusText,
+                message: response.data?.message,
+                msg: response.data?.msg
+            };
+            return result;
         }
     }
 };
-const registerNewUser = async (user: User) => {
-    const response = await axios.post(`${baseURL}/auth/register`, user);
-
-    return buildResponseValue(response);
+const registerNewUser = async (user: NewUserDetails) => {
+    try {
+        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.put(`${baseURL}/auth/register`, user);
+        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
+    }
+    catch(error) {
+        const response: AxiosResponse<{message: string, msg: string}> = error.response;
+        const result: FailedResponse = {
+            result: 'error',
+            status: response.status,
+            statusText: response.statusText,
+            message: response.data.message
+        };
+        return result;
+    }
 };
 const updateSubscriptions = async (username: string, subscriptions: SubscriptionsPayload, token: string) => {
     try {
-        const response = await axios.put(`${baseURL}/user/${username}/subscriptions`, subscriptions, headers(token));
-        return buildResponse<User>(response);
+        const response: AxiosResponse<UserResponses<User>> = await axios.put(`${baseURL}/user/${username}/subscriptions`, subscriptions, headers(token));
+        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<User>>;
     }
     catch(error) {
         if (error?.response) {
-            return buildResponse<ErrorResponse>(error.response);
+            const response: AxiosResponse<{message: string, msg: string}> = error.response;
+            const result: FailedResponse = {
+                result: 'error',
+                status: response.status,
+                statusText: response.statusText,
+                message: response.data?.message,
+                msg: response.data?.msg
+            };
+            return result;
+        }
+        else {
+            const result: FailedResponse = {
+                result: 'error',
+                status: 0,
+                statusText: error.message,
+                message: error.message === 'Network Error'
+                    ? 'Unable to communicate with the server at this time. Please try again later.'
+                    : error.message
+            };
+            return result;
         }
     }
 };
 
 const login = async (loginDetails: { username: string, password: string }) => {
     try {
-        const response = await axios.post(`${baseURL}/auth/login`, loginDetails);
-        return buildResponse<CurrentUser>(response);
+        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.post(`${baseURL}/auth/login`, loginDetails);
+        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
     }
     catch(err) {
-        return buildResponse<ErrorResponse>(err.response);
+        if (err?.response) {
+            const payload: FailedResponse = err.response.data
+            return { result: 'error', ...payload }
+        }
     }
 };
 

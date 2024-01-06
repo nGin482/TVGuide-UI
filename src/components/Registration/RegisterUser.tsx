@@ -11,13 +11,15 @@ const RegisterUser = () => {
         event.preventDefault();
         const user = {
             username,
-            password
+            password,
+            show_subscriptions: [],
+            reminder_subscriptions: []
         };
         console.log(user)
         const response = await registerNewUser(user);
 
         if (response.result === 'success') {
-            console.log(response.message)
+            console.log(response.payload.message)
         }
         setUsername('');
         setPassword('');

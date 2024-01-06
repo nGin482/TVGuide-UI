@@ -53,8 +53,7 @@ interface SearchItem {
     searchActive: boolean
 };
 
-interface User extends BaseResponse {
-    result: 'success'
+interface User {
     user: string
     searchList: string[]
     reminders: string[]
@@ -70,13 +69,13 @@ interface UserContextModel {
     setUser: React.Dispatch<React.SetStateAction<CurrentUser>>
 };
 
-interface ResponseData {
-    result: 'success'
+interface BaseResponse {
     message: string
 };
 
-interface BaseResponse {
-    message: string
+interface SuccessResponse<Type> {
+    result: 'success'
+    payload: Type
 };
 
 interface AddReminderResponse extends BaseResponse {
@@ -84,26 +83,38 @@ interface AddReminderResponse extends BaseResponse {
     reminders: Reminder[]
 };
 
-interface AddSearchItemResponse extends BaseResponse {
-    result: 'success'
+interface SearchItemResponses {
+    message: string
     searchList: SearchItem[]
 };
 
-interface LoginResponse {
-    result: 'success'
-    message: CurrentUser
-}
+interface ErrorResponse {
+    status: number
+    statusText: string
+};
 
-interface ErrorResponse extends BaseResponse {
+interface FailedResponse extends BaseResponse {
     result: 'error'
     status: number
     statusText: string
-    msg: string
+    msg?: string
+};
+
+interface NewUserDetails {
+    username: string
+    password: string
+    show_subscriptions: string[]
+    reminder_subscriptions: string[]
 };
 
 interface SubscriptionsPayload {
     show_subscriptions?: string[],
     reminder_subscriptions?: string[]
+};
+
+interface UserResponses<Type> {
+    message: string
+    user: Type
 };
 
 export type {
@@ -112,13 +123,15 @@ export type {
     RecordedShowModel,
     Reminder,
     SearchItem,
-    ResponseData,
-    ErrorResponse,
-    LoginResponse,
     User,
     UserContextModel,
     CurrentUser,
     AddReminderResponse,
-    AddSearchItemResponse,
-    SubscriptionsPayload
+    SubscriptionsPayload,
+    SuccessResponse,
+    FailedResponse,
+    ErrorResponse,
+    UserResponses,
+    SearchItemResponses,
+    NewUserDetails
 };
