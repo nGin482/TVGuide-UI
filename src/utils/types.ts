@@ -89,8 +89,8 @@ interface SearchItemResponses {
 };
 
 interface ErrorResponse {
-    status: number
-    statusText: string
+    message: string
+    msg?: 'Token has expired'
 };
 
 interface FailedResponse extends BaseResponse {

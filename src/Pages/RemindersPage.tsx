@@ -36,8 +36,8 @@ const RemindersPage = () => {
     const deleteReminderHandle = async (reminder: string) => {
         const response = await deleteReminder(reminder, currentUser.token);
         setShowModal(true);
-        if (response.payload.result === 'error') {
-            setError(response.payload?.message || response.payload?.msg);
+        if (response.result === 'error') {
+            setError(response.message || response.msg);
         }
     };
 

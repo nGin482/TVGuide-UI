@@ -56,21 +56,6 @@ export function buildResponse<Type>(response: AxiosResponse<Type>) {
     return badResponse;
 };
 
-export const buildResponseValue = (response: AxiosResponse<any>) => {
-    if (response.status === 200) {
-        const successResponse = {
-            result: 'success',
-            payload: response.data
-        };
-        return successResponse;
-    }
-    const badResponse: ErrorResponse = {
-        status: response.status,
-        statusText: response.statusText
-    };
-    return badResponse;
-};
-
 
 export type {
     Guide,
@@ -83,6 +68,7 @@ export type {
     AddReminderResponse,
     CurrentUser,
     SubscriptionsPayload,
+    ErrorResponse,
     FailedResponse,
     SuccessResponse,
     UserResponses,

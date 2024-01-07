@@ -20,7 +20,7 @@ const ShowListPage = () => {
     const deleteShowFromList = async (show: string) => {
         const response = await removeShowFromList(show, currentUser.token);
 
-        response.result === 'success' ? setResult(response.message) : setResult(response.payload.message);
+        response.result === 'success' ? setResult(response.payload.message) : setResult(response?.msg ? response.msg : response.message);
     };
 
 

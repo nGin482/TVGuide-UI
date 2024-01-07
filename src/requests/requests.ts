@@ -7,10 +7,10 @@ import {
     SearchItem,
     AddReminderResponse,
     User,
-    buildResponseValue,
     buildResponse,
     CurrentUser,
     SubscriptionsPayload,
+    ErrorResponse,
     FailedResponse,
     SuccessResponse,
     UserResponses,
@@ -57,7 +57,7 @@ const addShowToList = async (show: string, token: string) => {
     }
     catch(error) {
         if (error?.response) {
-            const response: AxiosResponse<{message: string, msg: string}> = error.response;
+            const response: AxiosResponse<ErrorResponse> = error.response;
             const result: FailedResponse = {
                 result: 'error',
                 status: response.status,
@@ -70,9 +70,23 @@ const addShowToList = async (show: string, token: string) => {
     }
 };
 const removeShowFromList = async (showToRemove: string, token: string) => {
-    const response = await axios.delete(`${baseURL}/show-list/${showToRemove}`, headers(token));
-
-    return buildResponseValue(response);
+    try {
+        const response: AxiosResponse<SearchItemResponses> = await axios.delete(`${baseURL}/show-list/${showToRemove}`, headers(token));
+        return { result: 'success', payload: response.data } as SuccessResponse<SearchItemResponses>;
+    }
+    catch(error) {
+        if (error?.response) {
+            const response: AxiosResponse<ErrorResponse> = error.response;
+            const result: FailedResponse = {
+                result: 'error',
+                status: response.status,
+                statusText: response.statusText,
+                message: response.data?.message,
+                msg: response.data?.msg
+            };
+            return result;
+        }
+    }
 };
 
 const getRecordedShows = () => {
@@ -87,34 +101,58 @@ const getReminders = () => {
 };
 const addReminder = async (reminder: Reminder, token: string) => {
     try {
-        const response = await axios.post(`${baseURL}/reminders`, reminder, headers(token));
-        return buildResponse<AddReminderResponse>(response);
+        const response: AxiosResponse<AddReminderResponse> = await axios.post(`${baseURL}/reminders`, reminder, headers(token));
+        return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
     }
     catch(error) {
         if (error?.response) {
-            return buildResponse<FailedResponse>(error.response)
+            const response: AxiosResponse<ErrorResponse> = error.response;
+            const result: FailedResponse = {
+                result: 'error',
+                status: response.status,
+                statusText: response.statusText,
+                message: response.data?.message,
+                msg: response.data?.msg
+            };
+            return result;
         }
     }
 };
 const editReminder = async (reminderDetails: Reminder, token: string) => {
     try {
-        const response = await axios.put(`${baseURL}/reminder/${reminderDetails.show}`, reminderDetails, headers(token));
-        return buildResponseValue(response);
+        const response: AxiosResponse<AddReminderResponse> = await axios.put(`${baseURL}/reminder/${reminderDetails.show}`, reminderDetails, headers(token));
+        return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
     }
-    catch(err) {
-        if (err?.response) {
-            return buildResponseValue(err.response);
+    catch(error) {
+        if (error?.response) {
+            const response: AxiosResponse<ErrorResponse> = error.response;
+            const result: FailedResponse = {
+                result: 'error',
+                status: response.status,
+                statusText: response.statusText,
+                message: response.data?.message,
+                msg: response.data?.msg
+            };
+            return result;
         }
     }
 }
 const deleteReminder = async (reminder: string, token: string) => {
     try {
-        const response = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
-        return buildResponse<AddReminderResponse>(response);
+        const response: AxiosResponse<AddReminderResponse> = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
+        return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
     }
-    catch(err) {
-        if (err?.response) {
-            return buildResponse<FailedResponse>(err.response);
+    catch(error) {
+        if (error?.response) {
+            const response: AxiosResponse<ErrorResponse> = error.response;
+            const result: FailedResponse = {
+                result: 'error',
+                status: response.status,
+                statusText: response.statusText,
+                message: response.data?.message,
+                msg: response.data?.msg
+            };
+            return result;
         }
     }
 };
@@ -126,7 +164,7 @@ const getUser = async (username: string) => {
     }
     catch(error) {
         if (error?.response) {
-            const response: AxiosResponse<{message: string, msg: string}> = error.response;
+            const response: AxiosResponse<ErrorResponse> = error.response;
             const result: FailedResponse = {
                 result: 'error',
                 status: response.status,
@@ -144,7 +182,7 @@ const registerNewUser = async (user: NewUserDetails) => {
         return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
     }
     catch(error) {
-        const response: AxiosResponse<{message: string, msg: string}> = error.response;
+        const response: AxiosResponse<ErrorResponse> = error.response;
         const result: FailedResponse = {
             result: 'error',
             status: response.status,
@@ -161,7 +199,7 @@ const updateSubscriptions = async (username: string, subscriptions: Subscription
     }
     catch(error) {
         if (error?.response) {
-            const response: AxiosResponse<{message: string, msg: string}> = error.response;
+            const response: AxiosResponse<ErrorResponse> = error.response;
             const result: FailedResponse = {
                 result: 'error',
                 status: response.status,

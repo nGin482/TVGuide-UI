@@ -18,24 +18,24 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
     const [editSuccess, setEditSuccess] = useState(false);
 
     const [form] = Form.useForm();
-    const { user } = useContext(UserContext);
+    const { currentUser } = useContext(UserContext);
 
 
     const editReminderHandle = () => {
         setSubmitted(true);
         form.validateFields().then(async () => {
-            const response = await editReminder(reminderChosen, user.token);
+            const response = await editReminder(reminderChosen, currentUser.token);
             console.log(response)
             if (response.result === 'success') {
                 setResult(`The reminder for ${reminderChosen.show} has been updated!`);
                 setEditSuccess(true);
             }
             else {
-                if (response.payload?.msg === 'Token has expired') {
+                if (response?.msg === 'Token has expired') {
                     setResult('You have been signed out. Please sign in again to edit this reminder');
                 }
                 else {
-                    setResult(response.payload.message || response.payload.msg);
+                    setResult(response.message || response.msg);
                 }
                 setSubmitted(false);
             }
