@@ -22,7 +22,7 @@ const NavigationHandle = () => {
                 <Route path='/shows/:show'><RecordedShow /></Route>
                 <Route path='/reminders'><RemindersPage /></Route>
                 <Route path="/profile/:user"><ProfilePage /></Route>
-                <Route path="/login">{currentUser ? <Redirect to={`/profile/${currentUser.user}`} /> : <LoginPage />}</Route>
+                <Route path="/login">{currentUser ? <Redirect to={`/profile/${currentUser.username}`} /> : <LoginPage />}</Route>
                 <Route path='/'><Home/></Route>
             </Switch>
         </BrowserRouter>
