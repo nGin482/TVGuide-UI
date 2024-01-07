@@ -24,31 +24,26 @@ const ProfilePage = () => {
     const viewingOwnProfile = user === currentUser.username;
 
     useEffect(() => {
-        if (viewingOwnProfile) {
-            setUserDetails(currentUser);
+        if (user !== 'undefined') {
+            getUser(user).then(response => {
+                if (response.result === 'success') {
+                    setUserDetails(response.payload);
+                }
+                else {
+                    setUserNotExists(true);
+                }
+            });
         }
-        else {
-            if (user !== 'undefined') {
-                getUser(user).then(response => {
-                    if (response.result === 'success') {
-                        setUserDetails(response.payload);
-                    }
-                    else {
-                        setUserNotExists(true);
-                    }
-                });
-            }
-        }
-    }, [user, currentUser, viewingOwnProfile]);
+    }, [user]);
 
     const unsubscribe = (resource: 'searchList' | 'reminders', show: string) => {
         if (resource === 'searchList') {
             const updatedSearchList = userDetails.show_subscriptions.filter(searchItem => searchItem !== show);
-            updateSubscriptionsHandle(resource, { show_subscriptions: updatedSearchList });
+            updateSubscriptionsHandle({ show_subscriptions: updatedSearchList });
         }
         else {
             const updatedReminders = userDetails.reminder_subscriptions.filter(reminder => reminder !== show);
-            updateSubscriptionsHandle(resource, { reminder_subscriptions: updatedReminders });
+            updateSubscriptionsHandle({ reminder_subscriptions: updatedReminders });
         }
     };
 
@@ -64,12 +59,11 @@ const ProfilePage = () => {
                 reminder_subscriptions: []
             };
         }
-        updateSubscriptionsHandle(resource, subscriptions);
+        updateSubscriptionsHandle(subscriptions);
     };
 
-    const updateSubscriptionsHandle = async (resource: 'searchList' | 'reminders', subscriptions: SubscriptionsPayload) => {
+    const updateSubscriptionsHandle = async (subscriptions: SubscriptionsPayload) => {
         const response = await updateSubscriptions(user, subscriptions, currentUser.token);
-        console.log(response)
         if (response.result === 'success') {
             setResponseResult({
                 submitted: true,
@@ -78,8 +72,6 @@ const ProfilePage = () => {
             });
             setUserDetails(response.payload.user);
             if (viewingOwnProfile) {
-                console.log('hey hey hey happy halloween everybody')
-                console.log(response.payload.user)
                 setUser(prevState => ({ token: prevState.token, ...response.payload.user }));
             }
         }
@@ -107,8 +99,7 @@ const ProfilePage = () => {
     return (
         userDetails ? (
             <>
-                <h1>{userDetails.username} - {user}</h1>
-                <p><strong>{userDetails.role}</strong></p>
+                <h1>{userDetails.username}</h1>
                 <div id="subscription-list-container">
                     <List
                         bordered
