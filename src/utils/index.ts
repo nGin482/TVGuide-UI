@@ -1,5 +1,4 @@
-import { GuideShow, ErrorResponse, SuccessResponse, FailedResponse, } from "./types";
-import { AxiosResponse } from "axios";
+import { GuideShow } from "./types";
 
 export const showStringForEvent = (show_event) => {
     if (show_event.show) {
@@ -38,22 +37,6 @@ export const showStringForGuide = (show: GuideShow) => {
     }
 
     return showString;
-};
-
-export function buildResponse<Type>(response: AxiosResponse<Type>) {
-    if (response.status === 200) {
-        const result: SuccessResponse<Type> = {
-            result: 'success',
-            payload: response.data
-        }
-        return result;
-    }
-    const badResponse = {
-        result: 'error',
-        status: response.status,
-        statusText: response.statusText
-    };
-    return badResponse;
 };
 
 
