@@ -2,9 +2,10 @@ import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router";
 import { Alert, Button, Form, List, Modal, Select, Space } from "antd";
 
+import TVGuide from "../TVGuide/TVGuide";
 import { UserContext } from "../contexts/UserContext";
-import { getRecordedShows, getReminders, getUser, updateSubscriptions } from "../requests/requests";
-import { RecordedShowModel, Reminder, SubscriptionsPayload, User } from "../utils";
+import { getGuide, getRecordedShows, getReminders, getUser, updateSubscriptions } from "../requests/requests";
+import { Guide, RecordedShowModel, Reminder, SubscriptionsPayload, User } from "../utils";
 import "../styles/ProfilePage.css";
 
 interface ResponseResult {
@@ -27,6 +28,7 @@ const ProfilePage = () => {
 
     const [userDetails, setUserDetails] = useState<User>(null);
     const [userNotExists, setUserNotExists] = useState(false);
+    const [userTVGuide, setUserTVGuide] = useState<Guide>(null);
     const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(false);
     const [resource, setResource] = useState<'searchList' | 'reminders' | ''>('');
     const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
@@ -45,6 +47,7 @@ const ProfilePage = () => {
                     setUserNotExists(true);
                 }
             });
+            getGuide().then(guide => setUserTVGuide(guide));
         }
     }, [user]);
 
@@ -157,6 +160,7 @@ const ProfilePage = () => {
         userDetails ? (
             <>
                 <h1>{userDetails.username}</h1>
+                {userTVGuide && <TVGuide guide={userTVGuide} user={userDetails} />}
                 <div id="subscription-list-container">
                     <List
                         bordered

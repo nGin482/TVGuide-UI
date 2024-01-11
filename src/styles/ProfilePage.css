@@ -1,6 +1,7 @@
 #subscription-list-container {
     display: flex;
     margin: 0 auto;
+    margin-top: 50px;
     justify-content: space-evenly;
 }
 
