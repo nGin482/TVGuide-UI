@@ -212,8 +212,9 @@ const ProfilePage = () => {
                 <Modal
                     open={showAddSubscriptionModal}
                     okText={responseResult.submitted && responseResult.result ? 'Close' : 'Submit'}
-                    onOk={() => !responseResult.submitted ? subscribe('searchList') : closeAddSubscriptionsModal()}
+                    onOk={() => !responseResult.submitted && resource ? subscribe(resource) : closeAddSubscriptionsModal()}
                     onCancel={closeAddSubscriptionsModal}
+                    cancelButtonProps={responseResult.result && { style: { display: 'none' } }}
                     closeIcon={false}
                 >
                     <Form
