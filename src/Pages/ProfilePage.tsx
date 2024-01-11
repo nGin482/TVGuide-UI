@@ -3,8 +3,8 @@ import { useParams } from "react-router";
 import { Alert, Button, Form, List, Modal, Select, Space } from "antd";
 
 import { UserContext } from "../contexts/UserContext";
-import { getUser, updateSubscriptions, getRecordedShows } from "../requests/requests";
-import { RecordedShowModel, User, SubscriptionsPayload } from "../utils";
+import { getRecordedShows, getReminders, getUser, updateSubscriptions } from "../requests/requests";
+import { RecordedShowModel, Reminder, SubscriptionsPayload, User } from "../utils";
 import "../styles/ProfilePage.css";
 
 interface ResponseResult {
@@ -28,8 +28,9 @@ const ProfilePage = () => {
     const [userDetails, setUserDetails] = useState<User>(null);
     const [userNotExists, setUserNotExists] = useState(false);
     const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(false);
-    const [resource, setResource] = useState('');
+    const [resource, setResource] = useState<'searchList' | 'reminders' | ''>('');
     const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
+    const [reminders, setReminders] = useState<Reminder[]>([]);
     const [responseResult, setResponseResult] = useState<ResponseResult>(baseResult);
 
     const viewingOwnProfile = user === currentUser.username;
@@ -48,14 +49,13 @@ const ProfilePage = () => {
     }, [user]);
 
     useEffect(() => {
-        getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
-    }, [showAddSubscriptionModal]);
-
-    const closeAddSubscriptionsModal = () => {
-        setShowAddSubscriptionModal(false);
-        form.setFieldValue('shows', []);
-        closeModal();
-    };
+        if (resource === 'searchList') {
+            getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
+        }
+        if (resource === 'reminders') {
+            getReminders().then(reminders => setReminders(reminders));
+        }
+    }, [resource]);
 
     const subscribe = (resource: 'searchList' | 'reminders') => {
         if (resource === 'searchList') {
@@ -126,10 +126,32 @@ const ProfilePage = () => {
         setResource(resource);
     };
 
+    const closeAddSubscriptionsModal = () => {
+        setShowAddSubscriptionModal(false);
+        form.setFieldValue('shows', []);
+        closeModal();
+    };
+
     const closeModal = () => {
         setResponseResult(baseResult);
     };
 
+    const setSelectOptions = () => {
+        if (resource === 'searchList' && recordedShows.length > 0) {
+            return recordedShows.map(recordedShow => (
+                { label: recordedShow.show, value: recordedShow.show }
+            ));
+        }
+        else if (resource === 'reminders' && reminders.length > 0) {
+            return reminders.filter(reminder => userDetails.show_subscriptions.includes(reminder.show))
+                .map(reminder => (
+                    { label: reminder.show, value: reminder.show }
+                ));
+        }
+        else {
+            return [];
+        }
+    };
 
     return (
         userDetails ? (
@@ -200,10 +222,7 @@ const ProfilePage = () => {
                     >
                         <Form.Item name="shows" label="Select shows to subscribe to">
                             <Select
-                                options={recordedShows.length > 0
-                                    ? recordedShows.map(show => ({ label: show.show, value: show.show }))
-                                    : []
-                                }
+                                options={setSelectOptions()}
                                 showSearch
                                 mode="multiple"
                             />
