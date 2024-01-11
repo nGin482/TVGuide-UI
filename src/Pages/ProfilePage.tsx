@@ -1,13 +1,14 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router";
-import { Alert, Button, List, Modal } from "antd";
+import { Alert, Button, Form, List, Modal, Select, Space } from "antd";
 
 import { UserContext } from "../contexts/UserContext";
-import { getUser, updateSubscriptions } from "../requests/requests";
-import { User, SubscriptionsPayload } from "../utils";
+import { getUser, updateSubscriptions, getRecordedShows } from "../requests/requests";
+import { RecordedShowModel, User, SubscriptionsPayload } from "../utils";
 import "../styles/ProfilePage.css";
 
 interface ResponseResult {
+    notificationType: 'alert' | 'modal' | 'none'
     submitted: boolean
     result: boolean
     message: string
@@ -16,10 +17,20 @@ interface ResponseResult {
 const ProfilePage = () => {
     const { user } = useParams<{user: string}>();
     const { currentUser, setUser } = useContext(UserContext);
+    const [ form ] = Form.useForm();
+    const baseResult: ResponseResult = {
+        notificationType: 'none',
+        submitted: false,
+        result: false,
+        message: ''
+    };
 
     const [userDetails, setUserDetails] = useState<User>(null);
     const [userNotExists, setUserNotExists] = useState(false);
-    const [responseResult, setResponseResult] = useState<ResponseResult>({ submitted: false, result: false, message: '' });
+    const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(false);
+    const [resource, setResource] = useState('');
+    const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
+    const [responseResult, setResponseResult] = useState<ResponseResult>(baseResult);
 
     const viewingOwnProfile = user === currentUser.username;
 
@@ -36,14 +47,35 @@ const ProfilePage = () => {
         }
     }, [user]);
 
+    useEffect(() => {
+        getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
+    }, [showAddSubscriptionModal]);
+
+    const closeAddSubscriptionsModal = () => {
+        setShowAddSubscriptionModal(false);
+        form.setFieldValue('shows', []);
+        closeModal();
+    };
+
+    const subscribe = (resource: 'searchList' | 'reminders') => {
+        if (resource === 'searchList') {
+            const updatedSearchList = userDetails.show_subscriptions.concat(form.getFieldValue('shows'));
+            updateSubscriptionsHandle({ show_subscriptions: updatedSearchList }, 'subscribe');
+        }
+        else {
+            const updatedReminders = userDetails.reminder_subscriptions.concat(form.getFieldValue('shows'));
+            updateSubscriptionsHandle({ reminder_subscriptions: updatedReminders }, 'subscribe');
+        }
+    };
+
     const unsubscribe = (resource: 'searchList' | 'reminders', show: string) => {
         if (resource === 'searchList') {
             const updatedSearchList = userDetails.show_subscriptions.filter(searchItem => searchItem !== show);
-            updateSubscriptionsHandle({ show_subscriptions: updatedSearchList });
+            updateSubscriptionsHandle({ show_subscriptions: updatedSearchList }, 'unsubscribe');
         }
         else {
             const updatedReminders = userDetails.reminder_subscriptions.filter(reminder => reminder !== show);
-            updateSubscriptionsHandle({ reminder_subscriptions: updatedReminders });
+            updateSubscriptionsHandle({ reminder_subscriptions: updatedReminders }, 'unsubscribe');
         }
     };
 
@@ -59,13 +91,14 @@ const ProfilePage = () => {
                 reminder_subscriptions: []
             };
         }
-        updateSubscriptionsHandle(subscriptions);
+        updateSubscriptionsHandle(subscriptions, 'unsubscribe');
     };
 
-    const updateSubscriptionsHandle = async (subscriptions: SubscriptionsPayload) => {
+    const updateSubscriptionsHandle = async (subscriptions: SubscriptionsPayload, action: 'subscribe' | 'unsubscribe') => {
         const response = await updateSubscriptions(user, subscriptions, currentUser.token);
         if (response.result === 'success') {
             setResponseResult({
+                notificationType: action === 'unsubscribe' ? 'modal' : 'alert',
                 submitted: true,
                 result: true,
                 message: response.payload.message
@@ -80,6 +113,7 @@ const ProfilePage = () => {
                 ? 'You have been signed out. Please sign in again to unsubscribe'
                 : response.message;
             setResponseResult({
+                notificationType: action === 'unsubscribe' ? 'modal' : 'alert',
                 submitted: true,
                 result: false,
                 message: message
@@ -87,12 +121,13 @@ const ProfilePage = () => {
         }
     };
 
+    const openAddSubscriptionModal = (resource: 'searchList' | 'reminders') => {
+        setShowAddSubscriptionModal(true);
+        setResource(resource);
+    };
+
     const closeModal = () => {
-        setResponseResult({
-            submitted: false,
-            result: false,
-            message: ''
-        });
+        setResponseResult(baseResult);
     };
 
 
@@ -116,7 +151,10 @@ const ProfilePage = () => {
                         header={<strong>Your Show Subscriptions</strong>}
                         className="subscription-list"
                         footer={viewingOwnProfile && (
-                            <Button onClick={() => resetAllSubscriptions('searchList')}>Unsubscribe from all</Button>
+                            <Space>
+                                <Button onClick={() => openAddSubscriptionModal('searchList')}>Subscribe to a Show</Button>
+                                <Button onClick={() => resetAllSubscriptions('searchList')}>Unsubscribe from all</Button>
+                            </Space>
                         )}
                     />
                     <List
@@ -134,11 +172,14 @@ const ProfilePage = () => {
                         header={<strong>Your Reminder Subscriptions</strong>}
                         className="subscription-list"
                         footer={viewingOwnProfile && (
-                            <Button onClick={() => resetAllSubscriptions('reminders')}>Unsubscribe from all</Button>
+                            <Space>
+                                <Button onClick={() => openAddSubscriptionModal('reminders')}>Subscribe to a Reminder</Button>
+                                <Button onClick={() => resetAllSubscriptions('reminders')}>Unsubscribe from all</Button>
+                            </Space>
                         )}
                     />
                     <Modal
-                        open={responseResult.submitted}
+                        open={responseResult.notificationType === 'modal' && responseResult.submitted}
                         onOk={closeModal}
                         closeIcon={false}
                         cancelButtonProps={{style: { display: 'none' } }}
@@ -146,6 +187,32 @@ const ProfilePage = () => {
                         <Alert type={responseResult.result ? "success" : "error"} message={responseResult.message} />
                     </Modal>
                 </div>
+                <Modal
+                    open={showAddSubscriptionModal}
+                    okText={responseResult.submitted && responseResult.result ? 'Close' : 'Submit'}
+                    onOk={() => !responseResult.submitted ? subscribe('searchList') : closeAddSubscriptionsModal()}
+                    onCancel={closeAddSubscriptionsModal}
+                    closeIcon={false}
+                >
+                    <Form
+                        form={form}
+                        name="add_show_subscription"
+                    >
+                        <Form.Item name="shows" label="Select shows to subscribe to">
+                            <Select
+                                options={recordedShows.length > 0
+                                    ? recordedShows.map(show => ({ label: show.show, value: show.show }))
+                                    : []
+                                }
+                                showSearch
+                                mode="multiple"
+                            />
+                        </Form.Item>
+                    </Form>
+                    {responseResult.notificationType === 'alert' && responseResult.submitted && (
+                        <Alert type={responseResult.result ? 'success' : 'error'} message={responseResult.message} />
+                    )}
+                </Modal>
             </>
         )
         : userNotExists ? (
