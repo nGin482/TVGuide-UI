@@ -61,6 +61,10 @@ const NavigationMenu = () => {
                             key: 'profile-page'
                         },
                         {
+                            label: <NavLink to={`/profile/${currentUser.username}/settings`}>Settings</NavLink>,
+                            key: 'profile-settings-page'
+                        },
+                        {
                             label: <NavLink to="/" onClick={logout}>Logout</NavLink>,
                             key: 'logout'
                         }
