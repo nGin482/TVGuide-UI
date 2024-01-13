@@ -35,7 +35,7 @@ const ProfilePage = () => {
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [responseResult, setResponseResult] = useState<ResponseResult>(baseResult);
 
-    const viewingOwnProfile = user === currentUser.username;
+    const viewingOwnProfile = user && currentUser && user === currentUser.username;
 
     useEffect(() => {
         if (user !== 'undefined') {
@@ -160,7 +160,7 @@ const ProfilePage = () => {
         userDetails ? (
             <>
                 <h1>{userDetails.username}</h1>
-                {userTVGuide && <TVGuide guide={userTVGuide} user={userDetails} />}
+                {viewingOwnProfile && userTVGuide && <TVGuide guide={userTVGuide} user={userDetails} />}
                 <div id="subscription-list-container">
                     <List
                         bordered
@@ -174,7 +174,7 @@ const ProfilePage = () => {
                                 <span>{item}</span>
                             </List.Item>
                         )}
-                        header={<strong>Your Show Subscriptions</strong>}
+                        header={<strong>{viewingOwnProfile ? 'Your' : `${user}'s`} Show Subscriptions</strong>}
                         className="subscription-list"
                         footer={viewingOwnProfile && (
                             <Space>
@@ -195,7 +195,7 @@ const ProfilePage = () => {
                                 <span>{item}</span>
                             </List.Item>
                         )}
-                        header={<strong>Your Reminder Subscriptions</strong>}
+                        header={<strong>{viewingOwnProfile ? 'Your' : `${user}'s`} Reminder Subscriptions</strong>}
                         className="subscription-list"
                         footer={viewingOwnProfile && (
                             <Space>
