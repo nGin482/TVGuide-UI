@@ -191,6 +191,31 @@ const registerNewUser = async (user: NewUserDetails) => {
         return result;
     }
 };
+const changePassword = async (username: string, newPassword: string, token: string) => {
+    try {
+        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.post(
+            `${baseURL}/user/${username}/change_password`,
+            { password: newPassword },
+            headers(token)
+        );
+        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
+
+    }
+    catch(error) {
+        const response: AxiosResponse<ErrorResponse> = error.response;
+        const message = error?.response
+            ? response.data.message
+            : 'Unable to communicate with the server. Please try again later';
+        const result: FailedResponse = {
+            result: 'error',
+            status: response?.status || 0,
+            statusText: response?.statusText || '',
+            message,
+            msg: response?.data.msg
+        };
+        return result;
+    }
+};
 const updateSubscriptions = async (username: string, subscriptions: SubscriptionsPayload, token: string) => {
     try {
         const response: AxiosResponse<UserResponses<User>> = await axios.put(`${baseURL}/user/${username}/subscriptions`, subscriptions, headers(token));
@@ -249,6 +274,7 @@ export {
     deleteReminder,
     getUser,
     registerNewUser,
+    changePassword,
     updateSubscriptions,
     login
 };
