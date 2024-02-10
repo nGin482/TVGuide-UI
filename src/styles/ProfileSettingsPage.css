@@ -1,0 +1,20 @@
+#change-details {
+    width: 55%;
+    margin-left: 140px;
+    border: solid 3px #00b96b;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+#admin-access-request-section {
+    text-align: left;
+    margin-left: 140px;
+}
+
+#delete-account-section {
+    text-align: left;
+}
+
+#delete-account-section .ant-btn, #delete-account-section p {
+    margin-left: 140px;
+}

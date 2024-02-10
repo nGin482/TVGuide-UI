@@ -54,25 +54,28 @@ interface SearchItem {
 };
 
 interface User {
-    user: string
-    searchList: string[]
-    reminders: string[]
+    username: string
+    show_subscriptions: string[]
+    reminder_subscriptions: string[]
+    role: string
+};
+
+interface CurrentUser extends User {
     token: string
-    role: string,
 };
 
 interface UserContextModel {
-    user: User
-    setUser: React.Dispatch<React.SetStateAction<User>>
-};
-
-interface ResponseData {
-    result: 'success'
-    message: string
+    currentUser: CurrentUser
+    setUser: React.Dispatch<React.SetStateAction<CurrentUser>>
 };
 
 interface BaseResponse {
     message: string
+};
+
+interface SuccessResponse<Type> {
+    result: 'success'
+    payload: Type
 };
 
 interface AddReminderResponse extends BaseResponse {
@@ -80,16 +83,38 @@ interface AddReminderResponse extends BaseResponse {
     reminders: Reminder[]
 };
 
-interface LoginResponse {
-    result: 'success'
-    message: User
+interface SearchItemResponses {
+    message: string
+    searchList: SearchItem[]
 };
 
-interface ErrorResponse extends BaseResponse {
+interface ErrorResponse {
+    message: string
+    msg?: 'Token has expired'
+};
+
+interface FailedResponse extends BaseResponse {
     result: 'error'
     status: number
     statusText: string
-    msg: string
+    msg?: string
+};
+
+interface NewUserDetails {
+    username: string
+    password: string
+    show_subscriptions: string[]
+    reminder_subscriptions: string[]
+};
+
+interface SubscriptionsPayload {
+    show_subscriptions?: string[],
+    reminder_subscriptions?: string[]
+};
+
+interface UserResponses<Type> {
+    message: string
+    user: Type
 };
 
 export type {
@@ -98,10 +123,15 @@ export type {
     RecordedShowModel,
     Reminder,
     SearchItem,
-    ResponseData,
-    ErrorResponse,
-    LoginResponse,
     User,
     UserContextModel,
-    AddReminderResponse
+    CurrentUser,
+    AddReminderResponse,
+    SubscriptionsPayload,
+    SuccessResponse,
+    FailedResponse,
+    ErrorResponse,
+    UserResponses,
+    SearchItemResponses,
+    NewUserDetails
 };

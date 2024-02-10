@@ -18,7 +18,7 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
     const [result, setResult] = useState('');
     
     const [form] = Form.useForm();
-    const { user } = useContext(UserContext);
+    const { currentUser } = useContext(UserContext);
 
     useEffect(() => {
         getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
@@ -28,18 +28,18 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
         form.validateFields().then(async () => {
             const newReminder: Reminder = form.getFieldsValue();
             console.log(newReminder)
-            const response = await addReminder(newReminder, user.token);
-            if (response.payload.result === 'success') {
+            const response = await addReminder(newReminder, currentUser.token);
+            if (response.result === 'success') {
                 setCreateReminderStatus(true);
                 setResult(response.payload.message);
             }
             else {
                 setCreateReminderStatus(false);
-                if (response.payload?.msg === 'Token has expired') {
+                if (response?.msg === 'Token has expired') {
                     setResult('You have been signed out. Please sign in again to create a new reminder');
                 }
                 else {
-                    setResult(response.payload.message || response.payload.msg);
+                    setResult(response.message || response.msg);
                 }
             }
         })

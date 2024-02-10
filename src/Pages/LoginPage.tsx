@@ -1,14 +1,11 @@
-import { useState, useEffect } from "react";
-import { Button, Typography } from "antd";
+import { useState } from "react";
+import { Button } from "antd";
 
 import Login from "../components/Login/Login";
 import RegisterUser from "../components/Registration/RegisterUser";
 
 const LoginPage = () => {
     const [activity, setActivity] = useState('login');
-
-    const { Text } = Typography;
-
 
     return (
         <>

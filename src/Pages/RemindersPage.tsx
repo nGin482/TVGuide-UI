@@ -18,7 +18,7 @@ const RemindersPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [error, setError] = useState('');
 
-    const { user } = useContext(UserContext);
+    const { currentUser } = useContext(UserContext);
     
     useEffect(() => {
         getReminders().then(data => {
@@ -34,10 +34,10 @@ const RemindersPage = () => {
     };
 
     const deleteReminderHandle = async (reminder: string) => {
-        const response = await deleteReminder(reminder, user.token);
+        const response = await deleteReminder(reminder, currentUser.token);
         setShowModal(true);
         if (response.result === 'error') {
-            setError(response.payload?.message || response.payload?.msg);
+            setError(response.message || response.msg);
         }
     };
 
@@ -55,7 +55,7 @@ const RemindersPage = () => {
                             key={`reminder-${reminder.show}`}
                             title={reminder.show}
                             className="reminder-card"
-                            actions={user ? [
+                            actions={currentUser ? [
                                 <EditOutlined onClick={() => toggleEditReminderModal(reminder)} />,
                                 <DeleteOutlined onClick={() => deleteReminderHandle(reminder.show)} />
                             ] : []}
