@@ -1,13 +1,18 @@
 import { useState, useEffect, FormEvent } from 'react';
-import { Form, Input, Select } from 'antd';
+import { Button, Form, Input, Select } from 'antd';
 
 import { getRecordedShows, getReminders, registerNewUser } from '../../requests/requests';
 import { RecordedShowModel, Reminder } from '../../utils';
 import './RegisterUser.css';
 
+interface RegisterPayload {
+    username: string
+    password: string
+    show_subscriptions: string[]
+    reminder_subscriptions: string[]
+};
+
 const RegisterUser = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
     const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
     const [reminders, setReminders] = useState<Reminder[]>([]);
 
@@ -16,36 +21,41 @@ const RegisterUser = () => {
         getReminders().then(reminders => setReminders(reminders));
     }, []);
     
-    const registerUser = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const user = {
-            username,
-            password,
-            show_subscriptions: [],
-            reminder_subscriptions: []
-        };
-        const response = await registerNewUser(user);
-
+    const registerUser = async (values: RegisterPayload) => {
+        if (!values.reminder_subscriptions) {
+            values.reminder_subscriptions = [];
+        }
+        if (!values.show_subscriptions) {
+            values.show_subscriptions = [];
+        }
+        console.log(values)
+        
+        const response = await registerNewUser(values);
         if (response.result === 'success') {
             console.log(response)
             console.log(response.payload.message)
+        }
+        else {
+            console.log(response)
         }
     };
     
     return (
         <div id='register-user'>
             <Form
-            
+                onFinish={registerUser}
             >
                 <Form.Item
                     label="Username"
                     name="username"
+                    required
                 >
                     <Input />
                 </Form.Item>
                 <Form.Item
                     label="Password"
                     name="password"
+                    required
                 >
                     <Input.Password />
                 </Form.Item>
@@ -57,6 +67,7 @@ const RegisterUser = () => {
                         options={recordedShows ? recordedShows.map(show => ({ label: show.show, value: show.show })) : []}
                         showSearch
                         notFoundContent='No Shows available'
+                        mode="multiple"
                     />
                 </Form.Item>
                 <Form.Item
@@ -67,8 +78,10 @@ const RegisterUser = () => {
                         options={reminders ? reminders.map(reminder => ({ label: reminder.show, value: reminder.show })) : []}
                         showSearch
                         notFoundContent='No Reminders available'
+                        mode="multiple"
                     />
                 </Form.Item>
+                <Button type="primary" htmlType="submit">Register</Button>
             </Form>
         </div>
     );
