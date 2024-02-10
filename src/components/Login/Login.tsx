@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { Alert, Button, Form, Input } from "antd";
 import type { FormRule } from "antd";
 import Cookies from "universal-cookie";
@@ -24,6 +25,7 @@ const Login = () => {
     const [loginError, setLoginError] = useState('');
     const { setUser } = useContext(UserContext);
     const [ form ] = Form.useForm();
+    const history = useHistory<string>();
 
     const cookies = new Cookies(null, { path: '/' });
 
@@ -31,12 +33,12 @@ const Login = () => {
         console.log(values)
         const response = await login(values);
         if (response.result === 'success') {
-            console.log(response.message)
-            cookies.set('user', JSON.stringify(response.message));
-            setUser(response.message);
+            cookies.set('user', JSON.stringify(response.payload.user));
+            setUser(response.payload.user);
+            history.push(`/profile/${values.username}`);
         }
         else {
-            setLoginError(response.payload.message);
+            setLoginError(response.message);
         }
     };
 
@@ -45,13 +47,6 @@ const Login = () => {
         console.log(values)
         setLoginError('Please enter values for all fields');
     };
-
-    const logout = () => {
-        cookies.remove('user');
-        setUser(null);
-        window.location.reload();
-    };
-
 
     return (
         <>
@@ -69,8 +64,6 @@ const Login = () => {
                 </Form.Item>
                 {loginError && <Alert type="error" message="Login Failed!" description={loginError} />}
             </Form>
-            <br />
-            <Button onClick={logout}>Logout</Button>
         </>
     );
 };

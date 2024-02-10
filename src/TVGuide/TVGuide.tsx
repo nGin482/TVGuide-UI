@@ -1,24 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table, TableColumnsType, Tag } from "antd";
 
-import { Guide, GuideShow } from "../utils";
+import { Guide, GuideShow, User } from "../utils";
 import './TVGuide.css';
 
-const TVGuide = ({ guide }: { guide: Guide }) => {
+const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
     const [service, setService] = useState('All');
     const [guideShows, setGuideShows] = useState([...guide.FTA, ...guide.BBC]);
 
     useEffect(() => {
         if (service === 'FTA') {
-            setGuideShows([...guide.FTA]);
+            let guideShows = [...guide.FTA];
+            if (user) {
+                guideShows = guideShows.filter(show => user.show_subscriptions.includes(show.title));
+            }
+            setGuideShows(guideShows);
         }
         else if (service === 'BBC') {
-            setGuideShows(guide.BBC);
+            let guideShows = [...guide.BBC];
+            if (user) {
+                guideShows = guideShows.filter(show => user.show_subscriptions.includes(show.title));
+            }
+            setGuideShows(guideShows);
         }
         else {
-            setGuideShows([...guide.FTA, ...guide.BBC].sort((a, b) => sortServices(a, b)));
+            let guideShows = [...guide.FTA, ...guide.BBC];
+            if (user) {
+                guideShows = guideShows.filter(show => user.show_subscriptions.includes(show.title));
+            }
+            guideShows.sort((a, b) => sortServices(a, b));
+            setGuideShows(guideShows);
         }
-    }, [service, guide]);
+    }, [service, guide, user]);
 
     const sortServices = (a: GuideShow, b: GuideShow) => {
         if (a.time > b.time) {

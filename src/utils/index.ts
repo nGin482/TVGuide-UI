@@ -1,5 +1,4 @@
-import { GuideShow, ErrorResponse, LoginResponse } from "./types";
-import { AxiosResponse } from "axios";
+import { GuideShow } from "./types";
 
 export const showStringForEvent = (show_event) => {
     if (show_event.show) {
@@ -40,62 +39,6 @@ export const showStringForGuide = (show: GuideShow) => {
     return showString;
 };
 
-export function buildResponse<Type>(response: AxiosResponse<Type>) {
-    if (response.status === 200) {
-        return {
-            payload: {
-                result: 'success',
-                ...response.data
-            }
-        };
-    }
-    const badResponse = {
-        status: response.status,
-        statusText: response.statusText,
-        payload: {
-            result: 'error',
-            ...response.data
-        }
-    };
-    return badResponse;
-};
-
-export const buildResponseValue = (response: AxiosResponse<any>) => {
-    if (response.status === 200) {
-        const successResponse = {
-            result: 'success',
-            payload: response.data
-        };
-        return successResponse;
-    }
-    const badResponse: ErrorResponse = {
-        result: 'error',
-        status: response.status,
-        statusText: response.statusText,
-        message: response.data.message,
-        msg: response.data.msg
-    };
-    return badResponse;
-};
-
-export const buildLoginResponseValue = (response: AxiosResponse<any>) => {
-    if (response.status === 200) {
-        const successResponse: LoginResponse = {
-            result: 'success',
-            message: response.data
-        }
-        return successResponse;
-    }
-    const badResponse: ErrorResponse = {
-        result: 'error',
-        status: response.status,
-        statusText: response.statusText,
-        message: response.data.message,
-        msg: response.data.msg
-    };
-    return badResponse;
-};
-
 
 export type {
     Guide,
@@ -105,6 +48,13 @@ export type {
     SearchItem,
     User,
     UserContextModel,
+    AddReminderResponse,
+    CurrentUser,
+    SubscriptionsPayload,
     ErrorResponse,
-    AddReminderResponse
+    FailedResponse,
+    SuccessResponse,
+    UserResponses,
+    SearchItemResponses,
+    NewUserDetails
 } from "./types";

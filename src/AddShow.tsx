@@ -8,18 +8,18 @@ import './AddShow.css';
 const AddShow = () => {
     const [showToAdd, setShowToAdd] = useState('');
     const [result, setResult] = useState('');
-    const { user } = useContext(UserContext);
+    const { currentUser } = useContext(UserContext);
 
     const addShowSubmission = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const response = await addShowToList(showToAdd, user.token);
+        const response = await addShowToList(showToAdd, currentUser.token);
         if (response.result === 'success') {
-            setResult(response.message);
+            setResult(response.payload.message);
             setShowToAdd('');
             setResult('');
         }
         else {
-            setResult(response.payload.message);
+            setResult(response.message);
         }
     };
 
