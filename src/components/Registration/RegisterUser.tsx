@@ -1,5 +1,5 @@
-import { useState, useEffect, FormEvent } from 'react';
-import { Button, Form, Input, Select } from 'antd';
+import { useState, useEffect } from 'react';
+import { Alert, Button, Form, Input, Select } from 'antd';
 
 import { getRecordedShows, getReminders, registerNewUser } from '../../requests/requests';
 import { RecordedShowModel, Reminder } from '../../utils';
@@ -12,9 +12,20 @@ interface RegisterPayload {
     reminder_subscriptions: string[]
 };
 
+interface RegisterResult {
+    submitted: boolean
+    success: boolean
+    message: string
+};
+
 const RegisterUser = () => {
     const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
     const [reminders, setReminders] = useState<Reminder[]>([]);
+    const [registerResult, setRegisterResult] = useState<RegisterResult>({
+        submitted: false,
+        success: false,
+        message: ''
+    });
 
     useEffect(() => {
         getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
@@ -32,11 +43,18 @@ const RegisterUser = () => {
         
         const response = await registerNewUser(values);
         if (response.result === 'success') {
-            console.log(response)
-            console.log(response.payload.message)
+            setRegisterResult({
+                submitted: true,
+                success: true,
+                message: response.payload.message
+            });
         }
         else {
-            console.log(response)
+            setRegisterResult({
+                submitted: true,
+                success: false,
+                message: response?.message
+            });
         }
     };
     
@@ -83,6 +101,9 @@ const RegisterUser = () => {
                 </Form.Item>
                 <Button type="primary" htmlType="submit">Register</Button>
             </Form>
+            {registerResult.submitted && (
+                <Alert type={registerResult.success ? "success" : "error"} message={registerResult.message} />
+            )}
         </div>
     );
 };
