@@ -1,29 +1,7 @@
 #register-user {
-    border: solid 5px green;
+    border: solid 5px #00b96b;
     border-radius: 12px;
-    margin: 0 auto;
-    width: 50%;
+    margin: 4% auto 0;
+    width: 60%;
     padding: 2%;
-}
-
-.register-label {
-    font-weight: bold;
-    color: green;
-}
-
-.register-input {
-    display: block;
-    margin: 0 auto;
-    padding: 1%;
-    width: 50%;
-}
-
-#submit-new-user {
-    background-color: green;
-    color: white;
-    width: 20%;
-    padding: 2%;
-    border-radius: 10px;
-    margin-top: 2%;
-    cursor: pointer;
 }

@@ -39,7 +39,6 @@ const RegisterUser = () => {
         if (!values.show_subscriptions) {
             values.show_subscriptions = [];
         }
-        console.log(values)
         
         const response = await registerNewUser(values);
         if (response.result === 'success') {
@@ -59,9 +58,10 @@ const RegisterUser = () => {
     };
     
     return (
-        <div id='register-user'>
+        <>
             <Form
                 onFinish={registerUser}
+                id="register-user"
             >
                 <Form.Item
                     label="Username"
@@ -104,7 +104,7 @@ const RegisterUser = () => {
             {registerResult.submitted && (
                 <Alert type={registerResult.success ? "success" : "error"} message={registerResult.message} />
             )}
-        </div>
+        </>
     );
 };
 
