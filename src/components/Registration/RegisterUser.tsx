@@ -2,15 +2,8 @@ import { useState, useEffect } from 'react';
 import { Alert, Button, Form, Input, Select } from 'antd';
 
 import { getRecordedShows, getReminders, registerNewUser } from '../../requests/requests';
-import { RecordedShowModel, Reminder } from '../../utils';
+import { NewUserDetails, RecordedShowModel, Reminder } from '../../utils';
 import './RegisterUser.css';
-
-interface RegisterPayload {
-    username: string
-    password: string
-    show_subscriptions: string[]
-    reminder_subscriptions: string[]
-};
 
 interface RegisterResult {
     submitted: boolean
@@ -32,7 +25,7 @@ const RegisterUser = () => {
         getReminders().then(reminders => setReminders(reminders));
     }, []);
     
-    const registerUser = async (values: RegisterPayload) => {
+    const registerUser = async (values: NewUserDetails) => {
         if (!values.reminder_subscriptions) {
             values.reminder_subscriptions = [];
         }
