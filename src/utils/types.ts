@@ -122,7 +122,12 @@ interface UserResponses<Type> {
 interface RecordedShowsContextModel {
     recordedShows: RecordedShowModel[]
     setRecordedShows: React.Dispatch<React.SetStateAction<RecordedShowModel[]>>
-}
+};
+
+interface RemindersContextModel {
+    reminders: Reminder[]
+    setReminders: React.Dispatch<React.SetStateAction<Reminder[]>>
+};
 
 export type {
     Guide,
@@ -141,5 +146,6 @@ export type {
     UserResponses,
     SearchItemResponses,
     NewUserDetails,
-    RecordedShowsContextModel
+    RecordedShowsContextModel,
+    RemindersContextModel
 };
