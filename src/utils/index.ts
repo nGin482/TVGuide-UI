@@ -56,5 +56,6 @@ export type {
     SuccessResponse,
     UserResponses,
     SearchItemResponses,
-    NewUserDetails
+    NewUserDetails,
+    RecordedShowsContextModel
 } from "./types";

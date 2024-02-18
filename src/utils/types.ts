@@ -117,6 +117,13 @@ interface UserResponses<Type> {
     user: Type
 };
 
+
+// Contexts
+interface RecordedShowsContextModel {
+    recordedShows: RecordedShowModel[]
+    setRecordedShows: React.Dispatch<React.SetStateAction<RecordedShowModel[]>>
+}
+
 export type {
     Guide,
     GuideShow,
@@ -133,5 +140,6 @@ export type {
     ErrorResponse,
     UserResponses,
     SearchItemResponses,
-    NewUserDetails
+    NewUserDetails,
+    RecordedShowsContextModel
 };
