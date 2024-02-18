@@ -58,5 +58,6 @@ export type {
     SearchItemResponses,
     NewUserDetails,
     RecordedShowsContextModel,
-    RemindersContextModel
+    RemindersContextModel,
+    SearchListContextModel
 } from "./types";

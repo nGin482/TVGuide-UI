@@ -129,6 +129,11 @@ interface RemindersContextModel {
     setReminders: React.Dispatch<React.SetStateAction<Reminder[]>>
 };
 
+interface SearchListContextModel {
+    searchList: SearchItem[]
+    setSearchList: React.Dispatch<React.SetStateAction<SearchItem[]>>
+};
+
 export type {
     Guide,
     GuideShow,
@@ -147,5 +152,6 @@ export type {
     SearchItemResponses,
     NewUserDetails,
     RecordedShowsContextModel,
-    RemindersContextModel
+    RemindersContextModel,
+    SearchListContextModel
 };
