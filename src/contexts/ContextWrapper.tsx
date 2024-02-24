@@ -5,7 +5,7 @@ import { RecordedShowsContext, RemindersContext, SearchListContext, UserContext,
 import { CurrentUser, RecordedShowModel, Reminder, SearchItem } from "../utils";
 import { getRecordedShows, getReminders, getShowList } from "../requests/requests";
 
-const ContextWrapper = ({ children }: { children: JSX.Element }) => {
+const ContextWrapper = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
     const cookies = new Cookies('user', { path: '/' });
     const userCookie = cookies.get('user')
     
@@ -33,10 +33,6 @@ const ContextWrapper = ({ children }: { children: JSX.Element }) => {
         }
         return `Unable to communicate with server to retrieve ${resource}`;
     };
-
-    useEffect(() => {
-        console.log(errors)
-    }, [errors])
 
     return (
         <RecordedShowsContext.Provider value={{ recordedShows, setRecordedShows }}>

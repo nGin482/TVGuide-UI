@@ -1,6 +1,8 @@
+import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 
 import NavigationHandle from './Navigation/NavigationHandle';
+import BasePage from './Pages/BasePage';
 import { ContextWrapper } from "./contexts";
 
 const theme = {
@@ -14,9 +16,10 @@ function App() {
     return (
         <ConfigProvider theme={theme}>
             <ContextWrapper>
-                <div className="App">
+                <BrowserRouter>
+                    <BasePage />
                     <NavigationHandle/>
-                </div>
+                </BrowserRouter>
             </ContextWrapper>
         </ConfigProvider>
     );
