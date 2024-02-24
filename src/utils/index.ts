@@ -59,5 +59,6 @@ export type {
     NewUserDetails,
     RecordedShowsContextModel,
     RemindersContextModel,
-    SearchListContextModel
+    SearchListContextModel,
+    ErrorsContextModel
 } from "./types";

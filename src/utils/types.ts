@@ -134,6 +134,11 @@ interface SearchListContextModel {
     setSearchList: React.Dispatch<React.SetStateAction<SearchItem[]>>
 };
 
+interface ErrorsContextModel {
+    errors: string[]
+    setErrors: React.Dispatch<React.SetStateAction<string[]>>
+};
+
 export type {
     Guide,
     GuideShow,
@@ -153,5 +158,6 @@ export type {
     NewUserDetails,
     RecordedShowsContextModel,
     RemindersContextModel,
-    SearchListContextModel
+    SearchListContextModel,
+    ErrorsContextModel
 };
