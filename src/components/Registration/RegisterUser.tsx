@@ -1,50 +1,103 @@
-import React, { useState, FormEvent } from 'react';
+import { useState, useEffect } from 'react';
+import { Alert, Button, Form, Input, Select } from 'antd';
 
-import { registerNewUser } from '../../requests/requests';
+import { getRecordedShows, getReminders, registerNewUser } from '../../requests/requests';
+import { NewUserDetails, RecordedShowModel, Reminder } from '../../utils';
 import './RegisterUser.css';
 
-const RegisterUser = () => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    
-    const registerUser = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const user = {
-            username,
-            password,
-            show_subscriptions: [],
-            reminder_subscriptions: []
-        };
-        console.log(user)
-        const response = await registerNewUser(user);
+interface RegisterResult {
+    submitted: boolean
+    success: boolean
+    message: string
+};
 
-        if (response.result === 'success') {
-            console.log(response.payload.message)
+const RegisterUser = () => {
+    const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
+    const [reminders, setReminders] = useState<Reminder[]>([]);
+    const [registerResult, setRegisterResult] = useState<RegisterResult>({
+        submitted: false,
+        success: false,
+        message: ''
+    });
+
+    useEffect(() => {
+        getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
+        getReminders().then(reminders => setReminders(reminders));
+    }, []);
+    
+    const registerUser = async (values: NewUserDetails) => {
+        if (!values.reminder_subscriptions) {
+            values.reminder_subscriptions = [];
         }
-        setUsername('');
-        setPassword('');
+        if (!values.show_subscriptions) {
+            values.show_subscriptions = [];
+        }
+        
+        const response = await registerNewUser(values);
+        if (response.result === 'success') {
+            setRegisterResult({
+                submitted: true,
+                success: true,
+                message: response.payload.message
+            });
+        }
+        else {
+            setRegisterResult({
+                submitted: true,
+                success: false,
+                message: response?.message
+            });
+        }
     };
     
     return (
-        <div id='register-user'>
-            <form id='register-form' onSubmit={registerUser}>
-                <label htmlFor="username" id="username-label" className="register-label">Username</label>
-                <input
-                    type="text"
-                    id="register-username" className="register-input" name="username"
-                    value={username}
-                    onChange={event => setUsername(event.target.value)}
-                />
-                <label htmlFor="password" id="password-label" className="register-label">Password</label>
-                <input
-                    type="password"
-                    id="register-password" className="register-input" name="password"
-                    value={password}
-                    onChange={event => setPassword(event.target.value)}
-                />
-                <input type="submit" value="Register" id="submit-new-user"/>
-            </form>
-        </div>
+        <>
+            <Form
+                onFinish={registerUser}
+                id="register-user"
+            >
+                <Form.Item
+                    label="Username"
+                    name="username"
+                    required
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    required
+                >
+                    <Input.Password />
+                </Form.Item>
+                <Form.Item
+                    label="Show Subscriptions"
+                    name="show_subscriptions"
+                >
+                    <Select
+                        options={recordedShows ? recordedShows.map(show => ({ label: show.show, value: show.show })) : []}
+                        showSearch
+                        notFoundContent='No Shows available'
+                        mode="multiple"
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Reminder Subscriptions"
+                    name="reminder_subscriptions"
+                    >
+                    <Select
+                        options={reminders ? reminders.map(reminder => ({ label: reminder.show, value: reminder.show })) : []}
+                        showSearch
+                        notFoundContent='No Reminders available'
+                        mode="multiple"
+                    />
+                </Form.Item>
+                <Button type="primary" htmlType="submit">Register</Button>
+            </Form>
+            {registerResult.submitted && (
+                <Alert type={registerResult.success ? "success" : "error"} message={registerResult.message} />
+            )}
+        </>
     );
 };
 
