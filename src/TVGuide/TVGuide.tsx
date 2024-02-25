@@ -101,6 +101,7 @@ const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
                         hideOnSinglePage: true
                     }
                 }
+                rowKey={record => `${record.channel}-${record.time}`}
             />
         </div>
     );
