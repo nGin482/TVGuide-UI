@@ -57,7 +57,7 @@ interface User {
     username: string
     show_subscriptions: string[]
     reminder_subscriptions: string[]
-    role: string
+    role: 'Standard' | 'Admin'
 };
 
 interface CurrentUser extends User {
