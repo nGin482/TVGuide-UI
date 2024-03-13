@@ -46,9 +46,7 @@ interface SearchItem {
     show: string
     image: string
     conditions: {
-        minimum: number
-        maximum: number
-        exclude_titles: string[]
+        [condition: string]: any
     }
     searchActive: boolean
 };

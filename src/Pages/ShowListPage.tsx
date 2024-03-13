@@ -11,7 +11,7 @@ import '../ShowList.css';
 const ShowListPage = () => {
     const [showList, setShowList] = useState<SearchItem[]>([]);
     const [result, setResult] = useState('');
-    const { currentUser } = useContext(UserContext)
+    const { currentUser } = useContext(UserContext);
 
     useEffect(() => {
         getShowList().then(showList => setShowList(showList));
@@ -34,7 +34,11 @@ const ShowListPage = () => {
                         title={show.show}
                         actions={[
                             <Tooltip title={`Delete ${show.show}`}>
-                                <DeleteOutlined onClick={() => deleteShowFromList(show.show)} style={{color: "#f00"}} />
+                                <DeleteOutlined
+                                    id={`delete-${show.show}`}
+                                    onClick={() => deleteShowFromList(show.show)}
+                                    style={{color: "#f00"}}
+                                />
                             </Tooltip>
                         ]}
                         cover={<Image alt={show.show} src={show.image} height={400} preview={false} />}
@@ -42,7 +46,7 @@ const ShowListPage = () => {
                     >
                     </Card>
                 ))}
-                <blockquote>{result}</blockquote>
+                <blockquote id="delete-result">{result}</blockquote>
             </div>
             <AddShow/>
         </div>
