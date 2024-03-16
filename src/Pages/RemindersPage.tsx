@@ -56,8 +56,14 @@ const RemindersPage = () => {
                             title={reminder.show}
                             className="reminder-card"
                             actions={currentUser ? [
-                                <EditOutlined onClick={() => toggleEditReminderModal(reminder)} />,
-                                <DeleteOutlined onClick={() => deleteReminderHandle(reminder.show)} />
+                                <EditOutlined
+                                    id={`edit-${reminder.show}`}
+                                    onClick={() => toggleEditReminderModal(reminder)}
+                                />,
+                                <DeleteOutlined
+                                    id={`delete-${reminder.show}`}
+                                    onClick={() => deleteReminderHandle(reminder.show)}
+                                />
                             ] : []}
                         >
                             <blockquote>Reminder time: {reminder.reminder_alert}</blockquote>

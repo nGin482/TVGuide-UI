@@ -37,9 +37,9 @@ interface Episode {
 
 interface Reminder {
     show: string
-    reminder_alert: string
+    reminder_alert: 'Before' | 'During' | 'After'
     warning_time: number
-    occasions: string
+    occasions: 'All' | 'Latest'
 };
 
 interface SearchItem {
