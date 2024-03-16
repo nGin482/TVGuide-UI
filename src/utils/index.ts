@@ -43,6 +43,7 @@ export const showStringForGuide = (show: GuideShow) => {
 export type {
     Guide,
     RecordedShowModel,
+    Episode,
     Reminder,
     GuideShow,
     SearchItem,

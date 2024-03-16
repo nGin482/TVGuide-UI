@@ -29,7 +29,7 @@ interface Season {
 interface Episode {
     episode_number: number
     episode_title: string
-    alternative_titles: string
+    alternative_titles: string[]
     summary: string
     channels: string[]
     air_dates: string[]
@@ -119,6 +119,7 @@ export type {
     Guide,
     GuideShow,
     RecordedShowModel,
+    Episode,
     Reminder,
     SearchItem,
     User,
