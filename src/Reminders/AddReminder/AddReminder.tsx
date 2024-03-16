@@ -51,7 +51,7 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
     const convertWarningTimeToNumber = (event: FormEvent<HTMLInputElement>) => {
         let warningTimeString = event.currentTarget.value;
         const lastCharIndex = warningTimeString.length - 1;
-        if (warningTimeString.charCodeAt(lastCharIndex) < 48 || warningTimeString.charCodeAt(lastCharIndex) > 58) {
+        if (warningTimeString.charCodeAt(lastCharIndex) < 48 || warningTimeString.charCodeAt(lastCharIndex) > 57) {
             warningTimeString = warningTimeString.replace(warningTimeString.slice(-1), '');
         }
         if (warningTimeString === '') {
