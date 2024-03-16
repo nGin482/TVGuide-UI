@@ -19,7 +19,7 @@ const NavigationHandle = () => {
             <NavigationMenu/>
             <Switch>
                 <Route path='/show-list'><ShowListPage /></Route>
-                <Route exact path='/shows'><RecordedShowsPage /></Route>
+                <Route path='/shows' exact><RecordedShowsPage /></Route>
                 <Route path='/shows/:show'><RecordedShow /></Route>
                 <Route path='/reminders'><RemindersPage /></Route>
                 <Route path="/profile/:user" exact><ProfilePage /></Route>
