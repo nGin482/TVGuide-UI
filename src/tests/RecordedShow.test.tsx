@@ -1,4 +1,4 @@
-import { act, configure, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Switch, Route } from "react-router-dom";
 import axios from "axios";
 
@@ -66,8 +66,6 @@ describe('Viewing the details about a Recorded Show', () => {
             </Switch>
         </MemoryRouter>
     );
-
-    configure({ testIdAttribute: 'id' });
 
     test('renders table with doctor who data', async () => {
         await act(async () => {

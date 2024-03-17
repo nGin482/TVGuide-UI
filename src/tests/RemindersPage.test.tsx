@@ -1,4 +1,4 @@
-import { act, configure, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import axios from "axios";
 
 import RemindersPage from "../Pages/RemindersPage";
@@ -39,8 +39,6 @@ describe('Reminders Page', () => {
         token: 'testToken',
         role: 'Standard'
     };
-
-    configure({ testIdAttribute: 'id' });
 
     const RemindersComp = () => (
         <UserContext.Provider value={{ currentUser: user, setUser: () => null }}>

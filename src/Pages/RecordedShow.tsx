@@ -86,13 +86,13 @@ const RecordedShow = () => {
                         className="change-season"
                         onClick={() => changeSeasons(season.season_number)}
                         key={season.season_number}
-                        id={`season-${season.season_number}`}
+                        data-testid={`season-${season.season_number}`}
                     >
                         Season {season.season_number}
                     </Button>
                 )}
                 <Table
-                    id={`${recordedShow.show}-table`}
+                    data-testid={`${recordedShow.show}-table`}
                     key={`${recordedShow.show}-table`}
                     rowKey={record => record.episode_title}
                     columns={episodeColumns}

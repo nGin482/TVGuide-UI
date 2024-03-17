@@ -1,4 +1,4 @@
-import { act, configure, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import axios from "axios";
 
 import ShowListPage from "../Pages/ShowListPage";
@@ -49,8 +49,6 @@ describe('test SearchList page', () => {
             <ShowListPage />
         </UserContext.Provider>
     );
-
-    configure({ testIdAttribute: 'id' })
 
     
     test('renders all search items', async () => {

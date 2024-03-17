@@ -35,7 +35,7 @@ const ShowListPage = () => {
                         actions={[
                             <Tooltip title={`Delete ${show.show}`}>
                                 <DeleteOutlined
-                                    id={`delete-${show.show}`}
+                                    data-testid={`delete-${show.show}`}
                                     onClick={() => deleteShowFromList(show.show)}
                                     style={{color: "#f00"}}
                                 />
@@ -46,7 +46,7 @@ const ShowListPage = () => {
                     >
                     </Card>
                 ))}
-                <blockquote id="delete-result">{result}</blockquote>
+                <blockquote data-testid="delete-result">{result}</blockquote>
             </div>
             <AddShow/>
         </div>

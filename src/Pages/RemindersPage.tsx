@@ -46,7 +46,15 @@ const RemindersPage = () => {
             <h1>Reminders</h1>
             {reminders.length > 0 && showAddReminder
                 ? <AddReminder showAddReminder setShowAddReminder={setShowAddReminder}/>
-                : <Button id="add-reminder-button" onClick={() => setShowAddReminder(true)}>Add Reminder</Button>
+                : (
+                    <Button
+                        id="add-reminder-button"
+                        data-testid="add-reminder-button"
+                        onClick={() => setShowAddReminder(true)}
+                    >
+                        Add Reminder
+                    </Button>
+                )
             }
             <div id="reminders">
                 {reminders.length > 0 && (
@@ -58,10 +66,12 @@ const RemindersPage = () => {
                             actions={currentUser ? [
                                 <EditOutlined
                                     id={`edit-${reminder.show}`}
+                                    data-testid={`edit-${reminder.show}`}
                                     onClick={() => toggleEditReminderModal(reminder)}
                                 />,
                                 <DeleteOutlined
                                     id={`delete-${reminder.show}`}
+                                    data-testid={`delete-${reminder.show}`}
                                     onClick={() => deleteReminderHandle(reminder.show)}
                                 />
                             ] : []}
