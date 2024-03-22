@@ -22,7 +22,7 @@ interface RecordedShowModel {
 };
 
 interface Season {
-    season_number: number
+    season_number: string
     episodes: Episode[]
 };
 
