@@ -117,6 +117,28 @@ interface UserResponses<Type> {
     user: Type
 };
 
+
+// Contexts
+interface RecordedShowsContextModel {
+    recordedShows: RecordedShowModel[]
+    setRecordedShows: React.Dispatch<React.SetStateAction<RecordedShowModel[]>>
+};
+
+interface RemindersContextModel {
+    reminders: Reminder[]
+    setReminders: React.Dispatch<React.SetStateAction<Reminder[]>>
+};
+
+interface SearchListContextModel {
+    searchList: SearchItem[]
+    setSearchList: React.Dispatch<React.SetStateAction<SearchItem[]>>
+};
+
+interface ErrorsContextModel {
+    errors: string[]
+    setErrors: React.Dispatch<React.SetStateAction<string[]>>
+};
+
 export type {
     Guide,
     GuideShow,
@@ -133,5 +155,9 @@ export type {
     ErrorResponse,
     UserResponses,
     SearchItemResponses,
-    NewUserDetails
+    NewUserDetails,
+    RecordedShowsContextModel,
+    RemindersContextModel,
+    SearchListContextModel,
+    ErrorsContextModel
 };

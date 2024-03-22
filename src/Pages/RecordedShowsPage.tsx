@@ -1,18 +1,13 @@
-import React, { useState, useEffect } from "react";
+import { useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { Card } from "antd";
 
-import { RecordedShowModel } from "../utils/types";
-import { getRecordedShows } from "../requests/requests";
+import { RecordedShowsContext } from "../contexts";
 import '../RecordedShows.css';
 
 const RecordedShowsPage = () => {
-    const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
     const history = useHistory();
-
-    useEffect(() => {
-        getRecordedShows().then(data => setRecordedShows(data));
-    }, []);
+    const { recordedShows } = useContext(RecordedShowsContext);
 
     return (
         <div id="recorded-shows-page">
