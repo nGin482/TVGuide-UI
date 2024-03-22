@@ -1,32 +1,24 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { Alert, Button, Card, Modal } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import AddReminder from '../Reminders/AddReminder/AddReminder';
 import EditReminder from '../Reminders/EditReminder';
-import { UserContext } from '../contexts/UserContext';
-import { getReminders, deleteReminder } from '../requests/requests';
+import { RemindersContext, UserContext } from '../contexts';
+import { deleteReminder } from '../requests/requests';
 import { Reminder } from '../utils';
 import './RemindersPage.css';
 
 
 const RemindersPage = () => {
-    const [reminders, setReminders] = useState<Reminder[]>([]);
     const [showAddReminder, setShowAddReminder] = useState(false);
     const [editingReminder, setEditingReminder] = useState(false);
     const [reminderChosen, setReminderChosen] = useState<Reminder>(null);
     const [showModal, setShowModal] = useState(false);
     const [error, setError] = useState('');
 
+    const { reminders } = useContext(RemindersContext);
     const { currentUser } = useContext(UserContext);
-    
-    useEffect(() => {
-        getReminders().then(data => {
-            setReminders(data);
-        }).catch(err => {
-            setError(err.response?.data.message);
-        });
-    }, []);
 
     const toggleEditReminderModal = (reminder: Reminder) => {
         setEditingReminder(true);
@@ -44,7 +36,7 @@ const RemindersPage = () => {
     return (
         <div id="reminders-page">
             <h1>Reminders</h1>
-            {reminders.length > 0 && showAddReminder
+            {showAddReminder
                 ? <AddReminder showAddReminder setShowAddReminder={setShowAddReminder}/>
                 : (
                     <Button

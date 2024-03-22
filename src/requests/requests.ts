@@ -177,7 +177,7 @@ const getUser = async (username: string) => {
 };
 const registerNewUser = async (user: NewUserDetails) => {
     try {
-        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.put(`${baseURL}/auth/register`, user);
+        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.post(`${baseURL}/auth/register`, user);
         return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
     }
     catch(error) {

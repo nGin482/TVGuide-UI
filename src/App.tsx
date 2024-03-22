@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
-import Cookies from "universal-cookie";
 
 import NavigationHandle from './Navigation/NavigationHandle';
-import { UserContext } from "./contexts/UserContext";
-import { CurrentUser } from "./utils";
+import BasePage from './Pages/BasePage';
+import { ContextWrapper } from "./contexts";
 
 const theme = {
     token: {
@@ -13,18 +12,15 @@ const theme = {
 };
 
 function App() {
-    const cookies = new Cookies('user', { path: '/' });
-    const userCookie = cookies.get('user')
 
-    const [currentUser, setUser] = useState<CurrentUser>(userCookie);
-    
     return (
         <ConfigProvider theme={theme}>
-            <UserContext.Provider value={{ currentUser, setUser }}>
-                <div className="App">
+            <ContextWrapper>
+                <BrowserRouter>
+                    <BasePage />
                     <NavigationHandle/>
-                </div>
-            </UserContext.Provider>
+                </BrowserRouter>
+            </ContextWrapper>
         </ConfigProvider>
     );
 };
