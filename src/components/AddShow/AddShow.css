@@ -38,3 +38,30 @@
 .ant-carousel .slick-prev::before { 
     content: '';
 }
+
+.ant-carousel {
+    width: 900px;
+    margin: 0 auto;
+}
+
+.result {
+    text-align: center;
+    width: 400px;
+    cursor: pointer;
+    width: 99% !important;
+}
+
+.result:hover {
+    border-radius: 10px;
+    background-color: #00b96b80;
+}
+
+.result-selected {
+    text-align: center;
+    border: solid 5px #00b96b;
+    border-right-width: 4px;
+    border-radius: 10px;
+    background-color: #00b96b80;
+    width: 99% !important;
+    margin: 0 auto;
+}

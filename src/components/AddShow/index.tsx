@@ -1,4 +1,4 @@
-import { CSSProperties, Dispatch, JSX, SetStateAction, useState, useContext, FC } from "react";
+import { CSSProperties, Dispatch, JSX, SetStateAction, useEffect, useState, useContext } from "react";
 import { Carousel, Input, Form, Modal } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
@@ -26,6 +26,7 @@ const AddShow = (props: AddShowProps) => {
     const [state, setState] = useState('initial');
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState<ShowSearchResult[]>([]);
+    const [showSelected, setShowSelected] = useState<ShowSearchResult>(null);
     const [result, setResult] = useState('');
     const [showToAdd, setShowToAdd] = useState('');
     const { currentUser } = useContext(UserContext);
@@ -52,12 +53,12 @@ const AddShow = (props: AddShowProps) => {
     const contentStyle: CSSProperties = {
         height: '160px',
         background: "#364d79",
-        textAlign: 'center'
+        textAlign: 'center',
+        width: '99%'
     };
 
     const ArrowComponent = (props: SlickArrowProps) => {
         const { className, style, onClick, children } = props;
-        
         return (
             <div
                 className={className}
@@ -93,6 +94,7 @@ const AddShow = (props: AddShowProps) => {
             onOk={state === 'initial' ? () => searchNewShowHandle() : () => setOpenModal(false)}
             okText={state === 'initial' ? 'Search' : 'Close'}
             onCancel={() => setOpenModal(false)}
+            width={searchResults.length > 0 ? 1000 : 520}
         >
             <Form>
                 <Form.Item
@@ -103,7 +105,12 @@ const AddShow = (props: AddShowProps) => {
                 </Form.Item>
                 <Carousel dots={false} arrows nextArrow={<NextArrow />} prevArrow={<PrevArrow />}>
                     {searchResults.map(result => (
-                        <div key={result.show.id} style={contentStyle}>
+                        <div
+                            key={result.show.id}
+                            onClick={() => setShowSelected(result)}
+                            style={contentStyle}
+                            className={showSelected && showSelected.show.id === result.show.id ? 'result-selected' : 'result'}
+                        >
                             <h2>{result.show.name}</h2>
                             <img src={result.show.image.medium} style={{ margin: '0 auto'}} />
                             <p dangerouslySetInnerHTML={{ __html: result.show.summary }} />
