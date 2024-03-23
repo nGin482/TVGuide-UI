@@ -2,7 +2,7 @@ import { useState, useContext } from "react";
 import { Button, Card, Image, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
-import AddShow from "../AddShow";
+import AddShow from "../components/AddShow";
 import { SearchListContext, UserContext } from "../contexts";
 import { removeShowFromList } from "../requests/requests";
 import '../ShowList.css';

@@ -2,10 +2,10 @@ import { CSSProperties, Dispatch, JSX, SetStateAction, useState, useContext, FC 
 import { Carousel, Input, Form, Modal } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
-import { UserContext } from "./contexts/UserContext";
-import { addShowToList } from "./requests/requests";
-import { searchNewShow } from "./requests/tvmaze";
-import { ShowSearchResult } from "./utils/types/index";
+import { UserContext } from "../../contexts/UserContext";
+import { addShowToList } from "../../requests/requests";
+import { searchNewShow } from "../../requests/tvmaze";
+import { ShowSearchResult } from "../../utils/types/index";
 import './AddShow.css';
 
 interface AddShowProps {
