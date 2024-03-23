@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { Card, Image, Tooltip } from "antd";
+import { Button, Card, Image, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
 import AddShow from "../AddShow";
@@ -9,6 +9,7 @@ import '../ShowList.css';
 
 const ShowListPage = () => {
     const [result, setResult] = useState('');
+    const [addingNewShow, setAddingNewShow] = useState(false);
     const { searchList } = useContext(SearchListContext);
     const { currentUser } = useContext(UserContext);
 
@@ -43,7 +44,10 @@ const ShowListPage = () => {
                 ))}
                 <blockquote data-testid="delete-result">{result}</blockquote>
             </div>
-            <AddShow/>
+            {addingNewShow ? 
+                <AddShow openModal={addingNewShow} setOpenModal={setAddingNewShow} /> :
+                <Button onClick={() => setAddingNewShow(true)}>Add Show</Button>
+            }
         </div>
     );
 };
