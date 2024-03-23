@@ -22,14 +22,14 @@ interface RecordedShowModel {
 };
 
 interface Season {
-    season_number: number
+    season_number: string
     episodes: Episode[]
 };
 
 interface Episode {
     episode_number: number
     episode_title: string
-    alternative_titles: string
+    alternative_titles: string[]
     summary: string
     channels: string[]
     air_dates: string[]
@@ -37,18 +37,16 @@ interface Episode {
 
 interface Reminder {
     show: string
-    reminder_alert: string
+    reminder_alert: 'Before' | 'During' | 'After'
     warning_time: number
-    occasions: string
+    occasions: 'All' | 'Latest'
 };
 
 interface SearchItem {
     show: string
     image: string
     conditions: {
-        minimum: number
-        maximum: number
-        exclude_titles: string[]
+        [condition: string]: any
     }
     searchActive: boolean
 };
@@ -57,7 +55,7 @@ interface User {
     username: string
     show_subscriptions: string[]
     reminder_subscriptions: string[]
-    role: string
+    role: 'Standard' | 'Admin'
 };
 
 interface CurrentUser extends User {
@@ -143,6 +141,7 @@ export type {
     Guide,
     GuideShow,
     RecordedShowModel,
+    Episode,
     Reminder,
     SearchItem,
     User,

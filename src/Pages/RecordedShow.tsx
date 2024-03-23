@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
 
 import { getRecordedShow } from '../requests/requests';
-import { RecordedShowModel } from '../utils';
+import { Episode, RecordedShowModel } from '../utils';
 import BackButton from '../BackButton';
 import '../RecordedShowData.css';
 import '../EpisodeData.css';
@@ -33,7 +33,7 @@ const RecordedShow = () => {
         }
     };
 
-    const episodeColumns: TableColumnsType = [
+    const episodeColumns: TableColumnsType<Episode> = [
         {
             key: 'episode_number',
             dataIndex: 'episode_number',
@@ -86,13 +86,15 @@ const RecordedShow = () => {
                         className="change-season"
                         onClick={() => changeSeasons(season.season_number)}
                         key={season.season_number}
+                        data-testid={`season-${season.season_number}`}
                     >
                         Season {season.season_number}
                     </Button>
                 )}
                 <Table
+                    data-testid={`${recordedShow.show}-table`}
                     key={`${recordedShow.show}-table`}
-                    rowKey="id"
+                    rowKey={record => record.episode_title}
                     columns={episodeColumns}
                     dataSource={recordedShow.seasons[season-1].episodes}
                     className='season-table'

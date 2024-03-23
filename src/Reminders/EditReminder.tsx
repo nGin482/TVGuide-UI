@@ -55,15 +55,17 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
     };
 
     const updateReminder = (field: string, value: string) => {
-        if (field === 'reminder_alert') {
-            setReminderChosen(prevState => ({ ...prevState, reminder_alert: value }));
-        }
-        else if (field === 'warning_time') {
+        if (field === 'warning_time') {
             setReminderChosen(prevState => ({ ...prevState, warning_time: Number(value) }));
         }
-        else {
-            setReminderChosen(prevState => ({ ...prevState, occasions: value }));
-        }
+    };
+    
+    const updateAlert = (value: 'Before' | 'During' | 'After') => {
+        setReminderChosen(prevState => ({ ...prevState, reminder_alert: value }));
+    };
+
+    const updateOccasion = (value: 'All' | 'Latest') => {
+        setReminderChosen(prevState => ({ ...prevState, occasions: value }));
     };
 
     return (
@@ -123,7 +125,7 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
                             { label: 'Every episode', value: 'All' },
                             { label: 'Only the latest seasons', value: 'Latest' }
                         ]}
-                        onChange={(value) => updateReminder('occasions', value)}
+                        onChange={(value) => updateOccasion(value)}
                     />
                 </Form.Item>
                 {result && <Alert type={editSuccess ? "success" : "error"} message={result} />}
