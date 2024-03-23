@@ -31,3 +31,10 @@
     padding: 0.5%;
     width: 10%;
 }
+
+.ant-carousel .slick-next::before {
+    content: '';
+}
+.ant-carousel .slick-prev::before { 
+    content: '';
+}
