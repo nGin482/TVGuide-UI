@@ -27,15 +27,18 @@ const ShowListPage = () => {
                     <Card
                         key={show.show}
                         title={show.show}
-                        actions={[
-                            <Tooltip title={`Delete ${show.show}`}>
-                                <DeleteOutlined
-                                    data-testid={`delete-${show.show}`}
-                                    onClick={() => deleteShowFromList(show.show)}
-                                    style={{color: "#f00"}}
-                                />
-                            </Tooltip>
-                        ]}
+                        actions={currentUser ? 
+                            [
+                                <Tooltip title={`Delete ${show.show}`}>
+                                    <DeleteOutlined
+                                        data-testid={`delete-${show.show}`}
+                                        onClick={() => deleteShowFromList(show.show)}
+                                        style={{color: "#f00"}}
+                                    />
+                                </Tooltip>
+                            ] :
+                            []
+                        }
                         cover={<Image alt={show.show} src={show.image} height={400} preview={false} />}
                         className="search-card"
                     >
