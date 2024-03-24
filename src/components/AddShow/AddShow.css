@@ -40,28 +40,26 @@
 }
 
 .ant-carousel {
-    width: 900px;
+    width: 800px;
     margin: 0 auto;
 }
 
 .result {
     text-align: center;
-    width: 400px;
     cursor: pointer;
-    width: 99% !important;
+    border-radius: 10px;
 }
 
 .result:hover {
-    border-radius: 10px;
     background-color: #00b96b80;
 }
 
 .result-selected {
-    text-align: center;
     border: solid 5px #00b96b;
     border-right-width: 4px;
-    border-radius: 10px;
     background-color: #00b96b80;
-    width: 99% !important;
+    width: 97% !important;
     margin: 0 auto;
+    cursor: default;
+    box-shadow: 7px 10px #88888880;
 }

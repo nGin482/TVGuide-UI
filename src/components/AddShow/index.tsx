@@ -1,6 +1,7 @@
 import { CSSProperties, Dispatch, JSX, SetStateAction, useEffect, useState, useContext } from "react";
 import { Carousel, Input, Form, Modal } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import classNames from "classnames";
 
 import { UserContext } from "../../contexts/UserContext";
 import { addShowToList } from "../../requests/requests";
@@ -52,9 +53,8 @@ const AddShow = (props: AddShowProps) => {
 
     const contentStyle: CSSProperties = {
         height: '160px',
-        background: "#364d79",
         textAlign: 'center',
-        width: '99%'
+        width: '50%'
     };
 
     const ArrowComponent = (props: SlickArrowProps) => {
@@ -87,6 +87,10 @@ const AddShow = (props: AddShowProps) => {
         </ArrowComponent>
     );
 
+    useEffect(() => {
+        console.log(showSelected)
+    }, [showSelected])
+
     return (
         <Modal
             open={openModal}
@@ -109,7 +113,10 @@ const AddShow = (props: AddShowProps) => {
                             key={result.show.id}
                             onClick={() => setShowSelected(result)}
                             style={contentStyle}
-                            className={showSelected && showSelected.show.id === result.show.id ? 'result-selected' : 'result'}
+                            className={classNames(
+                                'result',
+                                {'result-selected': showSelected && showSelected.show.id === result.show.id}
+                            )}
                         >
                             <h2>{result.show.name}</h2>
                             <img src={result.show.image.medium} style={{ margin: '0 auto'}} />
