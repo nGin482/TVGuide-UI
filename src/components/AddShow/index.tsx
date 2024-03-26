@@ -1,5 +1,5 @@
 import { CSSProperties, Dispatch, JSX, SetStateAction, useEffect, useState, useContext } from "react";
-import { Carousel, Input, Form, Modal } from "antd";
+import { Carousel, Checkbox, Input, Form, Modal, Select } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 
@@ -32,6 +32,11 @@ const AddShow = (props: AddShowProps) => {
     const [showToAdd, setShowToAdd] = useState('');
     const { currentUser } = useContext(UserContext);
 
+    useEffect(() => {
+        setState('initial');
+        setSearchResults([]);
+    }, [searchTerm]);
+
     const addShowSubmission = async () => {
         const response = await addShowToList(showToAdd, currentUser.token);
         if (response.result === 'success') {
@@ -49,6 +54,36 @@ const AddShow = (props: AddShowProps) => {
         const searchShowResults = await searchNewShow(searchTerm);
         console.log(searchShowResults)
         setSearchResults(searchShowResults);
+        setState('searching');
+    };
+
+    const handleConfirm = () => {
+        if (state === 'initial') {
+            searchNewShowHandle();
+        }
+        else if (state === 'searching') {
+            setState('selected');
+        }
+        else if (state === 'selected') {
+            // addShowSubmission();
+            console.log(showSelected)
+        }
+        else {
+            setOpenModal(false);
+        }
+    };
+
+    const okText = () => {
+        switch (state) {
+            case 'initial':
+                return 'Search';
+            case 'searching':
+                return 'Next';
+            case 'selected':
+                return 'Add Show';
+            default:
+                return 'Close';
+        }
     };
 
     const contentStyle: CSSProperties = {
@@ -95,8 +130,9 @@ const AddShow = (props: AddShowProps) => {
         <Modal
             open={openModal}
             title="Add a new Search Item"
-            onOk={state === 'initial' ? () => searchNewShowHandle() : () => setOpenModal(false)}
-            okText={state === 'initial' ? 'Search' : 'Close'}
+            onOk={handleConfirm}
+            okText={okText()}
+            okButtonProps={{ disabled: state === 'searching' && !showSelected }}
             onCancel={() => setOpenModal(false)}
             width={searchResults.length > 0 ? 1000 : 520}
         >
@@ -107,25 +143,32 @@ const AddShow = (props: AddShowProps) => {
                 >
                     <Input onChange={event => setSearchTerm(event.currentTarget.value)} />
                 </Form.Item>
-                <Carousel dots={false} arrows nextArrow={<NextArrow />} prevArrow={<PrevArrow />}>
-                    {searchResults.map(result => (
-                        <div
-                            key={result.show.id}
-                            onClick={() => setShowSelected(result)}
-                            style={contentStyle}
-                            className={classNames(
-                                'result',
-                                {'result-selected': showSelected && showSelected.show.id === result.show.id}
-                            )}
-                        >
-                            <h2>{result.show.name}</h2>
-                            <img src={result.show.image.medium} style={{ margin: '0 auto'}} />
-                            <p dangerouslySetInnerHTML={{ __html: result.show.summary }} />
-                            <blockquote>Premiered: {result.show.premiered}</blockquote>
-                            <blockquote>Status: {result.show.status}</blockquote>
-                        </div>
-                    ))}
-                </Carousel>
+                {state === 'searching' ? (
+                    <Carousel dots={false} arrows nextArrow={<NextArrow />} prevArrow={<PrevArrow />}>
+                        {searchResults.map(result => (
+                            <div
+                                key={result.show.id}
+                                onClick={() => setShowSelected(result)}
+                                style={contentStyle}
+                                className={classNames(
+                                    'result',
+                                    {'result-selected': showSelected && showSelected.show.id === result.show.id}
+                                )}
+                            >
+                                <h2>{result.show.name}</h2>
+                                <img src={result.show.image.medium} style={{ margin: '0 auto'}} />
+                                <p dangerouslySetInnerHTML={{ __html: result.show.summary }} />
+                                <blockquote>Premiered: {result.show.premiered}</blockquote>
+                                <blockquote>Status: {result.show.status}</blockquote>
+                            </div>
+                        ))}
+                    </Carousel>
+                ) : state === 'selected' && (
+                    <>
+                        <Checkbox value="exact_search">Exact Title Search</Checkbox>
+                        <Select />
+                    </>
+                )}
             </Form>
         </Modal>
     );
