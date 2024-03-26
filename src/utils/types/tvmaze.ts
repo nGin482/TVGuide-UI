@@ -1,7 +1,7 @@
 export interface ShowSearchResult {
     score: number
     show: {
-        id: string
+        id: number
         name: string
         image: {
             medium: string
@@ -11,4 +11,11 @@ export interface ShowSearchResult {
         premiered: string
         summary: string
     }
+};
+
+export interface SeasonSearch {
+    id: number
+    url: string
+    number: number
+    episodeOrder: number
 };

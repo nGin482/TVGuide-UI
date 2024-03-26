@@ -1,1 +1,1 @@
-export type { ShowSearchResult } from "./tvmaze";
+export type { ShowSearchResult, SeasonSearch } from "./tvmaze";

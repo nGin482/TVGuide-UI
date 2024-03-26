@@ -1,6 +1,7 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
-import { ShowSearchResult } from "../utils/types/index";
+import { validateTVMazeSeasons } from "../utils";
+import { ShowSearchResult, SeasonSearch } from "../utils/types/index";
 
 const baseURL = 'https://api.tvmaze.com';
 
@@ -10,4 +11,10 @@ export const searchNewShow = async (searchTerm: string) => {
         return response.data;
     }
 };
-
+export const getShowSeasons = async (tvMazeId: number) => {
+    const response = await axios.get<SeasonSearch[]>(`${baseURL}/shows/${tvMazeId}/seasons`);
+    if (response.status === 200) {
+        const seasons = validateTVMazeSeasons(response.data);
+        return seasons;
+    }
+}

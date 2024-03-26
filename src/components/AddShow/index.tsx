@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 import { UserContext } from "../../contexts/UserContext";
 import { addShowToList } from "../../requests/requests";
-import { searchNewShow } from "../../requests/tvmaze";
+import { searchNewShow, getShowSeasons } from "../../requests/tvmaze";
 import { ShowSearchResult } from "../../utils/types/index";
 import './AddShow.css';
 
@@ -36,6 +36,15 @@ const AddShow = (props: AddShowProps) => {
         setState('initial');
         setSearchResults([]);
     }, [searchTerm]);
+
+    useEffect(() => {
+        console.log(showSelected)
+        if (showSelected) {
+            getShowSeasons(showSelected.show.id).then(seasons => {
+                console.log(seasons)
+            });
+        }
+    }, [showSelected])
 
     const addShowSubmission = async () => {
         const response = await addShowToList(showToAdd, currentUser.token);
@@ -121,10 +130,6 @@ const AddShow = (props: AddShowProps) => {
             <RightOutlined />
         </ArrowComponent>
     );
-
-    useEffect(() => {
-        console.log(showSelected)
-    }, [showSelected])
 
     return (
         <Modal
