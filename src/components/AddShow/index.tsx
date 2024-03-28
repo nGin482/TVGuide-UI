@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { UserContext } from "../../contexts/UserContext";
 import { addShowToList } from "../../requests/requests";
 import { searchNewShow, getShowSeasons } from "../../requests/tvmaze";
-import { ShowSearchResult } from "../../utils/types/index";
+import { SeasonSearch, ShowSearchResult } from "../../utils/types/index";
 import './AddShow.css';
 
 interface AddShowProps {
@@ -21,16 +21,24 @@ interface SlickArrowProps {
     style: {}
     children: JSX.Element
 };
+interface FormValues {
+    searchTerm: string
+    exact_search: boolean
+    seasons: string[]
+};
 
 const AddShow = (props: AddShowProps) => {
     const { openModal, setOpenModal } = props;
+    
     const [state, setState] = useState('initial');
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState<ShowSearchResult[]>([]);
     const [showSelected, setShowSelected] = useState<ShowSearchResult>(null);
+    const [showSeasons, setShowSeasons] = useState<SeasonSearch[]>([]);
     const [result, setResult] = useState('');
-    const [showToAdd, setShowToAdd] = useState('');
     const { currentUser } = useContext(UserContext);
+
+    const [form] = Form.useForm<FormValues>();
 
     useEffect(() => {
         setState('initial');
@@ -42,15 +50,15 @@ const AddShow = (props: AddShowProps) => {
         if (showSelected) {
             getShowSeasons(showSelected.show.id).then(seasons => {
                 console.log(seasons)
+                setShowSeasons(seasons);
             });
         }
     }, [showSelected])
 
     const addShowSubmission = async () => {
-        const response = await addShowToList(showToAdd, currentUser.token);
+        const response = await addShowToList(showSelected.show.name, showSelected.show.image.original, showSelected.show.id, { } , currentUser.token);
         if (response.result === 'success') {
             setResult(response.payload.message);
-            setShowToAdd('');
             setResult('');
         }
         else {
@@ -74,8 +82,10 @@ const AddShow = (props: AddShowProps) => {
             setState('selected');
         }
         else if (state === 'selected') {
-            // addShowSubmission();
+            addShowSubmission();
+            setOpenModal(false); // or show alert?
             console.log(showSelected)
+            console.log(form.getFieldsValue())
         }
         else {
             setOpenModal(false);
@@ -141,7 +151,9 @@ const AddShow = (props: AddShowProps) => {
             onCancel={() => setOpenModal(false)}
             width={searchResults.length > 0 ? 1000 : 520}
         >
-            <Form>
+            <Form
+                form={form}
+            >
                 <Form.Item
                     name="searchTerm"
                     label="New Show"
@@ -170,8 +182,19 @@ const AddShow = (props: AddShowProps) => {
                     </Carousel>
                 ) : state === 'selected' && (
                     <>
-                        <Checkbox value="exact_search">Exact Title Search</Checkbox>
-                        <Select />
+                        <Form.Item
+                            name="exact_search"
+                        >
+                            <Checkbox name="exact_search">Exact Title Search</Checkbox>
+                        </Form.Item>
+                        <Form.Item
+                            name="seasons"
+                            label="Select the seasons desired"
+                        >
+                            <Select
+                                options={showSeasons.map(season => ({ label: `Season ${season.number}`, value: season.number }))}
+                            />
+                        </Form.Item>
                     </>
                 )}
             </Form>

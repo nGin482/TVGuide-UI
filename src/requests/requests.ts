@@ -49,9 +49,13 @@ const getEvents = async () => {
 const getShowList = () => {
     return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<SearchItem[]>) => response.data);
 };
-const addShowToList = async (show: string, token: string) => {
+const addShowToList = async (showName: string, image: string, tvmazeId: number, conditions, token: string) => {
     try {
-        const response: AxiosResponse<SearchItemResponses> = await axios.post(`${baseURL}/show-list`, { show }, headers(token));
+        const response = await axios.post<SearchItemResponses>(
+            `${baseURL}/show-list`,
+            { show: showName, image, tvmaze_id: tvmazeId, conditions },
+            headers(token)
+        );
         return { result: 'success', payload: response.data } as SuccessResponse<SearchItemResponses>;
     }
     catch(error) {
