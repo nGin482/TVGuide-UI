@@ -1,9 +1,9 @@
-import { Dispatch, JSX, SetStateAction, useEffect, useContext, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useContext, useState } from "react";
 import { Carousel, Checkbox, Input, Form, Modal, Select, Tag } from "antd";
-import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 
 import ShowStatusTag from "./ShowStatusTag";
+import { PrevArrow, NextArrow } from "./ArrowComponents";
 import { UserContext } from "../../contexts/UserContext";
 import { addShowToList } from "../../requests/requests";
 import { searchNewShow, getShowSeasons } from "../../requests/tvmaze";
@@ -13,14 +13,6 @@ import './AddShow.scss';
 interface AddShowProps {
     openModal: boolean
     setOpenModal: Dispatch<SetStateAction<boolean>>
-};
-
-interface SlickArrowProps {
-    className: string
-    currentSlide: number
-    onClick: () => {}
-    style: {}
-    children: JSX.Element
 };
 interface FormValues {
     searchTerm: string
@@ -110,36 +102,6 @@ const AddShow = (props: AddShowProps) => {
                 return 'Close';
         }
     };
-
-    const ArrowComponent = (props: SlickArrowProps) => {
-        const { className, style, onClick, children } = props;
-        return (
-            <div
-                className={className}
-                style={{
-                    ...style,
-                    color: 'black',
-                    fontSize: '15px',
-                    lineHeight: '1.5715'
-                }}
-                onClick={onClick}
-            >
-                {children}
-            </div>
-        );
-    };
-
-    const PrevArrow = (props) => (
-        <ArrowComponent {...props}>
-            <LeftOutlined />
-        </ArrowComponent>
-    );
-
-    const NextArrow = (props) => (
-        <ArrowComponent {...props}>
-            <RightOutlined />
-        </ArrowComponent>
-    );
 
     return (
         <Modal
