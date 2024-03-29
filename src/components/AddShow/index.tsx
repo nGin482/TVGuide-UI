@@ -178,8 +178,13 @@ const AddShow = (props: AddShowProps) => {
                                 <div
                                     key={result.show.id}
                                     onClick={() => {
-                                        setShowSelected(result);
-                                        setShowSelectedIndex(index);
+                                        if (showSelected && result.show.id === showSelected.show.id) {
+                                            setShowSelected(null);
+                                        }
+                                        else {
+                                            setShowSelected(result);
+                                            setShowSelectedIndex(index);
+                                        }
                                     }}
                                     style={contentStyle}
                                     className={classNames(
