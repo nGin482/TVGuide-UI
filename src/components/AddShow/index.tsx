@@ -1,8 +1,9 @@
 import { Dispatch, JSX, SetStateAction, useEffect, useContext, useState } from "react";
-import { Carousel, Checkbox, Input, Form, Modal, Select } from "antd";
+import { Carousel, Checkbox, Input, Form, Modal, Select, Tag } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 
+import ShowStatusTag from "./ShowStatusTag";
 import { UserContext } from "../../contexts/UserContext";
 import { addShowToList } from "../../requests/requests";
 import { searchNewShow, getShowSeasons } from "../../requests/tvmaze";
@@ -189,8 +190,8 @@ const AddShow = (props: AddShowProps) => {
                                     <h2>{result.show.name}</h2>
                                     <img src={result.show.image.medium} style={{ margin: '0 auto'}} />
                                     <p dangerouslySetInnerHTML={{ __html: result.show.summary }} />
-                                    <blockquote>Premiered: {result.show.premiered}</blockquote>
-                                    <blockquote>Status: {result.show.status}</blockquote>
+                                    <blockquote>Premiered: <Tag color="processing">{result.show.premiered}</Tag></blockquote>
+                                    <blockquote>Status: <ShowStatusTag status={result.show.status} /></blockquote>
                                 </div>
                             ))}
                         </Carousel>
