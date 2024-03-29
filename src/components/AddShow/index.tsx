@@ -1,4 +1,4 @@
-import { CSSProperties, Dispatch, JSX, SetStateAction, useEffect, useContext, useState } from "react";
+import { Dispatch, JSX, SetStateAction, useEffect, useContext, useState } from "react";
 import { Carousel, Checkbox, Input, Form, Modal, Select } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import classNames from "classnames";
@@ -7,7 +7,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { addShowToList } from "../../requests/requests";
 import { searchNewShow, getShowSeasons } from "../../requests/tvmaze";
 import { SeasonSearch, ShowSearchResult } from "../../utils/types/index";
-import './AddShow.css';
+import './AddShow.scss';
 
 interface AddShowProps {
     openModal: boolean
@@ -110,11 +110,6 @@ const AddShow = (props: AddShowProps) => {
         }
     };
 
-    const contentStyle: CSSProperties = {
-        height: '160px',
-        width: '50%'
-    };
-
     const ArrowComponent = (props: SlickArrowProps) => {
         const { className, style, onClick, children } = props;
         return (
@@ -186,7 +181,6 @@ const AddShow = (props: AddShowProps) => {
                                             setShowSelectedIndex(index);
                                         }
                                     }}
-                                    style={contentStyle}
                                     className={classNames(
                                         'result',
                                         {'result-selected': showSelected && showSelected.show.id === result.show.id}
