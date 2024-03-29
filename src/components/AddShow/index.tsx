@@ -1,4 +1,4 @@
-import { CSSProperties, Dispatch, JSX, SetStateAction, useEffect, useState, useContext } from "react";
+import { CSSProperties, Dispatch, JSX, SetStateAction, useEffect, useContext, useState } from "react";
 import { Carousel, Checkbox, Input, Form, Modal, Select } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import classNames from "classnames";
@@ -34,8 +34,10 @@ const AddShow = (props: AddShowProps) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState<ShowSearchResult[]>([]);
     const [showSelected, setShowSelected] = useState<ShowSearchResult>(null);
+    const [showSelectedIndex, setShowSelectedIndex] = useState<number>(null);
     const [showSeasons, setShowSeasons] = useState<SeasonSearch[]>([]);
     const [result, setResult] = useState('');
+    const [index, setIndex] = useState(0);
     const { currentUser } = useContext(UserContext);
 
     const [form] = Form.useForm<FormValues>();
@@ -53,7 +55,7 @@ const AddShow = (props: AddShowProps) => {
                 setShowSeasons(seasons);
             });
         }
-    }, [showSelected])
+    }, [showSelected]);
 
     const addShowSubmission = async () => {
         const response = await addShowToList(showSelected.show.name, showSelected.show.image.original, showSelected.show.id, { } , currentUser.token);
@@ -72,6 +74,9 @@ const AddShow = (props: AddShowProps) => {
         console.log(searchShowResults)
         setSearchResults(searchShowResults);
         setState('searching');
+        if (searchShowResults.length > 0) {
+            setIndex(1);
+        }
     };
 
     const handleConfirm = () => {
@@ -107,7 +112,6 @@ const AddShow = (props: AddShowProps) => {
 
     const contentStyle: CSSProperties = {
         height: '160px',
-        textAlign: 'center',
         width: '50%'
     };
 
@@ -161,25 +165,37 @@ const AddShow = (props: AddShowProps) => {
                     <Input onChange={event => setSearchTerm(event.currentTarget.value)} />
                 </Form.Item>
                 {state === 'searching' ? (
-                    <Carousel dots={false} arrows nextArrow={<NextArrow />} prevArrow={<PrevArrow />}>
-                        {searchResults.map(result => (
-                            <div
-                                key={result.show.id}
-                                onClick={() => setShowSelected(result)}
-                                style={contentStyle}
-                                className={classNames(
-                                    'result',
-                                    {'result-selected': showSelected && showSelected.show.id === result.show.id}
-                                )}
-                            >
-                                <h2>{result.show.name}</h2>
-                                <img src={result.show.image.medium} style={{ margin: '0 auto'}} />
-                                <p dangerouslySetInnerHTML={{ __html: result.show.summary }} />
-                                <blockquote>Premiered: {result.show.premiered}</blockquote>
-                                <blockquote>Status: {result.show.status}</blockquote>
-                            </div>
-                        ))}
-                    </Carousel>
+                    <>
+                        {searchResults && index && <span>Viewing: {index} of {searchResults.length}</span>}
+                        {showSelected && showSelectedIndex && (
+                            <>
+                                <br/>
+                                <span>Selected {showSelected.show.name} - Item {showSelectedIndex}</span>
+                            </>
+                        )}
+                        <Carousel dots={false} arrows nextArrow={<NextArrow />} prevArrow={<PrevArrow />} afterChange={change => setIndex(change + 1)}>
+                            {searchResults.map(result => (
+                                <div
+                                    key={result.show.id}
+                                    onClick={() => {
+                                        setShowSelected(result);
+                                        setShowSelectedIndex(index);
+                                    }}
+                                    style={contentStyle}
+                                    className={classNames(
+                                        'result',
+                                        {'result-selected': showSelected && showSelected.show.id === result.show.id}
+                                    )}
+                                >
+                                    <h2>{result.show.name}</h2>
+                                    <img src={result.show.image.medium} style={{ margin: '0 auto'}} />
+                                    <p dangerouslySetInnerHTML={{ __html: result.show.summary }} />
+                                    <blockquote>Premiered: {result.show.premiered}</blockquote>
+                                    <blockquote>Status: {result.show.status}</blockquote>
+                                </div>
+                            ))}
+                        </Carousel>
+                    </>
                 ) : state === 'selected' && (
                     <>
                         <Form.Item
