@@ -46,7 +46,7 @@ const ShowListPage = () => {
             </div>
             {addingNewShow ? 
                 <AddShow openModal={addingNewShow} setOpenModal={setAddingNewShow} /> :
-                <Button onClick={() => setAddingNewShow(true)}>Add Show</Button>
+                currentUser && <Button onClick={() => setAddingNewShow(true)}>Add Show</Button>
             }
         </div>
     );
