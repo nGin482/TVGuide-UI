@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useContext, useState } from "react";
-import { Carousel, Checkbox, Input, Form, Modal, Select, Tag } from "antd";
+import { Alert, Carousel, Checkbox, Form, Input, Modal, notification, Select, Tag } from "antd";
 import classNames from "classnames";
 
 import ShowStatusTag from "./ShowStatusTag";
@@ -54,10 +54,13 @@ const AddShow = (props: AddShowProps) => {
         const response = await addShowToList(showSelected.show.name, showSelected.show.image.original, showSelected.show.id, { } , currentUser.token);
         if (response.result === 'success') {
             setResult(response.payload.message);
-            setResult('');
+            setState('success');
+            setOpenModal(false);
+            notification.success({ message: 'Success!', description: response.payload.message, duration: 5 });
         }
         else {
-            setResult(response.message);
+            setResult(response?.message || 'You have been logged out. Please login again to add this show');
+            setState('error');
         }
     };
 
@@ -81,7 +84,6 @@ const AddShow = (props: AddShowProps) => {
         }
         else if (state === 'selected') {
             addShowSubmission();
-            setOpenModal(false); // or show alert?
             console.log(showSelected)
             console.log(form.getFieldsValue())
         }
@@ -175,6 +177,7 @@ const AddShow = (props: AddShowProps) => {
                         </Form.Item>
                     </>
                 )}
+                {result && <Alert type="error" message={result} />}
             </Form>
         </Modal>
     );
