@@ -38,6 +38,10 @@ const AddShow = (props: AddShowProps) => {
     useEffect(() => {
         setState('initial');
         setSearchResults([]);
+        setResult('');
+        setShowSelected(null);
+        setShowSelectedIndex(null);
+        setShowSeasons([]);
     }, [searchTerm]);
 
     useEffect(() => {
