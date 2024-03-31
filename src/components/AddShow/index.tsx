@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useContext, useState } from "react";
 import { Alert, Carousel, Checkbox, Form, Input, Modal, notification, Select, Tag } from "antd";
 import classNames from "classnames";
+import moment from "moment";
 
 import ShowStatusTag from "./ShowStatusTag";
 import { PrevArrow, NextArrow } from "./ArrowComponents";
@@ -158,7 +159,7 @@ const AddShow = (props: AddShowProps) => {
                                     <h2>{result.show.name}</h2>
                                     <img src={result.show.image.medium} style={{ margin: '0 auto'}} />
                                     <p dangerouslySetInnerHTML={{ __html: result.show.summary }} />
-                                    <blockquote>Premiered: <Tag color="processing">{result.show.premiered}</Tag></blockquote>
+                                    <blockquote>Premiered: <Tag color="processing">{moment(result.show.premiered).format('DD MMMM YYYY')}</Tag></blockquote>
                                     <blockquote>Status: <ShowStatusTag status={result.show.status} /></blockquote>
                                 </div>
                             ))}
