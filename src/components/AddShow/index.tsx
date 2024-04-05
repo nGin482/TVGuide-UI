@@ -18,7 +18,7 @@ interface AddShowProps {
 interface FormValues {
     searchTerm: string
     exact_search: boolean
-    seasons: string[]
+    seasons: number[]
 };
 
 const AddShow = (props: AddShowProps) => {
@@ -48,15 +48,19 @@ const AddShow = (props: AddShowProps) => {
     useEffect(() => {
         console.log(showSelected)
         if (showSelected) {
-            getShowSeasons(showSelected.show.id).then(seasons => {
-                console.log(seasons)
-                setShowSeasons(seasons);
-            });
+            getShowSeasons(showSelected.show.id).then(seasons => setShowSeasons(seasons));
         }
     }, [showSelected]);
 
     const addShowSubmission = async () => {
-        const response = await addShowToList(showSelected.show.name, showSelected.show.image.original, showSelected.show.id, { } , currentUser.token);
+        if (!form.getFieldsValue().exact_search) {
+            form.setFieldValue('exact_search', false);
+        }
+        
+        const conditions = form.getFieldsValue();
+        delete conditions.searchTerm;
+        
+        const response = await addShowToList(showSelected, conditions, currentUser.token);
         if (response.result === 'success') {
             setResult(response.payload.message);
             setState('success');
@@ -169,6 +173,7 @@ const AddShow = (props: AddShowProps) => {
                     <>
                         <Form.Item
                             name="exact_search"
+                            valuePropName="checked"
                         >
                             <Checkbox name="exact_search">Exact Title Search</Checkbox>
                         </Form.Item>
