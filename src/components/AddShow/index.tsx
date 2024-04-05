@@ -20,11 +20,12 @@ interface FormValues {
     exact_search: boolean
     seasons: number[]
 };
+type FORM_STATES = 'initial' | 'searching' | 'selected' | 'success' | 'error';
 
 const AddShow = (props: AddShowProps) => {
     const { openModal, setOpenModal } = props;
     
-    const [state, setState] = useState('initial');
+    const [state, setState] = useState<FORM_STATES>('initial');
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState<ShowSearchResult[]>([]);
     const [showSelected, setShowSelected] = useState<ShowSearchResult>(null);
@@ -46,7 +47,6 @@ const AddShow = (props: AddShowProps) => {
     }, [searchTerm]);
 
     useEffect(() => {
-        console.log(showSelected)
         if (showSelected) {
             getShowSeasons(showSelected.show.id).then(seasons => setShowSeasons(seasons));
         }
@@ -74,9 +74,7 @@ const AddShow = (props: AddShowProps) => {
     };
 
     const searchNewShowHandle = async () => {
-        console.log(searchTerm)
         const searchShowResults = await searchNewShow(searchTerm);
-        console.log(searchShowResults)
         setSearchResults(searchShowResults);
         setState('searching');
         if (searchShowResults.length > 0) {
@@ -93,8 +91,6 @@ const AddShow = (props: AddShowProps) => {
         }
         else if (state === 'selected') {
             addShowSubmission();
-            console.log(showSelected)
-            console.log(form.getFieldsValue())
         }
         else {
             setOpenModal(false);
