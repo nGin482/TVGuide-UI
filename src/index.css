@@ -25,3 +25,7 @@ code {
 .auth-form {
     padding-bottom: 2%;
 }
+
+.ant-notification {
+    text-align: left;
+}

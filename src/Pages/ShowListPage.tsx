@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { Card, Image, Tooltip } from "antd";
+import { Card, Image, notification, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
 import AddShow from "../AddShow";
@@ -8,14 +8,26 @@ import { removeShowFromList } from "../requests/requests";
 import '../ShowList.css';
 
 const ShowListPage = () => {
-    const [result, setResult] = useState('');
     const { searchList } = useContext(SearchListContext);
     const { currentUser } = useContext(UserContext);
 
     const deleteShowFromList = async (show: string) => {
         const response = await removeShowFromList(show, currentUser.token);
 
-        response.result === 'success' ? setResult(response.payload.message) : setResult(response?.msg ? response.msg : response.message);
+        if (response.result === 'success') {
+            notification.success({
+                message: 'Show deleted!',
+                description: response.payload.message,
+                duration: 5
+            });
+        }
+        else {
+            notification.error({
+                message: 'Problem deleting show!',
+                description: response?.message ||  'You have been logged out. Please login again to delete this show',
+                duration: 5
+            });
+        }
     };
 
 
@@ -44,7 +56,6 @@ const ShowListPage = () => {
                     >
                     </Card>
                 ))}
-                <blockquote data-testid="delete-result">{result}</blockquote>
             </div>
             <AddShow/>
         </div>
