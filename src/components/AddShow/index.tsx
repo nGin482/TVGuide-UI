@@ -183,7 +183,7 @@ const AddShow = (props: AddShowProps) => {
                         </Form.Item>
                     </>
                 )}
-                {result && <Alert type="error" message={result} />}
+                {result && <Alert type="error" message={result} description="Note: You can edit your search term to start again" />}
             </Form>
         </Modal>
     );
