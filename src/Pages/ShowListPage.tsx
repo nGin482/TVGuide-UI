@@ -23,6 +23,10 @@ const ShowListPage = () => {
     return (
         <div id="show-list-page">
             <h1>List of Shows</h1>
+            {addingNewShow ? 
+                <AddShow openModal={addingNewShow} setOpenModal={setAddingNewShow} /> :
+                currentUser && <Button onClick={() => setAddingNewShow(true)}>Add Show</Button>
+            }
             <div id="list-of-shows">
                 {searchList.map(show => (
                     <Card
@@ -44,10 +48,6 @@ const ShowListPage = () => {
                 ))}
                 <blockquote data-testid="delete-result">{result}</blockquote>
             </div>
-            {addingNewShow ? 
-                <AddShow openModal={addingNewShow} setOpenModal={setAddingNewShow} /> :
-                currentUser && <Button onClick={() => setAddingNewShow(true)}>Add Show</Button>
-            }
         </div>
     );
 };
