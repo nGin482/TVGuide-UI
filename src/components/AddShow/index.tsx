@@ -31,7 +31,7 @@ const AddShow = (props: AddShowProps) => {
     const [showSelected, setShowSelected] = useState<ShowSearchResult>(null);
     const [showSelectedIndex, setShowSelectedIndex] = useState<number>(null);
     const [showSeasons, setShowSeasons] = useState<SeasonSearch[]>([]);
-    const [result, setResult] = useState('');
+    const [error, setError] = useState('');
     const [index, setIndex] = useState(0);
     const { currentUser } = useContext(UserContext);
 
@@ -40,7 +40,7 @@ const AddShow = (props: AddShowProps) => {
     useEffect(() => {
         setState('initial');
         setSearchResults([]);
-        setResult('');
+        setError('');
         setShowSelected(null);
         setShowSelectedIndex(null);
         setShowSeasons([]);
@@ -62,13 +62,12 @@ const AddShow = (props: AddShowProps) => {
         
         const response = await addShowToList(showSelected, conditions, currentUser.token);
         if (response.result === 'success') {
-            setResult(response.payload.message);
             setState('success');
             setOpenModal(false);
             notification.success({ message: 'Success!', description: response.payload.message, duration: 5 });
         }
         else {
-            setResult(response?.message || 'You have been logged out. Please login again to add this show');
+            setError(response?.message || 'You have been logged out. Please login again to add this show');
             setState('error');
         }
     };
@@ -138,7 +137,13 @@ const AddShow = (props: AddShowProps) => {
                                 <span>Selected {showSelected.show.name} - Item {showSelectedIndex}</span>
                             </>
                         )}
-                        <Carousel dots={false} arrows nextArrow={<NextArrow />} prevArrow={<PrevArrow />} afterChange={change => setIndex(change + 1)}>
+                        <Carousel
+                            dots={false}
+                            arrows
+                            nextArrow={<NextArrow />}
+                            prevArrow={<PrevArrow />}
+                            afterChange={change => setIndex(change + 1)}
+                        >
                             {searchResults.map(result => (
                                 <div
                                     key={result.show.id}
@@ -183,7 +188,7 @@ const AddShow = (props: AddShowProps) => {
                         </Form.Item>
                     </>
                 )}
-                {result && <Alert type="error" message={result} description="Note: You can edit your search term to start again" />}
+                {error && <Alert type="error" message={error} description="Note: You can edit your search term to start again" />}
             </Form>
         </Modal>
     );
