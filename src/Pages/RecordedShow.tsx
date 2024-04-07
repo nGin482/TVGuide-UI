@@ -5,8 +5,6 @@ import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
 import { getRecordedShow } from '../requests/requests';
 import { Episode, RecordedShowModel } from '../utils';
 import BackButton from '../components/BackButton';
-import '../RecordedShowData.css';
-import '../EpisodeData.css';
 
 interface RecordedShowParam {
     show: string
