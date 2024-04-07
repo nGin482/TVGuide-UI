@@ -4,7 +4,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import { AddReminder, EditReminder } from '../components/Reminders';
 import { RemindersContext, UserContext } from '../contexts';
-import { deleteReminder } from '../requests/requests';
+import { deleteReminder } from '../requests';
 import { Reminder } from '../utils';
 import './styles/RemindersPage.css';
 

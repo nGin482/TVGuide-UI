@@ -6,7 +6,7 @@ import Cookies from "universal-cookie";
 import { ValidateErrorEntity } from "rc-field-form/lib/interface";
 
 import { UserContext } from "../../contexts/UserContext";
-import { login } from "../../requests/requests";
+import { login } from "../../requests";
 
 import "./login.css";
 

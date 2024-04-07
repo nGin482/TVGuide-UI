@@ -3,7 +3,7 @@ import Cookies from "universal-cookie";
 
 import { RecordedShowsContext, RemindersContext, SearchListContext, UserContext, ErrorsContext } from "../contexts";
 import { CurrentUser, RecordedShowModel, Reminder, SearchItem } from "../utils";
-import { getRecordedShows, getReminders, getShowList } from "../requests/requests";
+import { getRecordedShows, getReminders, getShowList } from "../requests";
 
 const ContextWrapper = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
     const cookies = new Cookies('user', { path: '/' });

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Alert, Button, Divider, Form, Input, Space } from "antd";
 
-import { changePassword } from "../requests/requests";
+import { changePassword } from "../requests";
 import { CurrentUser } from "../utils";
 import "../styles/ProfileSettingsPage.css";
 

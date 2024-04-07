@@ -6,7 +6,7 @@ import moment from "moment";
 import ShowStatusTag from "./ShowStatusTag";
 import { PrevArrow, NextArrow } from "./ArrowComponents";
 import { UserContext } from "../../contexts/UserContext";
-import { addShowToList } from "../../requests/requests";
+import { addShowToList } from "../../requests";
 import { searchNewShow, getShowSeasons } from "../../requests/tvmaze";
 import { SeasonSearch, ShowSearchResult } from "../../utils/types/index";
 import './AddShow.scss';

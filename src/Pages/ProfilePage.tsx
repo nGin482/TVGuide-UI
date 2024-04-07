@@ -4,7 +4,7 @@ import { Alert, Button, Form, List, Modal, Select, Space } from "antd";
 
 import TVGuide from "../components/TVGuide";
 import { UserContext } from "../contexts/UserContext";
-import { getGuide, getRecordedShows, getReminders, getUser, updateSubscriptions } from "../requests/requests";
+import { getGuide, getRecordedShows, getReminders, getUser, updateSubscriptions } from "../requests";
 import { Guide, RecordedShowModel, Reminder, SubscriptionsPayload, User } from "../utils";
 import "../styles/ProfilePage.css";
 

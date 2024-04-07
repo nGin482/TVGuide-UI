@@ -16,7 +16,7 @@ import {
     registerNewUser,
     removeShowFromList,
     updateSubscriptions
-} from "../requests/requests";
+} from "../requests";
 import {
     addSearchItem,
     addSearchItemResponse,

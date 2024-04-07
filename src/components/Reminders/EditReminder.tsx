@@ -1,7 +1,7 @@
 import { useState, useContext, FormEvent, SetStateAction, Dispatch } from "react";
 import { Alert, Form, Input, Modal, Select } from "antd";
 
-import { editReminder } from "../../requests/requests";
+import { editReminder } from "../../requests";
 import { UserContext } from "../../contexts/UserContext";
 import { Reminder } from "../../utils";
 

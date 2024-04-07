@@ -2,7 +2,7 @@ import { useState, useEffect, useContext, Dispatch, SetStateAction, FormEvent } 
 import { Alert, Form, Input, Modal, Select } from "antd";
 
 import { UserContext } from '../../../contexts/UserContext';
-import { addReminder, getRecordedShows } from '../../../requests/requests';
+import { addReminder, getRecordedShows } from '../../../requests';
 import { RecordedShowModel, Reminder } from '../../../utils';
 import './AddReminder.css';
 

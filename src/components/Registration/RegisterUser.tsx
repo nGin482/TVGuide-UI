@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Alert, Button, Form, Input, Select } from 'antd';
 
-import { getRecordedShows, getReminders, registerNewUser } from '../../requests/requests';
+import { getRecordedShows, getReminders, registerNewUser } from '../../requests';
 import { NewUserDetails, RecordedShowModel, Reminder } from '../../utils';
 import './RegisterUser.css';
 

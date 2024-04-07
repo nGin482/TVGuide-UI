@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from "react-router";
 import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
 
-import { getRecordedShow } from '../requests/requests';
+import { getRecordedShow } from '../requests';
 import { Episode, RecordedShowModel } from '../utils';
 import BackButton from '../components/BackButton';
 

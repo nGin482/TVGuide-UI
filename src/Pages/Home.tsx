@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import TVGuide from "../components/TVGuide";
-import { getGuide } from "../requests/requests";
+import { getGuide } from "../requests";
 import { Guide } from "../utils";
 
 const Home = () => {
