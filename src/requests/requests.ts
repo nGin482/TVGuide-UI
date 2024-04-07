@@ -14,8 +14,9 @@ import {
     SuccessResponse,
     UserResponses,
     SearchItemResponses,
-    NewUserDetails
+    NewUserDetails,
 } from "../utils";
+import { ShowSearchResult } from "../utils/types/index";
 
 const baseURL = 'http://127.0.0.1:5000/api';
 
@@ -49,9 +50,13 @@ const getEvents = async () => {
 const getShowList = () => {
     return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<SearchItem[]>) => response.data);
 };
-const addShowToList = async (show: string, token: string) => {
+const addShowToList = async (newShow: ShowSearchResult, conditions: SearchItem['conditions'], token: string) => {
     try {
-        const response: AxiosResponse<SearchItemResponses> = await axios.post(`${baseURL}/show-list`, { show }, headers(token));
+        const response = await axios.post<SearchItemResponses>(
+            `${baseURL}/show-list`,
+            { show: newShow.show.name, image: newShow.show.image.medium, tvmaze_id: newShow.show.id, conditions },
+            headers(token)
+        );
         return { result: 'success', payload: response.data } as SuccessResponse<SearchItemResponses>;
     }
     catch(error) {

@@ -46,7 +46,9 @@ interface SearchItem {
     show: string
     image: string
     conditions: {
-        [condition: string]: any
+        exact_search?: boolean
+        seasons?: number[]
+        exclude_titles?: string[]
     }
     searchActive: boolean
 };

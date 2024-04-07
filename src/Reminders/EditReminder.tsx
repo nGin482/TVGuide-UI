@@ -11,6 +11,7 @@ interface EditReminderProps {
     editingReminder: boolean
     setEditingReminder: Dispatch<SetStateAction<boolean>>
 };
+type AlertValues = 'Before' | 'During' | 'After';
 
 const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setEditingReminder }: EditReminderProps) => {
     const [submitted, setSubmitted] = useState(false);
@@ -91,7 +92,7 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
                             { label: 'When the episode starts', value: 'During' },
                             { label: 'After the episode starts', value: 'After' }
                         ]}
-                        onChange={(value) => updateReminder('reminder_alert', value)}
+                        onChange={(value: AlertValues) => updateAlert(value)}
                     />
                 </Form.Item>
                 <Form.Item

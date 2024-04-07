@@ -1,13 +1,14 @@
 import { useState, useContext } from "react";
-import { Card, Image, notification, Tooltip } from "antd";
+import { Button, Card, Image, notification, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
-import AddShow from "../AddShow";
+import AddShow from "../components/AddShow";
 import { SearchListContext, UserContext } from "../contexts";
 import { removeShowFromList } from "../requests/requests";
 import '../ShowList.css';
 
 const ShowListPage = () => {
+    const [addingNewShow, setAddingNewShow] = useState(false);
     const { searchList } = useContext(SearchListContext);
     const { currentUser } = useContext(UserContext);
 
@@ -34,6 +35,10 @@ const ShowListPage = () => {
     return (
         <div id="show-list-page">
             <h1>List of Shows</h1>
+            {addingNewShow ? 
+                <AddShow openModal={addingNewShow} setOpenModal={setAddingNewShow} /> :
+                currentUser && <Button onClick={() => setAddingNewShow(true)}>Add Show</Button>
+            }
             <div id="list-of-shows">
                 {searchList.map(show => (
                     <Card
@@ -57,7 +62,6 @@ const ShowListPage = () => {
                     </Card>
                 ))}
             </div>
-            <AddShow/>
         </div>
     );
 };
