@@ -7,7 +7,7 @@ import ShowStatusTag from "./ShowStatusTag";
 import { PrevArrow, NextArrow } from "./ArrowComponents";
 import { UserContext } from "../../contexts/UserContext";
 import { addShowToList } from "../../requests";
-import { searchNewShow, getShowSeasons } from "../../requests/tvmaze";
+import { getShowSeasons, searchNewShow } from "../../requests";
 import { SeasonSearch, ShowSearchResult } from "../../utils/types/index";
 import './AddShow.scss';
 

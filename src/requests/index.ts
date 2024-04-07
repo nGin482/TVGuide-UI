@@ -283,3 +283,5 @@ export {
     updateSubscriptions,
     login
 };
+
+export * from './tvmaze';
