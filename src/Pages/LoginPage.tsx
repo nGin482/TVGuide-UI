@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "antd";
 
-import Login from "../components/Login/Login";
+import Login from "../components/Login";
 import RegisterUser from "../components/Registration/RegisterUser";
 
 const LoginPage = () => {
