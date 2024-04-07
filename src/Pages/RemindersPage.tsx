@@ -7,7 +7,7 @@ import EditReminder from '../Reminders/EditReminder';
 import { RemindersContext, UserContext } from '../contexts';
 import { deleteReminder } from '../requests/requests';
 import { Reminder } from '../utils';
-import './RemindersPage.css';
+import './styles/RemindersPage.css';
 
 
 const RemindersPage = () => {
