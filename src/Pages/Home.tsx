@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-import TVGuide from "../TVGuide/TVGuide";
+import TVGuide from "../components/TVGuide";
 import { getGuide } from "../requests/requests";
 import { Guide } from "../utils";
 

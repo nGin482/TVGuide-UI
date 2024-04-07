@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Table, TableColumnsType, Tag } from "antd";
 
-import { Guide, GuideShow, User } from "../utils";
+import { Guide, GuideShow, User } from "../../utils";
 import './TVGuide.css';
 
 const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {

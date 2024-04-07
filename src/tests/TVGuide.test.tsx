@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import TVGuide from '../TVGuide/TVGuide';
+import TVGuide from '../components/TVGuide';
 import { Guide, CurrentUser } from '../utils';
 
 describe('test TVGuide component', () => {
