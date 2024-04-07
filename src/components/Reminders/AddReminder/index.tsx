@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext, Dispatch, SetStateAction, FormEvent } from 'react';
 import { Alert, Form, Input, Modal, Select } from "antd";
 
-import { UserContext } from '../../contexts/UserContext';
-import { addReminder, getRecordedShows } from '../../requests/requests';
-import { RecordedShowModel, Reminder } from '../../utils';
+import { UserContext } from '../../../contexts/UserContext';
+import { addReminder, getRecordedShows } from '../../../requests/requests';
+import { RecordedShowModel, Reminder } from '../../../utils';
 import './AddReminder.css';
 
 interface AddReminderProps {
