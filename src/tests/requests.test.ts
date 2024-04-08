@@ -27,6 +27,7 @@ import {
     recordedShows,
     reminders,
     searchList,
+    tvMazeResult,
     updateSubscriptionsRes,
     user
 } from "./test_data";
@@ -87,7 +88,7 @@ describe('requests return correct responses', () => {
         response.data = addSearchItemResponse;
 
         mockedAxios.post.mockResolvedValue(response);
-        const res = await addShowToList(addSearchItem.show, 'test-token');
+        const res = await addShowToList(tvMazeResult, {}, 'test-token');
         
         expect(res.result).toEqual('success');
         let payload: SearchItemResponses;
@@ -101,7 +102,7 @@ describe('requests return correct responses', () => {
     test.skip('returns error when unable to add searchItem', async () => {
         mockedAxios.post.mockRejectedValue(Error(`${badResponse.status} ${badResponse.statusText}`));
 
-        await expect(async () => await addShowToList(addSearchItem.show, 'test-token')).rejects.toMatchObject(badResponse);
+        await expect(async () => await addShowToList(tvMazeResult, {}, 'test-token')).rejects.toMatchObject(badResponse);
     });
 
     test('returns updated searchList when searchItem deleted', async () => {
@@ -241,7 +242,7 @@ describe('requests return correct responses', () => {
     test('is able to register a new user', async () => {
         response.data = newUserRes;
 
-        mockedAxios.put.mockResolvedValue(response);
+        mockedAxios.post.mockResolvedValue(response);
         const userResponse = await registerNewUser(newUser);
 
         expect(userResponse.result).toEqual('success');
