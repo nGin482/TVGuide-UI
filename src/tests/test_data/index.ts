@@ -9,7 +9,7 @@ import {
     SearchItemResponses,
     User,
     UserResponses
-} from "../../utils";
+} from "../../utils/types";
 
 
 export const guide: Guide = {

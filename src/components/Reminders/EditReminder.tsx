@@ -3,7 +3,7 @@ import { Alert, Form, Input, Modal, Select } from "antd";
 
 import { editReminder } from "../../requests";
 import { UserContext } from "../../contexts/UserContext";
-import { Reminder } from "../../utils";
+import { Reminder } from "../../utils/types";
 
 interface EditReminderProps {
     reminderChosen: Reminder

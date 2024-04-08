@@ -3,7 +3,7 @@ import { Alert, Form, Input, Modal, Select } from "antd";
 
 import { UserContext } from '../../../contexts/UserContext';
 import { addReminder, getRecordedShows } from '../../../requests';
-import { RecordedShowModel, Reminder } from '../../../utils';
+import { RecordedShowModel, Reminder } from '../../../utils/types';
 import './AddReminder.css';
 
 interface AddReminderProps {

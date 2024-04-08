@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import TVGuide from '../components/TVGuide';
-import { Guide, CurrentUser } from '../utils';
+import { Guide, CurrentUser } from '../utils/types';
 
 describe('test TVGuide component', () => {
     const guide: Guide = {

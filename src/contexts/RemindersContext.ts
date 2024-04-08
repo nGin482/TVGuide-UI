@@ -1,5 +1,5 @@
 import { createContext } from "react";
 
-import { RemindersContextModel } from "../utils";
+import { RemindersContextModel } from "../utils/types";
 
 export const RemindersContext = createContext<RemindersContextModel>(null);

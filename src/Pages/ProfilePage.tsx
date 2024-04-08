@@ -5,7 +5,7 @@ import { Alert, Button, Form, List, Modal, Select, Space } from "antd";
 import TVGuide from "../components/TVGuide";
 import { UserContext } from "../contexts/UserContext";
 import { getGuide, getRecordedShows, getReminders, getUser, updateSubscriptions } from "../requests";
-import { Guide, RecordedShowModel, Reminder, SubscriptionsPayload, User } from "../utils";
+import { Guide, RecordedShowModel, Reminder, SubscriptionsPayload, User } from "../utils/types";
 import "../styles/ProfilePage.css";
 
 interface ResponseResult {

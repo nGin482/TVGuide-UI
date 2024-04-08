@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter, Switch, Route } from "react-router-dom";
 import axios from "axios";
 
-import { RecordedShowModel } from "../utils";
+import { RecordedShowModel } from "../utils/types";
 import RecordedShow from "../Pages/RecordedShow";
 
 jest.mock("axios");

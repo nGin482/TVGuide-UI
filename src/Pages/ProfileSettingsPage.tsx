@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Alert, Button, Divider, Form, Input, Space } from "antd";
 
 import { changePassword } from "../requests";
-import { CurrentUser } from "../utils";
+import { CurrentUser } from "../utils/types";
 import "../styles/ProfileSettingsPage.css";
 
 interface SettingsProps {

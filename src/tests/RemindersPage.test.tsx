@@ -3,7 +3,7 @@ import axios from "axios";
 
 import RemindersPage from "../Pages/RemindersPage";
 import { UserContext } from "../contexts/UserContext";
-import { CurrentUser, Reminder } from "../utils";
+import { CurrentUser, Reminder } from "../utils/types";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;

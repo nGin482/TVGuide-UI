@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Alert, Button, Form, Input, Select } from 'antd';
 
 import { getRecordedShows, getReminders, registerNewUser } from '../../requests';
-import { NewUserDetails, RecordedShowModel, Reminder } from '../../utils';
+import { NewUserDetails, RecordedShowModel, Reminder } from '../../utils/types';
 import './RegisterUser.css';
 
 interface RegisterResult {

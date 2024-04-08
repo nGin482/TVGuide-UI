@@ -48,28 +48,3 @@ export const showStringForGuide = (show: GuideShow) => {
 
     return showString;
 };
-
-
-export type {
-    Guide,
-    RecordedShowModel,
-    Episode,
-    Reminder,
-    GuideShow,
-    SearchItem,
-    User,
-    UserContextModel,
-    AddReminderResponse,
-    CurrentUser,
-    SubscriptionsPayload,
-    ErrorResponse,
-    FailedResponse,
-    SuccessResponse,
-    UserResponses,
-    SearchItemResponses,
-    NewUserDetails,
-    RecordedShowsContextModel,
-    RemindersContextModel,
-    SearchListContextModel,
-    ErrorsContextModel
-} from "./types";

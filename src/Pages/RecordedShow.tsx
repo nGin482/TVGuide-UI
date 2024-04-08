@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
 
 import { getRecordedShow } from '../requests';
-import { Episode, RecordedShowModel } from '../utils';
+import { Episode, RecordedShowModel } from '../utils/types';
 import BackButton from '../components/BackButton';
 
 interface RecordedShowParam {

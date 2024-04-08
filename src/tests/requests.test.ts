@@ -30,7 +30,7 @@ import {
     updateSubscriptionsRes,
     user
 } from "./test_data";
-import { Reminder, SearchItemResponses } from "../utils";
+import { Reminder, SearchItemResponses } from "../utils/types";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;

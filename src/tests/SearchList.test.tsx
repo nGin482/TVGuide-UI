@@ -3,7 +3,7 @@ import axios from "axios";
 
 import ShowListPage from "../Pages/ShowListPage";
 import { UserContext } from "../contexts/UserContext";
-import { CurrentUser, SearchItem } from "../utils";
+import { CurrentUser, SearchItem } from "../utils/types";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
