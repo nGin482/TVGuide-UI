@@ -2,7 +2,8 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import axios from "axios";
 
 import RemindersPage from "../Pages/RemindersPage";
-import { UserContext } from "../contexts/UserContext";
+import { recordedShows } from "./test_data";
+import { RecordedShowsContext, RemindersContext, UserContext } from "../contexts";
 import { CurrentUser, Reminder } from "../utils/types";
 
 jest.mock("axios");
@@ -41,9 +42,14 @@ describe('Reminders Page', () => {
     };
 
     const RemindersComp = () => (
-        <UserContext.Provider value={{ currentUser: user, setUser: () => null }}>
-            <RemindersPage />
-        </UserContext.Provider>
+        <RecordedShowsContext.Provider value={{ recordedShows: recordedShows, setRecordedShows: () => undefined }}>
+            <RemindersContext.Provider value={{ reminders: reminders, setReminders: () => undefined }}>
+                <UserContext.Provider value={{ currentUser: user, setUser: () => undefined }}>
+                    <RemindersPage />
+                </UserContext.Provider>
+            </RemindersContext.Provider>
+        </RecordedShowsContext.Provider>
+        
     )
 
     test('page renders all reminders', async () => {
@@ -55,15 +61,6 @@ describe('Reminders Page', () => {
         expect(screen.queryByText(/Doctor Who/i)).toBeInTheDocument();
         expect(screen.queryByText(/Endeavour/i)).toBeInTheDocument();
         expect(screen.queryByText(/Maigret/i)).toBeInTheDocument();
-    });
-
-    test('page renders info alert when loading reminders', async () => {
-        await act(async () => {
-            mockedAxios.get.mockResolvedValue({ data: emptyReminders });
-            render(<RemindersComp />);
-        });
-
-        expect(screen.queryByText(/Waiting for reminders to be retrieved .../i)).toBeInTheDocument();
     });
 
     test('renders add reminder modal', async () => {

@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import axios from "axios";
 
 import ShowListPage from "../Pages/ShowListPage";
-import { UserContext } from "../contexts/UserContext";
+import { SearchListContext, UserContext } from "../contexts";
 import { CurrentUser, SearchItem } from "../utils/types";
 
 jest.mock("axios");
@@ -46,7 +46,9 @@ describe('test SearchList page', () => {
 
     const SearchList = () => (
         <UserContext.Provider value={{ currentUser: user, setUser: () => null }}>
-            <ShowListPage />
+            <SearchListContext.Provider value={{ searchList: searchList, setSearchList: () => null }}>
+                <ShowListPage />
+            </SearchListContext.Provider>
         </UserContext.Provider>
     );
 
@@ -89,6 +91,6 @@ describe('test SearchList page', () => {
             fireEvent.click(deleteVeraIcon);
         });
 
-        await waitFor(() => expect(screen.queryByTestId('delete-result')).toBeInTheDocument());
+        await waitFor(() => expect(screen.queryByText('Show deleted!')).toBeInTheDocument());
     });
 });
