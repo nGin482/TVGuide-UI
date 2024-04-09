@@ -26,7 +26,6 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
         setSubmitted(true);
         form.validateFields().then(async () => {
             const response = await editReminder(reminderChosen, currentUser.token);
-            console.log(response)
             if (response.result === 'success') {
                 setResult(`The reminder for ${reminderChosen.show} has been updated!`);
                 setEditSuccess(true);

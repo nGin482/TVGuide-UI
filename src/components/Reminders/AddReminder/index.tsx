@@ -39,7 +39,7 @@ const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) 
             }
         })
         .catch(errors => {
-            console.log(errors)
+            console.error(errors)
         });
     };
 

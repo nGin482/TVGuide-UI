@@ -29,9 +29,7 @@ const ProfileSettingsPage = ({ user }: SettingsProps) => {
     const [changeDetailsResponse, setChangeDetailsResponse] = useState<ChangeDetailsResponse>(baseChangeDetailsResponse);
 
     const changeDetailsHandle = async (values: AccountDetailsFormValues) => {
-        console.log(values)
         const response = await changePassword(user.username, values.password, user.token);
-        console.log(response)
         if (response.result === 'success') {
             setChangeDetailsResponse({
                 submitted: true,
@@ -99,7 +97,7 @@ const ProfileSettingsPage = ({ user }: SettingsProps) => {
                             </ul>
                             A request will need to be approved by another admin in order for administration access to be granted
                         </p>
-                        <Button onClick={() => console.log('Requesting admin access')} id="admin-access-request">Request</Button>
+                        <Button id="admin-access-request">Request</Button>
                     </div>
                 </>
             )}

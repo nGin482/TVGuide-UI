@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import { Alert, Button, Form, Input } from "antd";
 import type { FormRule } from "antd";
 import Cookies from "universal-cookie";
-import { ValidateErrorEntity } from "rc-field-form/lib/interface";
 
 import { UserContext } from "../../contexts/UserContext";
 import { login } from "../../requests";
@@ -30,7 +29,6 @@ const Login = () => {
     const cookies = new Cookies(null, { path: '/' });
 
     const loginHandle = async (values: LoginForm) => {
-        console.log(values)
         const response = await login(values);
         if (response.result === 'success') {
             cookies.set('user', JSON.stringify(response.payload.user));
@@ -42,9 +40,7 @@ const Login = () => {
         }
     };
 
-    const loginFailed = async (values: ValidateErrorEntity) => {
-        values.errorFields.forEach(field => field.errors.forEach(error => console.log(error)))
-        console.log(values)
+    const loginFailed = async () => {
         setLoginError('Please enter values for all fields');
     };
 
