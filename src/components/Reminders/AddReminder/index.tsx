@@ -1,9 +1,9 @@
-import { useState, useEffect, useContext, Dispatch, SetStateAction, FormEvent } from 'react';
+import { useState, useContext, Dispatch, SetStateAction, FormEvent } from 'react';
 import { Alert, Form, Input, Modal, Select } from "antd";
 
-import { UserContext } from '../../../contexts/UserContext';
-import { addReminder, getRecordedShows } from '../../../requests';
-import { RecordedShowModel, Reminder } from '../../../utils/types';
+import { RecordedShowsContext, UserContext } from '../../../contexts';
+import { addReminder } from '../../../requests';
+import { Reminder } from '../../../utils/types';
 import './AddReminder.css';
 
 interface AddReminderProps {
@@ -13,21 +13,16 @@ interface AddReminderProps {
 
 const AddReminder = ({ showAddReminder, setShowAddReminder }: AddReminderProps) => {
     const [reminderAlert, setReminderAlert] = useState('');
-    const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
     const [createReminderStatus, setCreateReminderStatus] = useState(false);
     const [result, setResult] = useState('');
     
     const [form] = Form.useForm();
+    const { recordedShows } = useContext(RecordedShowsContext);
     const { currentUser } = useContext(UserContext);
-
-    useEffect(() => {
-        getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
-    }, []);
 
     const handleAddReminder = async () => {
         form.validateFields().then(async () => {
             const newReminder: Reminder = form.getFieldsValue();
-            console.log(newReminder)
             const response = await addReminder(newReminder, currentUser.token);
             if (response.result === 'success') {
                 setCreateReminderStatus(true);
