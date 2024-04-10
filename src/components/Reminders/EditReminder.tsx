@@ -54,10 +54,8 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
         return Number(warningTimeString);
     };
 
-    const updateReminder = (field: string, value: string) => {
-        if (field === 'warning_time') {
-            setReminderChosen(prevState => ({ ...prevState, warning_time: Number(value) }));
-        }
+    const updateWarningTime = (value: string) => {
+        setReminderChosen(prevState => ({ ...prevState, warning_time: Number(value) }));
     };
     
     const updateAlert = (value: 'Before' | 'During' | 'After') => {
@@ -111,7 +109,7 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
                     <Input
                         disabled={reminderChosen.reminder_alert === 'During'}
                         addonAfter={reminderChosen.reminder_alert !== 'During' && `minutes ${reminderChosen.reminder_alert.toLowerCase()} `}
-                        onChange={(event) => updateReminder('warning_time', event.currentTarget.value)}
+                        onChange={(event) => updateWarningTime(event.currentTarget.value)}
                     />
                     {reminderChosen.reminder_alert === 'During' && 'This does not need to be set if you wish to be reminded when the episode starts.'}
                 </Form.Item>
