@@ -1,9 +1,9 @@
 import { useState, useContext, FormEvent, SetStateAction, Dispatch } from "react";
 import { Alert, Form, Input, Modal, Select } from "antd";
 
-import { editReminder } from "../requests/requests";
-import { UserContext } from "../contexts/UserContext";
-import { Reminder } from "../utils";
+import { editReminder } from "../../requests";
+import { UserContext } from "../../contexts/UserContext";
+import { Reminder } from "../../utils/types";
 
 interface EditReminderProps {
     reminderChosen: Reminder
@@ -26,7 +26,6 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
         setSubmitted(true);
         form.validateFields().then(async () => {
             const response = await editReminder(reminderChosen, currentUser.token);
-            console.log(response)
             if (response.result === 'success') {
                 setResult(`The reminder for ${reminderChosen.show} has been updated!`);
                 setEditSuccess(true);
@@ -46,7 +45,7 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
     const convertWarningTimeToNumber = (event: FormEvent<HTMLInputElement>) => {
         let warningTimeString = event.currentTarget.value;
         const lastCharIndex = warningTimeString.length - 1;
-        if (warningTimeString.charCodeAt(lastCharIndex) < 48 || warningTimeString.charCodeAt(lastCharIndex) > 58) {
+        if (warningTimeString.charCodeAt(lastCharIndex) < 48 || warningTimeString.charCodeAt(lastCharIndex) >= 58) {
             warningTimeString = warningTimeString.replace(warningTimeString.slice(-1), '');
         }
         if (warningTimeString === '') {
@@ -55,10 +54,8 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
         return Number(warningTimeString);
     };
 
-    const updateReminder = (field: string, value: string) => {
-        if (field === 'warning_time') {
-            setReminderChosen(prevState => ({ ...prevState, warning_time: Number(value) }));
-        }
+    const updateWarningTime = (value: string) => {
+        setReminderChosen(prevState => ({ ...prevState, warning_time: Number(value) }));
     };
     
     const updateAlert = (value: 'Before' | 'During' | 'After') => {
@@ -112,7 +109,7 @@ const EditReminder = ({ reminderChosen, setReminderChosen, editingReminder, setE
                     <Input
                         disabled={reminderChosen.reminder_alert === 'During'}
                         addonAfter={reminderChosen.reminder_alert !== 'During' && `minutes ${reminderChosen.reminder_alert.toLowerCase()} `}
-                        onChange={(event) => updateReminder('warning_time', event.currentTarget.value)}
+                        onChange={(event) => updateWarningTime(event.currentTarget.value)}
                     />
                     {reminderChosen.reminder_alert === 'During' && 'This does not need to be set if you wish to be reminded when the episode starts.'}
                 </Form.Item>

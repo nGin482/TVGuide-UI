@@ -7,9 +7,10 @@ import {
     Reminder,
     SearchItem,
     SearchItemResponses,
+    ShowSearchResult,
     User,
     UserResponses
-} from "../../utils";
+} from "../../utils/types";
 
 
 export const guide: Guide = {
@@ -193,5 +194,20 @@ export const loginRes: UserResponses<CurrentUser> = {
         reminder_subscriptions: [],
         role: 'Standard',
         token: 'token-test'
+    }
+};
+
+export const tvMazeResult: ShowSearchResult = {
+    score: 0.9,
+    show: {
+        id: 1234,
+        name: 'Maigret',
+        image: {
+            medium: 'https://image_url.com/maigret',
+            original: 'https://image_url.com/maigret'
+        },
+        summary: 'Maigret Summary',
+        status: 'Ended',
+        premiered: '01/01/2016'
     }
 };

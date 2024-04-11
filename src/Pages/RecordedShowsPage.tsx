@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { Card } from "antd";
 
 import { RecordedShowsContext } from "../contexts";
-import '../RecordedShows.css';
+import './styles/RecordedShows.css';
 
 const RecordedShowsPage = () => {
     const history = useHistory();

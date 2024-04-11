@@ -2,8 +2,8 @@ import { useState, useEffect, JSX } from "react";
 import Cookies from "universal-cookie";
 
 import { RecordedShowsContext, RemindersContext, SearchListContext, UserContext, ErrorsContext } from "../contexts";
-import { CurrentUser, RecordedShowModel, Reminder, SearchItem } from "../utils";
-import { getRecordedShows, getReminders, getShowList } from "../requests/requests";
+import { CurrentUser, RecordedShowModel, Reminder, SearchItem } from "../utils/types";
+import { getRecordedShows, getReminders, getShowList } from "../requests";
 
 const ContextWrapper = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
     const cookies = new Cookies('user', { path: '/' });

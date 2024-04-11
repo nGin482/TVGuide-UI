@@ -4,8 +4,8 @@ import { DeleteOutlined } from "@ant-design/icons";
 
 import AddShow from "../components/AddShow";
 import { SearchListContext, UserContext } from "../contexts";
-import { removeShowFromList } from "../requests/requests";
-import '../ShowList.css';
+import { removeShowFromList } from "../requests";
+import './styles/ShowList.css';
 
 const ShowListPage = () => {
     const [addingNewShow, setAddingNewShow] = useState(false);

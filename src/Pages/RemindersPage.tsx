@@ -2,12 +2,11 @@ import { useState, useContext } from 'react';
 import { Alert, Button, Card, Modal } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
-import AddReminder from '../Reminders/AddReminder/AddReminder';
-import EditReminder from '../Reminders/EditReminder';
+import { AddReminder, EditReminder } from '../components/Reminders';
 import { RemindersContext, UserContext } from '../contexts';
-import { deleteReminder } from '../requests/requests';
-import { Reminder } from '../utils';
-import './RemindersPage.css';
+import { deleteReminder } from '../requests';
+import { Reminder } from '../utils/types';
+import './styles/RemindersPage.css';
 
 
 const RemindersPage = () => {

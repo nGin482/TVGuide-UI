@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from "react-router";
 import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
 
-import { getRecordedShow } from '../requests/requests';
-import { Episode, RecordedShowModel } from '../utils';
-import BackButton from '../BackButton';
-import '../RecordedShowData.css';
-import '../EpisodeData.css';
+import { getRecordedShow } from '../requests';
+import { Episode, RecordedShowModel } from '../utils/types';
+import BackButton from '../components/BackButton';
 
 interface RecordedShowParam {
     show: string
@@ -16,11 +14,15 @@ const RecordedShow = () => {
     const { show } = useParams<RecordedShowParam>();
     const [recordedShow, setRecordedShow] = useState<RecordedShowModel | null>(null);
     const [season, setSeason] = useState(1);
+    const [loadingError, setLoadingError] = useState(false);
     
     useEffect(() => {
         getRecordedShow(show)
             .then(data => setRecordedShow(data))
-            .catch(response => console.log(response));
+            .catch(error => {
+                console.error(error);
+                setLoadingError(true);
+            });
     }, [show]);
 
     const changeSeasons = (season_number: number | string) => {
@@ -109,10 +111,15 @@ const RecordedShow = () => {
                 />
             </div>
         )
-        : (
+        : loadingError ? (
             <>
                 <h1>{show}</h1>
-                <Alert type="info" message={`Retrieving data for ${show} ...`} className="show-loading" />
+                <Alert type="info" message={`Retrieving data for ${show} ...`} />
+            </>
+        ) : (
+            <>
+                <h1>{show}</h1>
+                <Alert type="error" message="A problem occurred retrieving the data for this show" />
             </>
         )
     );    
