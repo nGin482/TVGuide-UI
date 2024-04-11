@@ -5,6 +5,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import AddShow from "../components/AddShow";
 import { SearchListContext, UserContext } from "../contexts";
 import { removeShowFromList } from "../requests";
+import image from '../assets/no_image.jpg';
 import './styles/ShowList.css';
 
 const ShowListPage = () => {
@@ -56,7 +57,17 @@ const ShowListPage = () => {
                             ] :
                             []
                         }
-                        cover={<Image alt={show.show} src={show.image} height={400} preview={false} />}
+                        cover={
+                            <Image
+                                alt={show.show}
+                                src={show.image}
+                                fallback={image}
+                                height={400}
+                                width="99%"
+                                style={{ marginLeft: '1px' }}
+                                preview={false}
+                            />
+                        }
                         className="search-card"
                     >
                     </Card>
