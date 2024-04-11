@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import Helmet from "react-helmet";
 import { Button, Card, Image, notification, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
@@ -35,6 +36,9 @@ const ShowListPage = () => {
 
     return (
         <div id="show-list-page">
+            <Helmet>
+                <title>Search List | TVGuide</title>
+            </Helmet>
             <h1>List of Shows</h1>
             {addingNewShow ? 
                 <AddShow openModal={addingNewShow} setOpenModal={setAddingNewShow} /> :

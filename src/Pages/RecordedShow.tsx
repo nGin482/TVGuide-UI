@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router";
+import { Helmet } from 'react-helmet';
 import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
 
 import { getRecordedShow } from '../requests';
@@ -80,6 +81,9 @@ const RecordedShow = () => {
     return (
         recordedShow ? (
             <div id={recordedShow.show}>
+                <Helmet>
+                    <title>{recordedShow.show} Details | TVGuide</title>
+                </Helmet>
                 <h1>{recordedShow.show}</h1>
                 <BackButton route="/shows" text="Recorded Shows"/>
 

@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { useHistory } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { Card } from "antd";
 
 import { RecordedShowsContext } from "../contexts";
@@ -11,6 +12,9 @@ const RecordedShowsPage = () => {
 
     return (
         <div id="recorded-shows-page">
+            <Helmet>
+                <title>Recorded Shows | TVGuide</title>
+            </Helmet>
             <h1>List of Shows Recorded</h1>
             <p>Browse this page to view the episodes recorded for each show.</p>
             <div id="recorded-shows-list">

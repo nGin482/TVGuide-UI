@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router";
+import { Helmet } from "react-helmet";
 import { Alert, Button, Form, List, Modal, Select, Space } from "antd";
 
 import TVGuide from "../components/TVGuide";
@@ -159,6 +160,9 @@ const ProfilePage = () => {
     return (
         userDetails ? (
             <>
+                <Helmet>
+                    <title>{userDetails.username} Profile | TVGuide</title>
+                </Helmet>
                 <h1>{userDetails.username}</h1>
                 {viewingOwnProfile && userTVGuide && <TVGuide guide={userTVGuide} user={userDetails} />}
                 <div id="subscription-list-container">
