@@ -9,28 +9,23 @@ const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
     const [guideShows, setGuideShows] = useState([...guide.FTA, ...guide.BBC]);
 
     useEffect(() => {
+        let guideShows: GuideShow[] = [];
         if (service === 'FTA') {
-            let guideShows = [...guide.FTA];
-            if (user) {
-                guideShows = guideShows.filter(show => user.show_subscriptions.includes(show.title));
-            }
-            setGuideShows(guideShows);
+            guideShows = [...guide.FTA];
         }
         else if (service === 'BBC') {
-            let guideShows = [...guide.BBC];
-            if (user) {
-                guideShows = guideShows.filter(show => user.show_subscriptions.includes(show.title));
-            }
-            setGuideShows(guideShows);
+            guideShows = [...guide.BBC];
         }
         else {
-            let guideShows = [...guide.FTA, ...guide.BBC];
-            if (user) {
-                guideShows = guideShows.filter(show => user.show_subscriptions.includes(show.title));
-            }
-            guideShows.sort((a, b) => sortServices(a, b));
-            setGuideShows(guideShows);
+            guideShows = [...guide.FTA, ...guide.BBC];
         }
+
+        if (user) {
+            guideShows = guideShows.filter(show => user.show_subscriptions.includes(show.title));
+        }
+        
+        guideShows.sort((a, b) => sortServices(a, b));
+        setGuideShows(guideShows);
     }, [service, guide, user]);
 
     const sortServices = (a: GuideShow, b: GuideShow) => {

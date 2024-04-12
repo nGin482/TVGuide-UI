@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet";
 
 import TVGuide from "../components/TVGuide";
 import { getGuide } from "../requests";
@@ -23,6 +24,9 @@ const Home = () => {
 
     return (
         <div id="home">
+            <Helmet>
+                <title>Home | TVGuide</title>
+            </Helmet>
             <h1>TV Guide</h1>
             {guide ? <TVGuide guide={guide} /> : <blockquote id="message">{guideError}</blockquote>}
         </div>

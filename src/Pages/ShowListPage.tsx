@@ -1,10 +1,12 @@
 import { useState, useContext } from "react";
+import Helmet from "react-helmet";
 import { Button, Card, Image, notification, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
 import AddShow from "../components/AddShow";
 import { SearchListContext, UserContext } from "../contexts";
 import { removeShowFromList } from "../requests";
+import image from '../assets/no_image.jpg';
 import './styles/ShowList.css';
 
 const ShowListPage = () => {
@@ -34,6 +36,9 @@ const ShowListPage = () => {
 
     return (
         <div id="show-list-page">
+            <Helmet>
+                <title>Search List | TVGuide</title>
+            </Helmet>
             <h1>List of Shows</h1>
             {addingNewShow ? 
                 <AddShow openModal={addingNewShow} setOpenModal={setAddingNewShow} /> :
@@ -56,7 +61,17 @@ const ShowListPage = () => {
                             ] :
                             []
                         }
-                        cover={<Image alt={show.show} src={show.image} height={400} preview={false} />}
+                        cover={
+                            <Image
+                                alt={show.show}
+                                src={show.image}
+                                fallback={image}
+                                height={400}
+                                width="99%"
+                                style={{ marginLeft: '1px' }}
+                                preview={false}
+                            />
+                        }
                         className="search-card"
                     >
                     </Card>

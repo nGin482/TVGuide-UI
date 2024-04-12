@@ -1,4 +1,5 @@
 import { useState, useContext } from 'react';
+import { Helmet } from 'react-helmet';
 import { Alert, Button, Card, Modal } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
@@ -34,6 +35,9 @@ const RemindersPage = () => {
 
     return (
         <div id="reminders-page">
+            <Helmet>
+                <title>Reminders | TVGuide</title>
+            </Helmet>
             <h1>Reminders</h1>
             {showAddReminder
                 ? <AddReminder showAddReminder setShowAddReminder={setShowAddReminder}/>

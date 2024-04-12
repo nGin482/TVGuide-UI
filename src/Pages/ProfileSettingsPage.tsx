@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { Helmet } from "react-helmet";
 import { Alert, Button, Divider, Form, Input, Space } from "antd";
 
 import { changePassword } from "../requests";
@@ -52,6 +53,9 @@ const ProfileSettingsPage = ({ user }: SettingsProps) => {
 
     return (
         <>
+            <Helmet>
+                <title>Your Settings | TVGuide</title>
+            </Helmet>
             <h3>{user.username}</h3>
             <Divider />
             <div id="change-details">

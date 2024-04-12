@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet";
 import { Button } from "antd";
 
 import Login from "../components/Login";
@@ -11,6 +12,9 @@ const LoginPage = () => {
         <>
             {activity === 'login' && (
                 <>
+                    <Helmet>
+                        <title>Login | TVGuide</title>
+                    </Helmet>
                     <Login />
                     <br/>
                     Don't have an account? <Button type="primary" onClick={() => setActivity('register')}>Register</Button>
@@ -18,6 +22,9 @@ const LoginPage = () => {
             )}
             {activity === 'register' && (
                 <>
+                    <Helmet>
+                        <title>Sign Up | TVGuide</title>
+                    </Helmet>
                     <RegisterUser />
                     <br />
                     Already have an account? <Button type="primary" onClick={() => setActivity('login')}>Log in</Button>
