@@ -9,6 +9,7 @@
     "@types/react": "^18.2.41",
     "@types/react-dom": "^18.2.17",
     "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^4.3.3",
     "antd": "^5.12.1",
     "axios": "^0.21.1",
     "classnames": "^2.5.1",
@@ -18,15 +19,15 @@
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.3",
     "sass": "^1.72.0",
-    "universal-cookie": "^6.1.1"
+    "universal-cookie": "^6.1.1",
+    "vite": "^5.4.10"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --watchAll=false",
-    "eject": "react-scripts eject"
+    "start": "vite",
+    "build": "vite build",
+    "test": "jest test --watchAll=false",
+    "preview": "vite preview"
   },
   "eslintConfig": {
     "extends": [
