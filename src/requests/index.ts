@@ -18,14 +18,8 @@ import {
     ShowSearchResult
 } from "../utils/types";
 
-const isProduction = process.env.NODE_ENV === 'production';
-let baseURL = '';
-if (isProduction) {
-    baseURL = 'https://tvguide-ng.fly.dev/api';
-}
-else {
-    baseURL = 'http://127.0.0.1:5000/api'
-}
+const baseURL = process.env.BASE_URL;
+
 
 const headers = (token: string) => {
     return {
