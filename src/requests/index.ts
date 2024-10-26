@@ -18,7 +18,8 @@ import {
     ShowSearchResult
 } from "../utils/types";
 
-const baseURL = 'http://127.0.0.1:5000/api';
+const baseURL = process.env.BASE_URL;
+
 
 const headers = (token: string) => {
     return {
