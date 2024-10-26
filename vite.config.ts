@@ -19,5 +19,8 @@ export default defineConfig({
                 }
             ]
         }
+    },
+    preview: {
+        open: true,
     }
 })
