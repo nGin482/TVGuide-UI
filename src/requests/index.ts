@@ -18,7 +18,7 @@ import {
     ShowSearchResult
 } from "../utils/types";
 
-const baseURL = import.meta.env.VITE_BASE_URL;
+const baseURL = process.env.VITE_BASE_URL;
 
 
 const headers = (token: string) => {
