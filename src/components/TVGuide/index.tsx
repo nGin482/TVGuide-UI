@@ -6,7 +6,7 @@ import './TVGuide.css';
 
 const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
     const [service, setService] = useState('All');
-    const [guideShows, setGuideShows] = useState([...guide.fta, ...guide?.bbc || []]);
+    const [guideShows, setGuideShows] = useState([]);
 
     useEffect(() => {
         let guideShows: GuideShow[] = [];
