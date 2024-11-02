@@ -39,15 +39,6 @@ const getGuide = async () => {
     throw Error(`${response.status} ${response.statusText}`);
 };
 
-const getEvents = async () => {
-    const response = await axios.get(`${baseURL}/events`);
-    if (response.status === 200) {
-        return response.data as string[];
-    }
-
-    throw Error(`${response.status} ${response.statusText}`);
-};
-
 const getShowList = () => {
     return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<SearchItem[]>) => response.data);
 };
@@ -269,7 +260,6 @@ const login = async (loginDetails: { username: string, password: string }) => {
 export {
     getGuide,
     getShowList,
-    getEvents,
     addShowToList,
     removeShowFromList,
     getRecordedShows,
