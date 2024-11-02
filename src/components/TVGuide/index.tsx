@@ -6,18 +6,18 @@ import './TVGuide.css';
 
 const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
     const [service, setService] = useState('All');
-    const [guideShows, setGuideShows] = useState([...guide.FTA, ...guide.BBC]);
+    const [guideShows, setGuideShows] = useState([...guide.fta, ...guide?.bbc || []]);
 
     useEffect(() => {
         let guideShows: GuideShow[] = [];
         if (service === 'FTA') {
-            guideShows = [...guide.FTA];
+            guideShows = [...guide.fta];
         }
         else if (service === 'BBC') {
-            guideShows = [...guide.BBC];
+            guideShows = [...guide?.bbc || []];
         }
         else {
-            guideShows = [...guide.FTA, ...guide.BBC];
+            guideShows = [...guide.fta, ...guide?.bbc || []];
         }
 
         if (user) {
@@ -29,10 +29,10 @@ const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
     }, [service, guide, user]);
 
     const sortServices = (a: GuideShow, b: GuideShow) => {
-        if (a.time > b.time) {
+        if (a.start_time > b.start_time) {
             return 1;
         }
-        if (a.time < b.time) {
+        if (a.start_time < b.start_time) {
             return -1;
         }
         return 0;
@@ -45,9 +45,14 @@ const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
             key: 'show'
         },
         {
-            title: 'Time',
-            dataIndex: 'time',
-            key: 'time'
+            title: 'Start Time',
+            dataIndex: 'start_time',
+            key: 'start_time'
+        },
+        {
+            title: 'End Time',
+            dataIndex: 'end_time',
+            key: 'end_time'
         },
         {
             title: 'Channel',
@@ -96,7 +101,7 @@ const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
                         hideOnSinglePage: true
                     }
                 }
-                rowKey={record => `${record.channel}-${record.time}`}
+                rowKey={record => `${record.channel}-${record.start_time}`}
             />
         </div>
     );

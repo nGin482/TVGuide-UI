@@ -1,14 +1,14 @@
 export type { ShowSearchResult, SeasonSearch } from "./tvmaze";
 
 interface Guide {
-    FTA: GuideShow[]
-    BBC: GuideShow[]
-    [x: string]: GuideShow[]
+    fta: GuideShow[]
+    bbc: GuideShow[]
 };
 
 interface GuideShow {
     title: string
-    time: string
+    start_time: string
+    end_time: string
     channel: string
     season_number: string
     episode_number: number
