@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import Home from "../Pages/Home";
 import ShowListPage from "../Pages/ShowListPage";
-import { ShowDetails } from "../Pages/ShowDetails";
+import { ShowsPage } from "../Pages/ShowsPage";
 import { ShowEpisodes } from "../components/ShowEpisode";
 import RemindersPage from "../Pages/RemindersPage";
 import LoginPage from "../Pages/LoginPage";
@@ -16,7 +16,7 @@ const NavigationHandle = () => {
     return (
         <Switch>
             <Route path='/show-list'><ShowListPage /></Route>
-            <Route exact path='/shows'><ShowDetails /></Route>
+            <Route exact path='/shows'><ShowsPage /></Route>
             <Route path='/shows/:show'><ShowEpisodes /></Route>
             <Route path='/reminders'><RemindersPage /></Route>
             <Route path="/profile/:user" exact><ProfilePage /></Route>

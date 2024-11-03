@@ -6,7 +6,7 @@ import { Card } from "antd";
 import { RecordedShowsContext } from "../contexts";
 import './styles/RecordedShows.css';
 
-const RecordedShowsPage = () => {
+const ShowsPage = () => {
     const history = useHistory();
     const { shows } = useContext(RecordedShowsContext);
 
@@ -24,7 +24,6 @@ const RecordedShowsPage = () => {
                         className="recorded-show"
                         onClick={() => history.push(`/shows/${show.show_name}`)}
                         title={show.show_name}
-                        
                     >
                         <blockquote>{show.show_episodes.length} season{show.show_episodes.length > 1 && 's'}</blockquote>
                     </Card>
@@ -34,4 +33,4 @@ const RecordedShowsPage = () => {
     );
 };
 
-export default RecordedShowsPage;
+export { ShowsPage };
