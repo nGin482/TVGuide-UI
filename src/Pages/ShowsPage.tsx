@@ -18,11 +18,11 @@ const ShowsPage = () => {
             </Helmet>
             <h1>List of Shows Recorded</h1>
             <p>Browse this page to view the episodes recorded for each show.</p>
-            <div id="recorded-shows-list">
+            <div id="shows-list">
                 {shows.length > 0 && shows.map(show => (
                     <Card
                         key={show.show_name}
-                        className="recorded-show"
+                        className="show"
                         onClick={() => history.push(`/shows/${show.show_name}`)}
                         title={show.show_name}
                         cover={<Image src={show.show_details.image} />}
