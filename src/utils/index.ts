@@ -1,4 +1,9 @@
-import { SeasonSearch } from "./types/index";
+import { SeasonSearch, ShowEpisode } from "./types/index";
+
+export const getSeasons = (showEpisodes: ShowEpisode[]) => {
+    const seasonNumbers = showEpisodes.map(showEpisode => showEpisode.season_number);
+    return [...new Set(seasonNumbers)];
+};
 
 export const validateTVMazeSeasons = (seasons: SeasonSearch[]) => {
     return seasons.map((season, idx) => {

@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 
 import BackButton from '../BackButton';
 import { RecordedShowsContext } from '../../contexts';
+import { getSeasons } from '../../utils';
 import { ShowData, ShowEpisode } from '../../utils/types';
 
 interface ShowParam {
@@ -23,11 +24,6 @@ const ShowEpisodes = () => {
         const showDetail = shows.find(showData => showData.show_name === show);
         setshowData(showDetail);
     }, [show, shows]);
-
-    const getSeasons = () => {
-        const seasonNumbers = showData.show_episodes.map(showEpisode => showEpisode.season_number);
-        return [...new Set(seasonNumbers)];
-    };
 
     const changeSeason = (seasonNumber: number) => {
         setSeason(seasonNumber)
@@ -95,7 +91,7 @@ const ShowEpisodes = () => {
                 <h1>{showData.show_name}</h1>
                 <BackButton route="/shows" text="Recorded Shows"/>
 
-                {getSeasons().map(seasonNumber => 
+                {getSeasons(showData.show_episodes).map(seasonNumber => 
                     <Button
                         className="change-season"
                         onClick={() => changeSeason(seasonNumber)}
