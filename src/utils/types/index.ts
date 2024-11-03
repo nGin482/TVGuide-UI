@@ -17,6 +17,31 @@ interface GuideShow {
     event: string
 };
 
+export interface ShowData {
+    show_name: string
+    show_details: ShowDetails
+    show_episodes: ShowEpisode[]
+}
+export interface ShowDetails {
+    title: string
+    description: string
+    tvmaze_id: string
+    genres: string[]
+    image: string
+}
+
+export interface ShowEpisode {
+    id: number
+    show: string
+    season_number: number
+    episode_number: number
+    episode_title: string
+    summary: string
+    alternative_titles: string[]
+    channels: string[]
+    air_dates: Date[]
+}
+
 interface RecordedShowModel {
     show: string
     seasons: Season[]
@@ -122,8 +147,8 @@ interface UserResponses<Type> {
 
 // Contexts
 interface RecordedShowsContextModel {
-    recordedShows: RecordedShowModel[]
-    setRecordedShows: React.Dispatch<React.SetStateAction<RecordedShowModel[]>>
+    shows: ShowData[]
+    setShows: React.Dispatch<React.SetStateAction<ShowData[]>>
 };
 
 interface RemindersContextModel {

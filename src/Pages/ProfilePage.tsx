@@ -5,8 +5,8 @@ import { Alert, Button, Form, List, Modal, Select, Space } from "antd";
 
 import TVGuide from "../components/TVGuide";
 import { UserContext } from "../contexts/UserContext";
-import { getGuide, getRecordedShows, getReminders, getUser, updateSubscriptions } from "../requests";
-import { Guide, RecordedShowModel, Reminder, SubscriptionsPayload, User } from "../utils/types";
+import { getGuide, getShows, getReminders, getUser, updateSubscriptions } from "../requests";
+import { Guide, Reminder, SubscriptionsPayload, User, ShowData } from "../utils/types";
 import "../styles/ProfilePage.css";
 
 interface ResponseResult {
@@ -32,7 +32,7 @@ const ProfilePage = () => {
     const [userTVGuide, setUserTVGuide] = useState<Guide>(null);
     const [showAddSubscriptionModal, setShowAddSubscriptionModal] = useState(false);
     const [resource, setResource] = useState<'searchList' | 'reminders' | ''>('');
-    const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
+    const [recordedShows, setRecordedShows] = useState<ShowData[]>([]);
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [responseResult, setResponseResult] = useState<ResponseResult>(baseResult);
 
@@ -54,7 +54,7 @@ const ProfilePage = () => {
 
     useEffect(() => {
         if (resource === 'searchList') {
-            getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
+            getShows().then(shows => setRecordedShows(shows));
         }
         if (resource === 'reminders') {
             getReminders().then(reminders => setReminders(reminders));
@@ -143,7 +143,7 @@ const ProfilePage = () => {
     const setSelectOptions = () => {
         if (resource === 'searchList' && recordedShows.length > 0) {
             return recordedShows.map(recordedShow => (
-                { label: recordedShow.show, value: recordedShow.show }
+                { label: recordedShow.show_name, value: recordedShow.show_name }
             ));
         }
         else if (resource === 'reminders' && reminders.length > 0) {

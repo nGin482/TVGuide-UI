@@ -15,7 +15,8 @@ import {
     UserResponses,
     SearchItemResponses,
     NewUserDetails,
-    ShowSearchResult
+    ShowSearchResult,
+    ShowData,
 } from "../utils/types";
 
 const baseURL = process.env.VITE_BASE_URL;
@@ -85,8 +86,8 @@ const removeShowFromList = async (showToRemove: string, token: string) => {
     }
 };
 
-const getRecordedShows = () => {
-    return axios.get(`${baseURL}/recorded-shows`).then((response: AxiosResponse<RecordedShowModel[]>) => response.data);
+export const getShows = () => {
+    return axios.get(`${baseURL}/shows`).then((response: AxiosResponse<ShowData[]>) => response.data);
 }
 const getRecordedShow = (show: string) => {
     return axios.get(`${baseURL}/recorded-shows/${show}`).then((response: AxiosResponse<RecordedShowModel>) => response.data);
@@ -262,7 +263,6 @@ export {
     getShowList,
     addShowToList,
     removeShowFromList,
-    getRecordedShows,
     getRecordedShow,
     getReminders,
     addReminder,

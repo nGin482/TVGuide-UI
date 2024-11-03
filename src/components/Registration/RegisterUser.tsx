@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Alert, Button, Form, Input, Select } from 'antd';
 
-import { getRecordedShows, getReminders, registerNewUser } from '../../requests';
-import { NewUserDetails, RecordedShowModel, Reminder } from '../../utils/types';
+import { getReminders, getShows, registerNewUser } from '../../requests';
+import { NewUserDetails, Reminder, ShowData } from '../../utils/types';
 import './RegisterUser.css';
 
 interface RegisterResult {
@@ -12,7 +12,7 @@ interface RegisterResult {
 };
 
 const RegisterUser = () => {
-    const [recordedShows, setRecordedShows] = useState<RecordedShowModel[]>([]);
+    const [shows, setShows] = useState<ShowData[]>([]);
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [registerResult, setRegisterResult] = useState<RegisterResult>({
         submitted: false,
@@ -21,7 +21,7 @@ const RegisterUser = () => {
     });
 
     useEffect(() => {
-        getRecordedShows().then(recordedShows => setRecordedShows(recordedShows));
+        getShows().then(shows => setShows(shows));
         getReminders().then(reminders => setReminders(reminders));
     }, []);
     
@@ -75,7 +75,7 @@ const RegisterUser = () => {
                     name="show_subscriptions"
                 >
                     <Select
-                        options={recordedShows ? recordedShows.map(show => ({ label: show.show, value: show.show })) : []}
+                        options={shows ? shows.map(show => ({ label: show.show_name, value: show.show_name })) : []}
                         showSearch
                         notFoundContent='No Shows available'
                         mode="multiple"
