@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from "react-router";
 import { Helmet } from 'react-helmet';
 import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
+import dayjs from 'dayjs';
 
-import { getRecordedShow } from '../requests';
-import { Episode, RecordedShowModel } from '../utils/types';
+import { RecordedShowsContext } from '../contexts';
+import { ShowData, ShowEpisode } from '../utils/types';
 import BackButton from '../components/BackButton';
 
 interface RecordedShowParam {
@@ -13,30 +14,31 @@ interface RecordedShowParam {
 
 const RecordedShow = () => {
     const { show } = useParams<RecordedShowParam>();
-    const [recordedShow, setRecordedShow] = useState<RecordedShowModel | null>(null);
+    const [showData, setshowData] = useState<ShowData | null>(null);
     const [season, setSeason] = useState(1);
-    const [loadingError, setLoadingError] = useState(false);
+
+    const { shows } = useContext(RecordedShowsContext);
     
     useEffect(() => {
-        getRecordedShow(show)
-            .then(data => setRecordedShow(data))
-            .catch(error => {
-                console.error(error);
-                setLoadingError(true);
-            });
-    }, [show]);
+        const showDetail = shows.find(showData => showData.show_name === show);
+        setshowData(showDetail);
+    }, [show, shows]);
 
-    const changeSeasons = (season_number: number | string) => {
-        if (typeof season_number === 'string') {
-            const index = recordedShow.seasons.findIndex(season => typeof season.season_number === 'string');
-            setSeason(index + 1);
-        }
-        else {
-            setSeason(season_number);
-        }
+    const getSeasons = () => {
+        const seasonNumbers = showData.show_episodes.map(showEpisode => showEpisode.season_number);
+        return [...new Set(seasonNumbers)];
     };
 
-    const episodeColumns: TableColumnsType<Episode> = [
+    const changeSeason = (seasonNumber: number) => {
+        setSeason(seasonNumber)
+    };
+
+    const episodeColumns: TableColumnsType<ShowEpisode> = [
+        {
+            key: 'season_number',
+            dataIndex: 'season_number',
+            title: 'Season Number'
+        },
         {
             key: 'episode_number',
             dataIndex: 'episode_number',
@@ -72,37 +74,43 @@ const RecordedShow = () => {
             dataIndex: 'air_dates',
             className: 'episode-air-dates',
             title: 'Air Dates',
-            render: (air_dates: string[]) => air_dates.map((air_date, index) =>
-                <Tag key={`tag-${index}-${air_date}`} color="geekblue" className="episode-channel">{air_date}</Tag>
+            render: (air_dates: Date[]) => air_dates.map((air_date, index) =>
+                <Tag
+                    key={`tag-${index}-${air_date}`}
+                    color="geekblue"
+                    className="episode-channel"
+                >
+                    {dayjs(air_date).format("DD/MM/YYYY")}
+                </Tag>
             )
         }
     ];
 
     return (
-        recordedShow ? (
-            <div id={recordedShow.show}>
+        showData ? (
+            <div id={showData.show_name}>
                 <Helmet>
-                    <title>{recordedShow.show} Details | TVGuide</title>
+                    <title>{showData.show_name} Details | TVGuide</title>
                 </Helmet>
-                <h1>{recordedShow.show}</h1>
+                <h1>{showData.show_name}</h1>
                 <BackButton route="/shows" text="Recorded Shows"/>
 
-                {recordedShow.seasons.map(season => 
+                {getSeasons().map(seasonNumber => 
                     <Button
                         className="change-season"
-                        onClick={() => changeSeasons(season.season_number)}
-                        key={season.season_number}
-                        data-testid={`season-${season.season_number}`}
+                        onClick={() => changeSeason(seasonNumber)}
+                        key={seasonNumber}
+                        data-testid={`season-${seasonNumber}`}
                     >
-                        Season {season.season_number}
+                        Season {seasonNumber}
                     </Button>
                 )}
                 <Table
-                    data-testid={`${recordedShow.show}-table`}
-                    key={`${recordedShow.show}-table`}
+                    data-testid={`${showData.show_name}-table`}
+                    key={`${showData.show_name}-table`}
                     rowKey={record => record.episode_title}
                     columns={episodeColumns}
-                    dataSource={recordedShow.seasons[season-1].episodes}
+                    dataSource={showData.show_episodes.filter(showEpisode => showEpisode.season_number === season)}
                     className='season-table'
                     bordered={true}
                     pagination={
@@ -115,12 +123,7 @@ const RecordedShow = () => {
                 />
             </div>
         )
-        : loadingError ? (
-            <>
-                <h1>{show}</h1>
-                <Alert type="info" message={`Retrieving data for ${show} ...`} />
-            </>
-        ) : (
+        : (
             <>
                 <h1>{show}</h1>
                 <Alert type="error" message="A problem occurred retrieving the data for this show" />
