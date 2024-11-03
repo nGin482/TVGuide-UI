@@ -4,9 +4,9 @@ import { Helmet } from 'react-helmet';
 import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
 import dayjs from 'dayjs';
 
-import { RecordedShowsContext } from '../contexts';
-import { ShowData, ShowEpisode } from '../utils/types';
-import BackButton from '../components/BackButton';
+import BackButton from '../BackButton';
+import { RecordedShowsContext } from '../../contexts';
+import { ShowData, ShowEpisode } from '../../utils/types';
 
 interface ShowParam {
     show: string

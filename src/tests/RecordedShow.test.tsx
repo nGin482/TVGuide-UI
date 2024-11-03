@@ -3,7 +3,7 @@ import { MemoryRouter, Switch, Route } from "react-router-dom";
 import axios from "axios";
 
 import { RecordedShowModel } from "../utils/types";
-import { ShowEpisodes } from "../Pages/ShowEpisode";
+import { ShowEpisodes } from "../components/ShowEpisode";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
