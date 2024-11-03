@@ -8,12 +8,12 @@ import { RecordedShowsContext } from '../contexts';
 import { ShowData, ShowEpisode } from '../utils/types';
 import BackButton from '../components/BackButton';
 
-interface RecordedShowParam {
+interface ShowParam {
     show: string
 };
 
-const RecordedShow = () => {
-    const { show } = useParams<RecordedShowParam>();
+const ShowEpisodes = () => {
+    const { show } = useParams<ShowParam>();
     const [showData, setshowData] = useState<ShowData | null>(null);
     const [season, setSeason] = useState(1);
 
@@ -133,4 +133,4 @@ const RecordedShow = () => {
 };
 
 
-export default RecordedShow;
+export { ShowEpisodes };

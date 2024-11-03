@@ -3,7 +3,7 @@ import { MemoryRouter, Switch, Route } from "react-router-dom";
 import axios from "axios";
 
 import { RecordedShowModel } from "../utils/types";
-import RecordedShow from "../Pages/RecordedShow";
+import { ShowEpisodes } from "../Pages/ShowEpisode";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -61,7 +61,7 @@ describe('Viewing the details about a Recorded Show', () => {
         <MemoryRouter initialEntries={[`/shows/Doctor Who`]}>
             <Switch>
                 <Route path="/shows/:show">
-                    <RecordedShow />
+                    <ShowEpisodes />
                 </Route>
             </Switch>
         </MemoryRouter>
