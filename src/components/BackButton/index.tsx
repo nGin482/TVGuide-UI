@@ -1,4 +1,6 @@
+import { Button } from "antd";
 import { Link } from "react-router-dom";
+
 import './BackButton.css';
 
 interface BackButtonProps {
@@ -7,7 +9,9 @@ interface BackButtonProps {
 }
 
 const BackButton = ({ route, text }: BackButtonProps) => (
-    <Link to={route}><button id="back-button">Back to {text}</button></Link>
+    <Link to={route} id="back-link">
+        <Button className="back-button">Back to {text}</Button>
+    </Link>
 );
 
 

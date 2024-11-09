@@ -1,21 +1,23 @@
-#back-button {
-    padding: 1% 2%;
+#back-link {
+    text-align: left;
+}
+
+.back-button {
     background-color: #888;
     color: white;
     border: none;
     border-radius: 5px;
     transition: border-radius 1s ease, background-color 1s ease;
-    float: left;
-    margin-bottom: 40px;
-    margin-left: 5%;
+    margin: 1%;
+    display: block;
 }
 
-#back-button:hover {
+.back-button:hover {
     cursor: pointer;
     border-radius: 12px;
     background-color: #222;
 }
 
-#back-button:hover::before {
+.back-button:hover::before {
     content: '\00AB     ';
 }
