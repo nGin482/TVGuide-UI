@@ -89,7 +89,7 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
                         key={seasonNumber}
                         data-testid={`season-${seasonNumber}`}
                     >
-                        Season {seasonNumber}
+                        Season {seasonNumber === -1 ? "Unknown" : seasonNumber}
                     </Button>
                 )}
                 <Table
