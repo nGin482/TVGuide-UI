@@ -14,10 +14,6 @@ interface ShowProps {
 
 const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
     const [season, setSeason] = useState(1);
-    
-    const changeSeason = (seasonNumber: number) => {
-        setSeason(seasonNumber)
-    };
 
     const episodeColumns: TableColumnsType<ShowEpisode> = [
         {
@@ -52,7 +48,13 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
             className: 'episode-channels',
             title: 'Channels',
             render: (channels: string[]) => channels.map((channel, index) =>
-                <Tag key={`tag-${index}-${channel}`} color="geekblue" className="episode-channel">{channel}</Tag>
+                <Tag
+                    key={`tag-${index}-${channel}`}
+                    color="geekblue"
+                    className="episode-channel"
+                >
+                    {channel}
+                </Tag>
             )
         },
         {
@@ -83,7 +85,7 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
                 {getSeasons(episodes).map(seasonNumber => 
                     <Button
                         className={seasonNumber === season ? "change-season-active" : "change-season" }
-                        onClick={() => changeSeason(seasonNumber)}
+                        onClick={() => setSeason(seasonNumber)}
                         key={seasonNumber}
                         data-testid={`season-${seasonNumber}`}
                     >
@@ -95,7 +97,7 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
                     key={`${showName}-table`}
                     rowKey={record => record.episode_title}
                     columns={episodeColumns}
-                    dataSource={episodes.filter(showEpisode => showEpisode.season_number === season)}
+                    dataSource={episodes.filter(episode => episode.season_number === season)}
                     className='season-table'
                     bordered={true}
                     pagination={
