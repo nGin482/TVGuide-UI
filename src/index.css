@@ -15,6 +15,11 @@ code {
     text-align: center;
 }
 
+.navigator {
+    margin-left: 2%;
+    margin-top: 0.75%;
+}
+
 .error-alert {
     width: 70%;
     margin: 0 auto;
