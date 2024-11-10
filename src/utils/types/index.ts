@@ -21,6 +21,7 @@ export interface ShowData {
     show_name: string
     show_details: ShowDetails
     show_episodes: ShowEpisode[]
+    search_item: SearchItem
 }
 export interface ShowDetails {
     title: string
@@ -71,13 +72,15 @@ interface Reminder {
 
 interface SearchItem {
     show: string
-    image: string
+    exact_title_match: boolean
+    search_active: boolean
     conditions: {
-        exact_search?: boolean
-        seasons?: number[]
-        exclude_titles?: string[]
+        ignore_episodes: string[]
+        ignore_seasons: number[]
+        ignore_titles: string[]
+        min_season_number: number
+        max_season_number: number
     }
-    searchActive: boolean
 };
 
 interface User {
