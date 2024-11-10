@@ -4,7 +4,7 @@ import { Alert } from "antd";
 import { Helmet } from "react-helmet";
 
 import { ShowDetails } from "../components/ShowDetails";
-import BackButton from "../components/BackButton";
+import { ShowEpisodes } from "../components/ShowEpisode";
 import { RecordedShowsContext } from "../contexts";
 import { ShowData } from "../utils/types";
 
@@ -18,7 +18,6 @@ const ShowPage = () => {
 
     const { shows } = useContext(RecordedShowsContext);
     const location = useLocation();
-    console.log(location)
 
     useEffect(() => {
         const showDetail = shows.find(showData => showData.show_name === show);
@@ -27,13 +26,18 @@ const ShowPage = () => {
 
     return (
         showData ? (
-            <div id={showData.show_name}>
+            <div id={showData.show_name} className="show-content">
                 <Helmet>
                     <title>{showData.show_name} Details | TVGuide</title>
                 </Helmet>
                 <h1>{showData.show_name}</h1>
-                <BackButton route="/shows" text="Recorded Shows"/>
                 <ShowDetails showDetails={showData.show_details} />
+                {location.pathname.includes("episodes") && (
+                    <ShowEpisodes
+                        episodes={showData.show_episodes}
+                        showName={showData.show_name}
+                    />
+                )}
             </div>
         ) : (
             <>

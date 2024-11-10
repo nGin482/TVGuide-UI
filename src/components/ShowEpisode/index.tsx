@@ -1,30 +1,20 @@
-import { useContext, useEffect, useState } from 'react';
-import { useParams } from "react-router";
+import { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
 import dayjs from 'dayjs';
 
-import BackButton from '../BackButton';
-import { RecordedShowsContext } from '../../contexts';
 import { getSeasons } from '../../utils';
-import { ShowData, ShowEpisode } from '../../utils/types';
+import { ShowEpisode } from '../../utils/types';
+import "./ShowEpisode.css";
 
-interface ShowParam {
-    show: string
+interface ShowProps {
+    episodes: ShowEpisode[]
+    showName: string
 };
 
-const ShowEpisodes = () => {
-    const { show } = useParams<ShowParam>();
-    const [showData, setshowData] = useState<ShowData | null>(null);
+const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
     const [season, setSeason] = useState(1);
-
-    const { shows } = useContext(RecordedShowsContext);
     
-    useEffect(() => {
-        const showDetail = shows.find(showData => showData.show_name === show);
-        setshowData(showDetail);
-    }, [show, shows]);
-
     const changeSeason = (seasonNumber: number) => {
         setSeason(seasonNumber)
     };
@@ -83,17 +73,16 @@ const ShowEpisodes = () => {
     ];
 
     return (
-        showData ? (
-            <div id={showData.show_name}>
+        episodes ? (
+            <div className="episodes">
                 <Helmet>
-                    <title>{showData.show_name} Details | TVGuide</title>
+                    <title>{showName} Episodes | TVGuide</title>
                 </Helmet>
-                <h1>{showData.show_name}</h1>
-                <BackButton route="/shows" text="Recorded Shows"/>
 
-                {getSeasons(showData.show_episodes).map(seasonNumber => 
+                <h3>Episodes</h3>
+                {getSeasons(episodes).map(seasonNumber => 
                     <Button
-                        className="change-season"
+                        className={seasonNumber === season ? "change-season-active" : "change-season" }
                         onClick={() => changeSeason(seasonNumber)}
                         key={seasonNumber}
                         data-testid={`season-${seasonNumber}`}
@@ -102,11 +91,11 @@ const ShowEpisodes = () => {
                     </Button>
                 )}
                 <Table
-                    data-testid={`${showData.show_name}-table`}
-                    key={`${showData.show_name}-table`}
+                    data-testid={`${showName}-table`}
+                    key={`${showName}-table`}
                     rowKey={record => record.episode_title}
                     columns={episodeColumns}
-                    dataSource={showData.show_episodes.filter(showEpisode => showEpisode.season_number === season)}
+                    dataSource={episodes.filter(showEpisode => showEpisode.season_number === season)}
                     className='season-table'
                     bordered={true}
                     pagination={
@@ -121,8 +110,7 @@ const ShowEpisodes = () => {
         )
         : (
             <>
-                <h1>{show}</h1>
-                <Alert type="error" message="A problem occurred retrieving the data for this show" />
+                <Alert type="error" message="A problem occurred retrieving the episodes for this show" />
             </>
         )
     );    
