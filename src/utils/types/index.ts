@@ -22,6 +22,7 @@ export interface ShowData {
     show_details: ShowDetails
     show_episodes: ShowEpisode[]
     search_item: SearchItem
+    reminder: Reminder
 }
 export interface ShowDetails {
     title: string
@@ -65,7 +66,7 @@ interface Episode {
 
 interface Reminder {
     show: string
-    reminder_alert: 'Before' | 'During' | 'After'
+    alert: 'Before' | 'During' | 'After'
     warning_time: number
     occasions: 'All' | 'Latest'
 };

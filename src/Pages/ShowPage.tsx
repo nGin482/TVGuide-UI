@@ -6,6 +6,7 @@ import { Helmet } from "react-helmet";
 import { ShowDetails } from "../components/ShowDetails";
 import { ShowEpisodes } from "../components/ShowEpisode";
 import { SearchItem } from "../components/SearchItem";
+import { Reminder } from "../components/Reminders";
 import { RecordedShowsContext } from "../contexts";
 import { ShowData } from "../utils/types";
 
@@ -41,6 +42,9 @@ const ShowPage = () => {
                 )}
                 {location.pathname.includes("search") && (
                     <SearchItem searchItem={showData.search_item} show={showData.show_name} />
+                )}
+                {location.pathname.includes("reminder") && (
+                    <Reminder reminder={showData.reminder} show={showData.show_name} />
                 )}
             </div>
         ) : (
