@@ -3,6 +3,7 @@ import { EditOutlined, DeleteFilled } from "@ant-design/icons";
 
 import type { SearchItem } from "../../utils/types";
 import "./SearchItem.css";
+import { EmptyTableView } from "../EmptyTableView";
 
 
 interface SearchItemProps {
@@ -93,6 +94,9 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
                     columns={columns}
                     dataSource={[searchItem]}
                     bordered
+                    locale={{
+                        emptyText: <EmptyTableView text={`No search configured for ${show}`} />
+                    }}
                 />
             </>
         ) : (

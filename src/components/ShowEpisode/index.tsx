@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import { getSeasons } from '../../utils';
 import { ShowEpisode } from '../../utils/types';
 import "./ShowEpisode.css";
+import { EmptyTableView } from '../EmptyTableView';
 
 interface ShowProps {
     episodes: ShowEpisode[]
@@ -107,6 +108,9 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
                             hideOnSinglePage: true
                         }
                     }
+                    locale={{
+                        emptyText: <EmptyTableView text={`No episodes found for ${showName}`} />
+                    }}
                 />
             </div>
         )
