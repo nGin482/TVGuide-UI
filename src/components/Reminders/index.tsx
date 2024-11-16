@@ -1,4 +1,6 @@
-import { Table, TableColumnsType } from "antd";
+import { Button, Dropdown, Table, TableColumnsType } from "antd";
+import { EditOutlined, DeleteFilled } from "@ant-design/icons";
+import type { MenuProps } from "antd";
 
 import AddReminder from "./AddReminder";
 import EditReminder from "./EditReminder";
@@ -29,6 +31,30 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
             dataIndex: "occasions",
             title: "Occasions",
         },
+        {
+            key: "actions",
+            title: "Actions",
+            render: () => (
+                <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
+                    <Button>Edit {show} Reminder</Button>
+                </Dropdown>
+            )
+        },
+    ];
+
+    const menuItems: MenuProps['items'] = [
+        {
+            icon: <EditOutlined />,
+            key: "edit",
+            label: "Edit",
+            onClick: () => console.log('clicked edit')
+        },
+        {
+            icon: <DeleteFilled />,
+            key: "delete",
+            label: "Delete",
+            onClick: () => console.log('clicked delete')
+        }
     ];
 
     return (

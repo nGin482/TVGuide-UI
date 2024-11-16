@@ -1,9 +1,9 @@
 import { Alert, Button, Dropdown, MenuProps, Table, TableColumnsType, Tag } from "antd";
 import { EditOutlined, DeleteFilled } from "@ant-design/icons";
 
+import { EmptyTableView } from "../EmptyTableView";
 import type { SearchItem } from "../../utils/types";
 import "./SearchItem.css";
-import { EmptyTableView } from "../EmptyTableView";
 
 
 interface SearchItemProps {
