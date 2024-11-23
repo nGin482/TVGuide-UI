@@ -1,10 +1,10 @@
 import axios, { AxiosResponse } from "axios";
 
+import { getRequest } from "./api-client";
 import {
     Guide,
     RecordedShowModel,
     Reminder,
-    SearchItem,
     AddReminderResponse,
     User,
     CurrentUser,
@@ -15,7 +15,6 @@ import {
     UserResponses,
     SearchItemResponses,
     NewUserDetails,
-    ShowSearchResult,
     ShowData,
 } from "../utils/types";
 
@@ -33,38 +32,11 @@ const headers = (token: string) => {
 };
 
 const getGuide = async () => {
-    const response = await axios.get(`${baseURL}/guide`);
-    if (response.status === 200) {
-        return response.data as Guide;
-    }
-    throw Error(`${response.status} ${response.statusText}`);
+    return await getRequest<Guide>(`/guide`);
 };
 
-const getShowList = () => {
-    return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<SearchItem[]>) => response.data);
-};
-const addShowToList = async (newShow: ShowSearchResult, conditions: SearchItem['conditions'], token: string) => {
-    try {
-        const response = await axios.post<SearchItemResponses>(
-            `${baseURL}/show-list`,
-            { show: newShow.show.name, image: newShow.show.image.medium, tvmaze_id: newShow.show.id, conditions },
-            headers(token)
-        );
-        return { result: 'success', payload: response.data } as SuccessResponse<SearchItemResponses>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: ErrorResponse = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+export const getShows = () => {
+    return getRequest<ShowData[]>("/shows");
 };
 const removeShowFromList = async (showToRemove: string, token: string) => {
     try {
@@ -86,9 +58,6 @@ const removeShowFromList = async (showToRemove: string, token: string) => {
     }
 };
 
-export const getShows = () => {
-    return axios.get<ShowData[]>(`${baseURL}/shows`).then((response) => response.data);
-}
 const getRecordedShow = (show: string) => {
     return axios.get<RecordedShowModel>(`${baseURL}/recorded-shows/${show}`).then((response) => response.data);
 };
@@ -268,8 +237,7 @@ const login = async (loginDetails: { username: string, password: string }) => {
 
 export {
     getGuide,
-    getShowList,
-    addShowToList,
+    // addNewShow,
     removeShowFromList,
     getRecordedShow,
     getReminders,

@@ -3,7 +3,7 @@ import Cookies from "universal-cookie";
 
 import { RecordedShowsContext, RemindersContext, SearchListContext, UserContext, ErrorsContext } from "../contexts";
 import { CurrentUser, Reminder, SearchItem, ShowData } from "../utils/types";
-import { getReminders, getShows, getShowList } from "../requests";
+import { getReminders, getShows } from "../requests";
 
 const ContextWrapper = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
     const cookies = new Cookies('user', { path: '/' });
@@ -22,9 +22,6 @@ const ContextWrapper = ({ children }: { children: JSX.Element | JSX.Element[] })
         getReminders()
             .then(reminders => setReminders(reminders))
             .catch(error => setErrors(prev => [...prev, catchError(error, 'Reminders')]));
-        getShowList()
-            .then(searchList => setSearchList(searchList))
-            .catch(error => setErrors(prev => [...prev, catchError(error, 'Search List')]));
     }, []);
 
     const catchError = (error, resource: string) => {
