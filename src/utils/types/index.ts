@@ -1,3 +1,5 @@
+import type { AxiosResponse } from "axios";
+
 export type { ShowSearchResult, SeasonSearch } from "./tvmaze";
 
 interface Guide {
@@ -104,10 +106,23 @@ interface BaseResponse {
     message: string
 };
 
+interface NewShowPayload {
+    name: string,
+    conditions: Partial<SearchItem['conditions']> & {
+        exact_title_match: boolean
+    }
+}
+
 interface SuccessResponse<Type> {
     result: 'success'
     payload: Type
 };
+interface ErrorResponse extends AxiosResponse {
+    data: {
+        message?: string
+        msg?: "Token has expired"
+    }
+}
 
 interface AddReminderResponse extends BaseResponse {
     result: 'success'
@@ -117,11 +132,6 @@ interface AddReminderResponse extends BaseResponse {
 interface SearchItemResponses {
     message: string
     searchList: SearchItem[]
-};
-
-interface ErrorResponse {
-    message: string
-    msg?: 'Token has expired'
 };
 
 interface FailedResponse extends BaseResponse {
@@ -182,6 +192,7 @@ export type {
     CurrentUser,
     AddReminderResponse,
     SubscriptionsPayload,
+    NewShowPayload,
     SuccessResponse,
     FailedResponse,
     ErrorResponse,

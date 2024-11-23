@@ -54,7 +54,7 @@ const addShowToList = async (newShow: ShowSearchResult, conditions: SearchItem['
     }
     catch(error) {
         if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
+            const response: ErrorResponse = error.response;
             const result: FailedResponse = {
                 result: 'error',
                 status: response.status,
@@ -73,7 +73,7 @@ const removeShowFromList = async (showToRemove: string, token: string) => {
     }
     catch(error) {
         if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
+            const response: ErrorResponse = error.response;
             const result: FailedResponse = {
                 result: 'error',
                 status: response.status,
@@ -87,23 +87,23 @@ const removeShowFromList = async (showToRemove: string, token: string) => {
 };
 
 export const getShows = () => {
-    return axios.get(`${baseURL}/shows`).then((response: AxiosResponse<ShowData[]>) => response.data);
+    return axios.get<ShowData[]>(`${baseURL}/shows`).then((response) => response.data);
 }
 const getRecordedShow = (show: string) => {
-    return axios.get(`${baseURL}/recorded-shows/${show}`).then((response: AxiosResponse<RecordedShowModel>) => response.data);
+    return axios.get<RecordedShowModel>(`${baseURL}/recorded-shows/${show}`).then((response) => response.data);
 };
 
-const getReminders = () => {
-    return axios.get(`${baseURL}/reminders`).then((response: AxiosResponse<Reminder[]>) => response.data);
+const getReminders = async () => {
+    return await axios.get<Reminder[]>(`${baseURL}/reminders`).then((response) => response.data);
 };
 const addReminder = async (reminder: Reminder, token: string) => {
     try {
-        const response: AxiosResponse<AddReminderResponse> = await axios.post(`${baseURL}/reminders`, reminder, headers(token));
+        const response = await axios.post<AddReminderResponse>(`${baseURL}/reminders`, reminder, headers(token));
         return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
     }
     catch(error) {
         if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
+            const response: ErrorResponse = error.response;
             const result: FailedResponse = {
                 result: 'error',
                 status: response.status,
@@ -117,12 +117,16 @@ const addReminder = async (reminder: Reminder, token: string) => {
 };
 const editReminder = async (reminderDetails: Reminder, token: string) => {
     try {
-        const response: AxiosResponse<AddReminderResponse> = await axios.put(`${baseURL}/reminder/${reminderDetails.show}`, reminderDetails, headers(token));
+        const response = await axios.put<AddReminderResponse>(
+            `${baseURL}/reminder/${reminderDetails.show}`,
+            reminderDetails,
+            headers(token)
+        );
         return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
     }
     catch(error) {
         if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
+            const response: ErrorResponse = error.response;
             const result: FailedResponse = {
                 result: 'error',
                 status: response.status,
@@ -136,12 +140,12 @@ const editReminder = async (reminderDetails: Reminder, token: string) => {
 }
 const deleteReminder = async (reminder: string, token: string) => {
     try {
-        const response: AxiosResponse<AddReminderResponse> = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
+        const response = await axios.delete<AddReminderResponse>(`${baseURL}/reminder/${reminder}`, headers(token));
         return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
     }
     catch(error) {
         if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
+            const response: ErrorResponse = error.response;
             const result: FailedResponse = {
                 result: 'error',
                 status: response.status,
@@ -156,12 +160,12 @@ const deleteReminder = async (reminder: string, token: string) => {
 
 const getUser = async (username: string) => {
     try {
-        const response: AxiosResponse<User> = await axios.get(`${baseURL}/user/${username}`);
+        const response = await axios.get<User>(`${baseURL}/user/${username}`);
         return { result: 'success', payload: response.data } as SuccessResponse<User>;
     }
     catch(error) {
         if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
+            const response: ErrorResponse = error.response;
             const result: FailedResponse = {
                 result: 'error',
                 status: response.status,
@@ -175,11 +179,11 @@ const getUser = async (username: string) => {
 };
 const registerNewUser = async (user: NewUserDetails) => {
     try {
-        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.post(`${baseURL}/auth/register`, user);
+        const response = await axios.post<UserResponses<CurrentUser>>(`${baseURL}/auth/register`, user);
         return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
     }
     catch(error) {
-        const response: AxiosResponse<ErrorResponse> = error.response;
+        const response: ErrorResponse = error.response;
         const result: FailedResponse = {
             result: 'error',
             status: response.status,
@@ -191,7 +195,7 @@ const registerNewUser = async (user: NewUserDetails) => {
 };
 const changePassword = async (username: string, newPassword: string, token: string) => {
     try {
-        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.post(
+        const response = await axios.post<UserResponses<CurrentUser>>(
             `${baseURL}/user/${username}/change_password`,
             { password: newPassword },
             headers(token)
@@ -200,7 +204,7 @@ const changePassword = async (username: string, newPassword: string, token: stri
 
     }
     catch(error) {
-        const response: AxiosResponse<ErrorResponse> = error.response;
+        const response: ErrorResponse = error.response;
         const message = error?.response
             ? response.data.message
             : 'Unable to communicate with the server. Please try again later';
@@ -216,12 +220,16 @@ const changePassword = async (username: string, newPassword: string, token: stri
 };
 const updateSubscriptions = async (username: string, subscriptions: SubscriptionsPayload, token: string) => {
     try {
-        const response: AxiosResponse<UserResponses<User>> = await axios.put(`${baseURL}/user/${username}/subscriptions`, subscriptions, headers(token));
+        const response = await axios.put<UserResponses<User>>(
+            `${baseURL}/user/${username}/subscriptions`,
+            subscriptions,
+            headers(token)
+        );
         return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<User>>;
     }
     catch(error) {
         if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
+            const response: ErrorResponse = error.response;
             const result: FailedResponse = {
                 result: 'error',
                 status: response.status,
@@ -247,7 +255,7 @@ const updateSubscriptions = async (username: string, subscriptions: Subscription
 
 const login = async (loginDetails: { username: string, password: string }) => {
     try {
-        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.post(`${baseURL}/auth/login`, loginDetails);
+        const response = await axios.post<UserResponses<CurrentUser>>(`${baseURL}/auth/login`, loginDetails);
         return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
     }
     catch(err) {
