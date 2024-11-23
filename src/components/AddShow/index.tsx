@@ -1,14 +1,26 @@
 import { Dispatch, SetStateAction, useEffect, useContext, useState } from "react";
-import { Alert, Carousel, Checkbox, Form, Input, Modal, notification, Select, Tag } from "antd";
+import {
+    Alert,
+    Carousel,
+    Checkbox,
+    Form,
+    Input,
+    Modal,
+    notification,
+    Radio,
+    Space,
+    Select,
+    Tag
+} from "antd";
 import classNames from "classnames";
 import moment from "moment";
 
 import ShowStatusTag from "./ShowStatusTag";
 import { PrevArrow, NextArrow } from "./ArrowComponents";
 import { UserContext } from "../../contexts/UserContext";
-import { addShowToList } from "../../requests";
+import { addNewShow } from "../../requests";
 import { getShowSeasons, searchNewShow } from "../../requests";
-import { SeasonSearch, ShowSearchResult } from "../../utils/types";
+import { ErrorResponse, NewShowPayload, SeasonSearch, ShowSearchResult } from "../../utils/types";
 import './AddShow.scss';
 
 interface AddShowProps {
@@ -17,19 +29,20 @@ interface AddShowProps {
 };
 interface FormValues {
     searchTerm: string
-    exact_search: boolean
+    exactSearch: boolean
     seasons: number[]
+    seasonChoice: "all" | "some"
 };
 type FORM_STATES = 'initial' | 'searching' | 'selected' | 'success' | 'error';
 
-const AddShow = (props: AddShowProps) => {
-    const { openModal, setOpenModal } = props;
+const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
     
     const [state, setState] = useState<FORM_STATES>('initial');
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState<ShowSearchResult[]>([]);
     const [showSelected, setShowSelected] = useState<ShowSearchResult>(null);
     const [showSelectedIndex, setShowSelectedIndex] = useState<number>(null);
+    const [seasonChoice, setSeasonChoice] = useState<"all" | "some">();
     const [showSeasons, setShowSeasons] = useState<SeasonSearch[]>([]);
     const [error, setError] = useState('');
     const [index, setIndex] = useState(0);
@@ -53,22 +66,48 @@ const AddShow = (props: AddShowProps) => {
     }, [showSelected]);
 
     const addShowSubmission = async () => {
-        if (!form.getFieldsValue().exact_search) {
+        form.validateFields();
+        if (!form.getFieldsValue().exactSearch) {
             form.setFieldValue('exact_search', false);
         }
         
-        const conditions = form.getFieldsValue();
-        delete conditions.searchTerm;
+        const formValues = form.getFieldsValue();
+        let seasons = formValues?.seasons;
+        if (formValues.seasonChoice === "all") {
+            seasons = showSeasons.map(season => season.number);
+        }
+        const searchCriteria: NewShowPayload['conditions'] = {
+            exact_title_match: formValues?.exactSearch || false,
+            min_season_number: Math.min(...seasons),
+            max_season_number: Math.max(...seasons)
+        };
+        if (formValues.seasonChoice === "some") {
+            const ignored_seasons = showSeasons.filter(
+                season => !formValues.seasons.includes(season.number)
+            );
+            searchCriteria.ignore_seasons = ignored_seasons.map(season => season.number);
+        }
         
-        const response = await addShowToList(showSelected, conditions, currentUser.token);
-        if (response.result === 'success') {
+        try {
+            const showData = await addNewShow(
+                showSelected.show.name,
+                searchCriteria,
+                currentUser.token
+            );
             setState('success');
             setOpenModal(false);
-            notification.success({ message: 'Success!', description: response.payload.message, duration: 5 });
+            notification.success({
+                message: 'Success!',
+                description: `${showData.show_name} has been added`,
+                duration: 5
+            });
         }
-        else {
-            setError(response?.message || 'You have been logged out. Please login again to add this show');
-            setState('error');
+        catch(error) {
+            if (error?.response) {
+                const response = error.response as ErrorResponse;
+                setError(response.data?.message || 'You have been logged out. Please login again to add this show');
+                setState('error');
+            }
         }
     };
 
@@ -162,9 +201,13 @@ const AddShow = (props: AddShowProps) => {
                                     )}
                                 >
                                     <h2>{result.show.name}</h2>
-                                    <img src={result.show.image.medium} style={{ margin: '0 auto'}} />
+                                    <img src={result.show?.image?.medium} style={{ margin: '0 auto'}} />
                                     <p dangerouslySetInnerHTML={{ __html: result.show.summary }} />
-                                    <blockquote>Premiered: <Tag color="processing">{moment(result.show.premiered).format('DD MMMM YYYY')}</Tag></blockquote>
+                                    <blockquote>Premiered: {" "}
+                                        <Tag color="processing">
+                                            {moment(result.show.premiered).format('DD MMMM YYYY')}
+                                        </Tag>
+                                    </blockquote>
                                     <blockquote>Status: <ShowStatusTag status={result.show.status} /></blockquote>
                                 </div>
                             ))}
@@ -173,19 +216,45 @@ const AddShow = (props: AddShowProps) => {
                 ) : state === 'selected' && (
                     <>
                         <Form.Item
-                            name="exact_search"
+                            name="exactSearch"
                             valuePropName="checked"
                         >
                             <Checkbox name="exact_search">Exact Title Search</Checkbox>
                         </Form.Item>
                         <Form.Item
-                            name="seasons"
-                            label="Select the seasons desired"
+                            name="seasonChoice"
+                            label="How many seasons?"
+                            required
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please select how many seasons you'd like"
+                                }
+                            ]}
                         >
-                            <Select
-                                options={showSeasons.map(season => ({ label: `Season ${season.number}`, value: season.number }))}
-                            />
+                            <Radio.Group onChange={value => setSeasonChoice(value.target.value)}>
+                                <Space direction="vertical">
+                                    <Radio value="all">All Seasons</Radio>
+                                    <Radio value="some">Some Seasons</Radio>
+                                </Space>
+                            </Radio.Group>
                         </Form.Item>
+                        {seasonChoice === "some" && (
+                            <Form.Item
+                                name="seasons"
+                                label="Select the desired seasons"
+                            >
+                                <Select
+                                    options={
+                                        showSeasons.map(season => ({
+                                            label: `Season ${season.number}`,
+                                            value: season.number
+                                        }))
+                                    }
+                                    mode="multiple"
+                                />
+                            </Form.Item>
+                        )}
                     </>
                 )}
                 {error && <Alert type="error" message={error} description="Note: You can edit your search term to start again" />}

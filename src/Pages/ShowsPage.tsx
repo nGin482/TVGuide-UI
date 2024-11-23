@@ -1,15 +1,19 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { Card, Image } from "antd";
+import { Button, Card, Image } from "antd";
 
-import { RecordedShowsContext } from "../contexts";
+import AddShow from "../components/AddShow";
+import { RecordedShowsContext, UserContext } from "../contexts";
 import { getSeasons } from "../utils";
 import './styles/RecordedShows.css';
 
 const ShowsPage = () => {
+    const [addingNewShow, setAddingNewShow] = useState(false);
+
     const history = useHistory();
     const { shows } = useContext(RecordedShowsContext);
+    const { currentUser } = useContext(UserContext);
 
     return (
         <div id="recorded-shows-page">
@@ -18,6 +22,13 @@ const ShowsPage = () => {
             </Helmet>
             <h1>List of Shows Recorded</h1>
             <p>Browse this page to view the episodes recorded for each show.</p>
+            <div className="actions">
+                {addingNewShow ? (
+                    <AddShow openModal={addingNewShow} setOpenModal={setAddingNewShow} />
+                ) : (
+                    currentUser && <Button onClick={() => setAddingNewShow(true)}>Add Show</Button>
+                )}
+            </div>
             <div id="shows-list">
                 {shows.length > 0 && shows.map(show => (
                     <Card

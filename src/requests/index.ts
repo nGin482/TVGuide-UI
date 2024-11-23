@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { getRequest } from "./api-client";
+import { getRequest, postRequest } from "./api-client";
 import {
     Guide,
     RecordedShowModel,
@@ -15,6 +15,7 @@ import {
     UserResponses,
     SearchItemResponses,
     NewUserDetails,
+    NewShowPayload,
     ShowData,
 } from "../utils/types";
 
@@ -32,11 +33,28 @@ const headers = (token: string) => {
 };
 
 const getGuide = async () => {
-    return await getRequest<Guide>(`/guide`);
+    return await getRequest<Guide>(`/guide?date=10/08/2024`);
 };
 
 export const getShows = () => {
     return getRequest<ShowData[]>("/shows");
+}
+const addNewShow = async (
+    name: string,
+    conditions: NewShowPayload['conditions'],
+    token: string
+): Promise<ShowData> => {
+    const data: NewShowPayload = {
+        name,
+        conditions
+    };
+
+    const newShowDetails = await postRequest<NewShowPayload, ShowData>(
+        "/shows",
+        data,
+        { Authorization: `Bearer ${token}` }
+    );
+    return newShowDetails;
 };
 const removeShowFromList = async (showToRemove: string, token: string) => {
     try {
@@ -237,7 +255,7 @@ const login = async (loginDetails: { username: string, password: string }) => {
 
 export {
     getGuide,
-    // addNewShow,
+    addNewShow,
     removeShowFromList,
     getRecordedShow,
     getReminders,
