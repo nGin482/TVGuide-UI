@@ -24,7 +24,10 @@ const ShowsPage = () => {
             <p>Browse this page to view the episodes recorded for each show.</p>
             <div className="actions">
                 {addingNewShow ? (
-                    <AddShow openModal={addingNewShow} setOpenModal={setAddingNewShow} />
+                    <AddShow
+                        openModal={addingNewShow}
+                        setOpenModal={setAddingNewShow}
+                    />
                 ) : (
                     currentUser && <Button onClick={() => setAddingNewShow(true)}>Add Show</Button>
                 )}

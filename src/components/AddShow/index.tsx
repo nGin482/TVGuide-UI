@@ -1,25 +1,26 @@
-import { Dispatch, SetStateAction, useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import {
     Alert,
+    App,
     Carousel,
     Checkbox,
     Form,
     Input,
     Modal,
-    notification,
     Radio,
     Space,
     Select,
     Tag
 } from "antd";
+import { NavLink } from "react-router-dom";
 import classNames from "classnames";
 import moment from "moment";
 
 import ShowStatusTag from "./ShowStatusTag";
 import { PrevArrow, NextArrow } from "./ArrowComponents";
-import { UserContext } from "../../contexts/UserContext";
-import { addNewShow } from "../../requests";
-import { getShowSeasons, searchNewShow } from "../../requests";
+import { RecordedShowsContext, UserContext } from "../../contexts";
+import { addNewShow, getShowSeasons, searchNewShow } from "../../requests";
 import { ErrorResponse, NewShowPayload, SeasonSearch, ShowSearchResult } from "../../utils/types";
 import './AddShow.scss';
 
@@ -46,7 +47,10 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
     const [showSeasons, setShowSeasons] = useState<SeasonSearch[]>([]);
     const [error, setError] = useState('');
     const [index, setIndex] = useState(0);
+    
+    const { setShows } = useContext(RecordedShowsContext);
     const { currentUser } = useContext(UserContext);
+    const { notification } = App.useApp();
 
     const [form] = Form.useForm<FormValues>();
 
@@ -96,10 +100,17 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
             );
             setState('success');
             setOpenModal(false);
+            setShows(current => [...current, showData]);
             notification.success({
                 message: 'Success!',
-                description: `${showData.show_name} has been added`,
-                duration: 5
+                description: (
+                    <>
+                        {showData.show_name} has been added.
+                        <br/>
+                        <NavLink to={`/shows/${showData.show_name}`}>View show</NavLink>
+                    </>
+                ),
+                duration: 8
             });
         }
         catch(error) {
@@ -257,7 +268,13 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
                         )}
                     </>
                 )}
-                {error && <Alert type="error" message={error} description="Note: You can edit your search term to start again" />}
+                {error && (
+                    <Alert
+                        type="error"
+                        message={error}
+                        description="Note: You can edit your search term to start again"
+                    />
+                )}
             </Form>
         </Modal>
     );
