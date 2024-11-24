@@ -21,7 +21,7 @@ import ShowStatusTag from "./ShowStatusTag";
 import { PrevArrow, NextArrow } from "./ArrowComponents";
 import { RecordedShowsContext, UserContext } from "../../contexts";
 import { addNewShow, getShowSeasons, searchNewShow } from "../../requests";
-import { ErrorResponse, NewShowPayload, SeasonSearch, ShowSearchResult } from "../../utils/types";
+import { ErrorResponse, NewShowPayload, TVMazeSeason, TVMazeShow } from "../../utils/types";
 import './AddShow.scss';
 
 interface AddShowProps {
@@ -40,11 +40,11 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
     
     const [state, setState] = useState<FORM_STATES>('initial');
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState<ShowSearchResult[]>([]);
-    const [showSelected, setShowSelected] = useState<ShowSearchResult>(null);
+    const [searchResults, setSearchResults] = useState<TVMazeShow[]>([]);
+    const [showSelected, setShowSelected] = useState<TVMazeShow>(null);
     const [showSelectedIndex, setShowSelectedIndex] = useState<number>(null);
     const [seasonChoice, setSeasonChoice] = useState<"all" | "some">();
-    const [showSeasons, setShowSeasons] = useState<SeasonSearch[]>([]);
+    const [showSeasons, setShowSeasons] = useState<TVMazeSeason[]>([]);
     const [error, setError] = useState('');
     const [index, setIndex] = useState(0);
     

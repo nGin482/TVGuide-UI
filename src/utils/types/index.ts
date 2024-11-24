@@ -1,6 +1,6 @@
 import type { AxiosResponse } from "axios";
 
-export type { ShowSearchResult, SeasonSearch } from "./tvmaze";
+export type { TVMazeSeason, TVMazeShow } from "./tvmaze";
 
 interface Guide {
     fta: GuideShow[]
