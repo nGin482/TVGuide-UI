@@ -20,15 +20,25 @@ type DataView = "episodes" | "search" | "reminder";
 const ShowPage = () => {
     const { show } = useParams<ShowParam>();
     const [showData, setshowData] = useState<ShowData>(null);
-    const [dataView, setDataView] = useState<DataView>("episodes");
+    const [dataView, setDataView] = useState<DataView>(null);
 
     const { shows } = useContext(RecordedShowsContext);
     const location = useLocation();
+    
+    useEffect(() => {
+        const view = findViewFromLocation();
+        setDataView(view);
+    }, []);
 
     useEffect(() => {
         const showDetail = shows.find(showData => showData.show_name === show);
         setshowData(showDetail);
     }, [show, shows]);
+
+    const findViewFromLocation = () => {
+        const paths = location.pathname.split("/");
+        return paths[paths.length - 1] as DataView;
+    };
 
     const dataButtonClass = (view: DataView) => {
         let className = "switch-view-button";
