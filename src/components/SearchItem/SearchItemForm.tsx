@@ -3,15 +3,24 @@ import type { Dispatch, SetStateAction } from "react";
 import { Checkbox, Form, Modal, notification, Radio, Select, Space, Spin } from "antd";
 
 import { RecordedShowsContext, UserContext } from "../../contexts";
-import { ErrorResponse, SearchItemPayload, ShowData, TVMazeSeason } from "../../utils/types";
 import { addSearchCriteria, getEpisodes, getShowSeasons } from "../../requests";
+import {
+    ErrorResponse,
+    SearchItem,
+    SearchItemPayload,
+    ShowData,
+    TVMazeSeason
+} from "../../utils/types";
 import { TVMazeEpisode } from "../../utils/types/tvmaze";
 
 
 interface AddSearchItemProps {
+    mode: "add" | "edit"
     open: boolean
-    setOpen: Dispatch<SetStateAction<boolean>>
     show: string
+    closeModal: () => void
+    successHandler: (searchCriteria: SearchItemPayload) => void
+    searchItem?: SearchItem
 }
 
 interface FormValues {
@@ -21,7 +30,9 @@ interface FormValues {
     ignoreEpisodes: string[]
 }
 
-const AddSearchItem = ({ open, setOpen, show }: AddSearchItemProps) => {
+const SearchItemForm = (props: AddSearchItemProps) => {
+    const { mode, open, closeModal, successHandler, show, searchItem } = props;
+
     const [showData, setShowData] = useState<ShowData>();
     const [showSeasons, setShowSeasons] = useState<TVMazeSeason[]>(null);
     const [formValues, setFormValues] = useState<FormValues>(null);
@@ -45,10 +56,17 @@ const AddSearchItem = ({ open, setOpen, show }: AddSearchItemProps) => {
             fetchShowEpisodes(tvmazeId);
         }
     }, [showData]);
+    
+    useEffect(() => {
+        if (showSeasons) {
+            setInitialValuesForSeasons();
+        }
+    }, [showSeasons]);
 
     useEffect(() => {
         console.log(formValues)
     }, [formValues]);
+
 
     const handleFormUpdate = (field: keyof FormValues, value: string | string[] | number[]) => {
         setFormValues(current => ({ ...current, [field]: value }));
@@ -74,6 +92,22 @@ const AddSearchItem = ({ open, setOpen, show }: AddSearchItemProps) => {
         setShowEpisodes(episodes);
         setFilteredEpisodes(episodes);
     };
+
+    const setInitialValuesForSeasons = () => {
+        if (showSeasons.length !== searchItem.conditions.ignore_seasons.length) {
+            form.setFieldValue("seasonChoice", "some");
+            handleFormUpdate("seasonChoice", "some");
+            const seasonsSelected = showSeasons.filter(
+                season => !searchItem.conditions.ignore_seasons.includes(season.number)
+            );
+            handleFormUpdate("seasons", seasonsSelected.map(season => season.number));
+            form.setFieldValue("seasons", seasonsSelected.map(season => season.number));
+        }
+        else {
+            form.setFieldValue("seasonChoice", "all");
+            handleFormUpdate("seasonChoice", "all");
+        }
+    }
 
     const submitSearchItem = async () => {
         form.validateFields();
@@ -106,14 +140,7 @@ const AddSearchItem = ({ open, setOpen, show }: AddSearchItemProps) => {
         };
 
         try {
-            const newSearchItem = await addSearchCriteria(searchCriteria, currentUser.token);
-            console.log(newSearchItem)
-            setOpen(false);
-            notification.success({
-                message: 'Success!',
-                description: `The search criteria for ${show} has been added`,
-                duration: 8
-            });
+            successHandler(searchCriteria);
         }
         catch(error) {
             let message: string =  error?.message;
@@ -138,16 +165,17 @@ const AddSearchItem = ({ open, setOpen, show }: AddSearchItemProps) => {
         showData ? (
             <Modal
                 open={open}
-                title={`Add Search Criteria for ${showData.show_name}`}
-                onCancel={() => setOpen(false)}
+                title={`${mode[0].toUpperCase() + mode.slice(1)} Search Criteria for ${showData.show_name}`}
+                onCancel={closeModal}
                 onOk={submitSearchItem}
             >
                 <Form
-                    form={form} 
+                    form={form}
                 >
                     <Form.Item
                         name="exactSearch"
                         valuePropName="checked"
+                        initialValue={searchItem.exact_title_match}
                     >
                         <Checkbox name="exact_search">Exact Title Match</Checkbox>
                     </Form.Item>
@@ -155,6 +183,7 @@ const AddSearchItem = ({ open, setOpen, show }: AddSearchItemProps) => {
                             name="seasonChoice"
                             label="How many seasons?"
                             required
+                            // initialValue={seasonChoiceInitial}
                             rules={[
                                 {
                                     required: true,
@@ -194,6 +223,7 @@ const AddSearchItem = ({ open, setOpen, show }: AddSearchItemProps) => {
                     <Form.Item
                             name="ignoreEpisodes"
                             label="Ignore Episodes"
+                            initialValue={searchItem.conditions.ignore_episodes}
                         >
                             <Select
                                 options={filteredEpisodes ? filteredEpisodes.map(episode => (
@@ -218,4 +248,4 @@ const AddSearchItem = ({ open, setOpen, show }: AddSearchItemProps) => {
     );
 };
 
-export { AddSearchItem };
+export { SearchItemForm };

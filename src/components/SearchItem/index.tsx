@@ -1,10 +1,13 @@
-import { useState } from "react";
-import { Button, Dropdown, MenuProps, Table, TableColumnsType, Tag, Typography } from "antd";
+import { useContext, useState } from "react";
+import { Button, Dropdown, notification, Table, Tag, Typography } from "antd";
+import type { MenuProps, TableColumnsType } from "antd";
 import { EditOutlined, DeleteFilled } from "@ant-design/icons";
 
-import { AddSearchItem } from "./AddSearchItem";
+import { SearchItemForm } from "./SearchItemForm";
 import { EmptyTableView } from "../EmptyTableView";
-import type { SearchItem } from "../../utils/types";
+import { UserContext } from "../../contexts";
+import { addSearchCriteria } from "../../requests";
+import type { SearchItem, SearchItemPayload } from "../../utils/types";
 import "./SearchItem.css";
 
 
@@ -15,6 +18,9 @@ interface SearchItemProps {
 
 const SearchItem = ({ searchItem, show }: SearchItemProps) => {
     const [openModal, setOpenModal] = useState(false);
+    const [formMode, setFormMode] = useState<"add" | "edit">(null);
+
+    const { currentUser } = useContext(UserContext);
 
     const { Text } = Typography;
 
@@ -81,7 +87,7 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
             icon: <EditOutlined />,
             key: "edit",
             label: "Edit",
-            onClick: () => console.log('clicked edit')
+            onClick: () => openForm("edit")
         },
         {
             icon: <DeleteFilled />,
@@ -91,11 +97,40 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
         }
     ];
 
+    const openForm = (mode: "add" | "edit") => {
+        setFormMode(mode);
+        setOpenModal(true);
+    };
+
+    const closeModal = () => {
+        setOpenModal(false);
+    };
+
+    const addSearchItem = async (searchCriteria: SearchItemPayload) => {
+        const newSearchItem = await addSearchCriteria(searchCriteria, currentUser.token);
+        console.log(newSearchItem)
+        closeModal();
+        notification.success({
+            message: 'Success!',
+            description: `The search criteria for ${show} has been added`,
+            duration: 8
+        });
+    };
+
+    const editSearchItem = async (searchCriteria: SearchItemPayload) => {
+        console.log(searchCriteria)
+        notification.success({
+            message: 'Success!',
+            description: `The search criteria for ${show} has been updated`,
+            duration: 8
+        });
+    };
+
     const EmptyDescription = () => (
         <>
             <Text type="secondary">No search item configured for {show}</Text>
             <br />
-            <Button onClick={() => setOpenModal(true)}>Add Search Criteria</Button>
+            <Button onClick={() => openForm("add")}>Add Search Criteria</Button>
         </>
     );
 
@@ -110,10 +145,13 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
                 }}
             />
             {openModal && (
-                <AddSearchItem
+                <SearchItemForm
+                    mode={formMode}
                     open={openModal}
-                    setOpen={setOpenModal}
+                    closeModal={closeModal}
+                    successHandler={formMode === "add" ? addSearchItem : editSearchItem}
                     show={show}
+                    searchItem={formMode === "edit" && searchItem}
                 />
             )}
         </>
