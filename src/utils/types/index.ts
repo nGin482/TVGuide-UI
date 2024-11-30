@@ -86,6 +86,13 @@ interface SearchItem {
     }
 };
 
+interface SearchItemPayload {
+    show: string
+    conditions: Partial<SearchItem['conditions']> & {
+        exact_title_match: boolean
+    }
+}
+
 interface User {
     username: string
     show_subscriptions: string[]
@@ -193,6 +200,7 @@ export type {
     AddReminderResponse,
     SubscriptionsPayload,
     NewShowPayload,
+    SearchItemPayload,
     SuccessResponse,
     FailedResponse,
     ErrorResponse,

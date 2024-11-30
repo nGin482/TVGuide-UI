@@ -17,6 +17,8 @@ import {
     NewUserDetails,
     NewShowPayload,
     ShowData,
+    SearchItemPayload,
+    SearchItem,
 } from "../utils/types";
 
 const baseURL = process.env.VITE_BASE_URL;
@@ -74,6 +76,15 @@ const removeShowFromList = async (showToRemove: string, token: string) => {
             return result;
         }
     }
+};
+
+export const addSearchCriteria = async (searchCriteria: SearchItemPayload, token: string) => {
+    const newSearchItem = await postRequest<SearchItemPayload, SearchItem>(
+        `/search_item`,
+        searchCriteria,
+        { Authorization: `Bearer ${token}` }
+    );
+    return newSearchItem;
 };
 
 const getRecordedShow = (show: string) => {

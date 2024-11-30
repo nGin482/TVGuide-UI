@@ -1,10 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
-import { Checkbox, Form, Modal, Radio, Select, Space, Spin } from "antd";
+import { Checkbox, Form, Modal, notification, Radio, Select, Space, Spin } from "antd";
 
-import { RecordedShowsContext } from "../../contexts";
-import { ShowData, TVMazeSeason } from "../../utils/types";
-import { getEpisodes, getShowSeasons } from "../../requests";
+import { RecordedShowsContext, UserContext } from "../../contexts";
+import { ErrorResponse, SearchItemPayload, ShowData, TVMazeSeason } from "../../utils/types";
+import { addSearchCriteria, getEpisodes, getShowSeasons } from "../../requests";
 import { TVMazeEpisode } from "../../utils/types/tvmaze";
 
 
@@ -29,6 +29,7 @@ const AddSearchItem = ({ open, setOpen, show }: AddSearchItemProps) => {
     const [filteredEpisodes, setFilteredEpisodes] = useState<TVMazeEpisode[]>(null);
 
     const { shows } = useContext(RecordedShowsContext);
+    const { currentUser } = useContext(UserContext);
 
     const [form] = Form.useForm<FormValues>();
 
@@ -74,14 +75,63 @@ const AddSearchItem = ({ open, setOpen, show }: AddSearchItemProps) => {
         setFilteredEpisodes(episodes);
     };
 
-    const submitSearchItem = () => {
+    const submitSearchItem = async () => {
         form.validateFields();
         if (!form.getFieldsValue().exactSearch) {
             form.setFieldValue('exact_search', false);
         }
         
         const formValues = form.getFieldsValue();
-        console.log(formValues)
+
+        let seasons = formValues?.seasons;
+        if (formValues.seasonChoice === "all") {
+            seasons = showSeasons.map(season => season.number);
+        }
+        const conditions: SearchItemPayload['conditions'] = {
+            exact_title_match: formValues?.exactSearch || false,
+            min_season_number: Math.min(...seasons),
+            max_season_number: Math.max(...seasons),
+            ignore_episodes: formValues?.ignoreEpisodes || []
+        };
+        if (formValues.seasonChoice === "some") {
+            const ignored_seasons = showSeasons.filter(
+                season => !formValues.seasons.includes(season.number)
+            );
+            conditions.ignore_seasons = ignored_seasons.map(season => season.number);
+        }
+
+        const searchCriteria: SearchItemPayload = {
+            show,
+            conditions
+        };
+
+        try {
+            const newSearchItem = await addSearchCriteria(searchCriteria, currentUser.token);
+            console.log(newSearchItem)
+            setOpen(false);
+            notification.success({
+                message: 'Success!',
+                description: `The search criteria for ${show} has been added`,
+                duration: 8
+            });
+        }
+        catch(error) {
+            let message: string =  error?.message;
+            if (error?.response) {
+                const responseError: ErrorResponse = error.response;
+                if (responseError.data.msg) {
+                    message = "You have been logged out. Please login again to add this search criteria.";
+                }
+                else {
+                    message = responseError.data.message;
+                }
+            }
+            notification.error({
+                message: `Unable to add the search criteria for ${show}`,
+                description: message,
+                duration: 8
+            });
+        }
     };
 
     return (
