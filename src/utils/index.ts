@@ -1,9 +1,37 @@
-import { ShowEpisode } from "./types";
+import { NewShowPayload, SearchItemFormValues, SearchItemPayload, ShowEpisode } from "./types";
 import { TVMazeEpisode, TVMazeSeason } from "./types/tvmaze";
 
 export const getSeasons = (showEpisodes: ShowEpisode[]) => {
     const seasonNumbers = showEpisodes.map(showEpisode => showEpisode.season_number);
     return [...new Set(seasonNumbers)];
+};
+
+export const createSearchItemPayload = (
+    show: string,
+    formValues: SearchItemFormValues,
+    showSeasons: TVMazeSeason[]
+) => {
+    let seasons = formValues?.seasons;
+    if (formValues.seasonChoice === "all") {
+        seasons = showSeasons.map(season => season.number);
+    }
+    const conditions: SearchItemPayload['conditions'] = {
+        exact_title_match: formValues?.exactSearch || false,
+        min_season_number: Math.min(...seasons),
+        max_season_number: Math.max(...seasons),
+        ignore_episodes: formValues?.ignoreEpisodes || [],
+    };
+    if (formValues.seasonChoice === "some") {
+        const ignored_seasons = showSeasons.filter(
+            season => !formValues.seasons.includes(season.number)
+        );
+        conditions.ignore_seasons = ignored_seasons.map(season => season.number);
+    }
+    else {
+        conditions.ignore_seasons = [];
+    }
+
+    return conditions;
 };
 
 export const validateTVMazeSeasons = (seasons: TVMazeSeason[]) => {

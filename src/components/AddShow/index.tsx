@@ -21,7 +21,8 @@ import ShowStatusTag from "./ShowStatusTag";
 import { PrevArrow, NextArrow } from "./ArrowComponents";
 import { RecordedShowsContext, UserContext } from "../../contexts";
 import { addNewShow, getShowSeasons, searchNewShow } from "../../requests";
-import { ErrorResponse, NewShowPayload, TVMazeSeason, TVMazeShow } from "../../utils/types";
+import { createSearchItemPayload } from "../../utils";
+import { ErrorResponse, NewShowPayload, SearchItemFormValues, TVMazeSeason, TVMazeShow } from "../../utils/types";
 import './AddShow.scss';
 
 interface AddShowProps {
@@ -52,7 +53,7 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
     const { currentUser } = useContext(UserContext);
     const { notification } = App.useApp();
 
-    const [form] = Form.useForm<FormValues>();
+    const [form] = Form.useForm<SearchItemFormValues>();
 
     useEffect(() => {
         setState('initial');
@@ -76,26 +77,17 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
         }
         
         const formValues = form.getFieldsValue();
-        let seasons = formValues?.seasons;
-        if (formValues.seasonChoice === "all") {
-            seasons = showSeasons.map(season => season.number);
-        }
-        const searchCriteria: NewShowPayload['conditions'] = {
-            exact_title_match: formValues?.exactSearch || false,
-            min_season_number: Math.min(...seasons),
-            max_season_number: Math.max(...seasons)
+        
+        const searchConditions = createSearchItemPayload(showSelected.show.name, formValues, showSeasons);
+
+        const newShow: NewShowPayload = {
+            name: showSelected.show.name,
+            conditions: searchConditions
         };
-        if (formValues.seasonChoice === "some") {
-            const ignored_seasons = showSeasons.filter(
-                season => !formValues.seasons.includes(season.number)
-            );
-            searchCriteria.ignore_seasons = ignored_seasons.map(season => season.number);
-        }
         
         try {
             const showData = await addNewShow(
-                showSelected.show.name,
-                searchCriteria,
+                newShow,
                 currentUser.token
             );
             setState('success');

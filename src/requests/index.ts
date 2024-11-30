@@ -41,19 +41,10 @@ const getGuide = async () => {
 export const getShows = () => {
     return getRequest<ShowData[]>("/shows");
 }
-const addNewShow = async (
-    name: string,
-    conditions: NewShowPayload['conditions'],
-    token: string
-): Promise<ShowData> => {
-    const data: NewShowPayload = {
-        name,
-        conditions
-    };
-
+const addNewShow = async (newShowData: NewShowPayload, token: string): Promise<ShowData> => {
     const newShowDetails = await postRequest<NewShowPayload, ShowData>(
         "/shows",
-        data,
+        newShowData,
         { Authorization: `Bearer ${token}` }
     );
     return newShowDetails;

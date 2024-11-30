@@ -3,9 +3,11 @@ import { Checkbox, Form, Modal, notification, Radio, Select, Space, Spin } from 
 
 import { RecordedShowsContext } from "../../contexts";
 import { getEpisodes, getShowSeasons } from "../../requests";
+import { createSearchItemPayload } from "../../utils";
 import {
     ErrorResponse,
     SearchItem,
+    SearchItemFormValues,
     SearchItemPayload,
     ShowData,
     TVMazeSeason
@@ -40,7 +42,7 @@ const SearchItemForm = (props: AddSearchItemProps) => {
 
     const { shows } = useContext(RecordedShowsContext);
 
-    const [form] = Form.useForm<FormValues>();
+    const [form] = Form.useForm<SearchItemFormValues>();
 
     useEffect(() => {
         const showItem = shows.find(showData => showData.show_name === show);
@@ -95,9 +97,9 @@ const SearchItemForm = (props: AddSearchItemProps) => {
     };
 
     const setInitialValuesForSeasons = () => {
-        if (searchItem.conditions.ignore_seasons.length !== 0) {
+        if (searchItem.conditions && searchItem.conditions?.ignore_seasons.length !== 0) {
             const seasonsSelected = showSeasons.filter(
-                season => !searchItem.conditions.ignore_seasons.includes(season.number)
+                season => !searchItem.conditions?.ignore_seasons.includes(season.number)
             );
             form.setFields([
                 {
@@ -136,33 +138,15 @@ const SearchItemForm = (props: AddSearchItemProps) => {
         
         const formValues = form.getFieldsValue();
 
-        let seasons = formValues?.seasons;
-        if (formValues.seasonChoice === "all") {
-            seasons = showSeasons.map(season => season.number);
-        }
-        const conditions: SearchItemPayload['conditions'] = {
-            exact_title_match: formValues?.exactSearch || false,
-            min_season_number: Math.min(...seasons),
-            max_season_number: Math.max(...seasons),
-            ignore_episodes: formValues?.ignoreEpisodes || [],
-        };
-        if (formValues.seasonChoice === "some") {
-            const ignored_seasons = showSeasons.filter(
-                season => !formValues.seasons.includes(season.number)
-            );
-            conditions.ignore_seasons = ignored_seasons.map(season => season.number);
-        }
-        else {
-            conditions.ignore_seasons = [];
-        }
+        const searchConditions = createSearchItemPayload(show, formValues,  showSeasons);
 
-        const searchCriteria: SearchItemPayload = {
-            show,
-            conditions
+        const searchItem: SearchItemPayload = {
+            show: show,
+            conditions: searchConditions
         };
 
         try {
-            const result = await successHandler(searchCriteria);
+            const result = await successHandler(searchItem);
             notification.success({
                 message: 'Success!',
                 description: result,
@@ -251,7 +235,7 @@ const SearchItemForm = (props: AddSearchItemProps) => {
                     <Form.Item
                             name="ignoreEpisodes"
                             label="Ignore Episodes"
-                            initialValue={searchItem.conditions.ignore_episodes}
+                            initialValue={searchItem?.conditions?.ignore_episodes}
                         >
                             <Select
                                 options={filteredEpisodes ? filteredEpisodes.map(episode => (

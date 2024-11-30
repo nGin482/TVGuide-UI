@@ -146,6 +146,7 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
                 locale={{
                     emptyText: <EmptyTableView description={<EmptyDescription />} />
                 }}
+                rowKey={record => record.show}
             />
             {openModal && (
                 <SearchItemForm

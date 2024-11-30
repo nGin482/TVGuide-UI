@@ -93,6 +93,14 @@ interface SearchItemPayload {
     }
 }
 
+interface SearchItemFormValues {
+    searchTerm: string
+    exactSearch: boolean
+    seasons: number[]
+    seasonChoice: "all" | "some"
+    ignoreEpisodes: string[]
+}
+
 interface User {
     username: string
     show_subscriptions: string[]
@@ -201,6 +209,7 @@ export type {
     SubscriptionsPayload,
     NewShowPayload,
     SearchItemPayload,
+    SearchItemFormValues,
     SuccessResponse,
     FailedResponse,
     ErrorResponse,
