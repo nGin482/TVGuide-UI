@@ -95,7 +95,7 @@ const SearchItemForm = (props: AddSearchItemProps) => {
     };
 
     const setInitialValuesForSeasons = () => {
-        if (showSeasons.length !== searchItem.conditions.ignore_seasons.length) {
+        if (searchItem.conditions.ignore_seasons.length !== 0) {
             const seasonsSelected = showSeasons.filter(
                 season => !searchItem.conditions.ignore_seasons.includes(season.number)
             );
