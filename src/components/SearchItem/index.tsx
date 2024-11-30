@@ -1,6 +1,8 @@
-import { Alert, Button, Dropdown, MenuProps, Table, TableColumnsType, Tag } from "antd";
+import { useState } from "react";
+import { Button, Dropdown, MenuProps, Table, TableColumnsType, Tag, Typography } from "antd";
 import { EditOutlined, DeleteFilled } from "@ant-design/icons";
 
+import { AddSearchItem } from "./AddSearchItem";
 import { EmptyTableView } from "../EmptyTableView";
 import type { SearchItem } from "../../utils/types";
 import "./SearchItem.css";
@@ -12,7 +14,9 @@ interface SearchItemProps {
 }
 
 const SearchItem = ({ searchItem, show }: SearchItemProps) => {
+    const [openModal, setOpenModal] = useState(false);
 
+    const { Text } = Typography;
 
     const columns: TableColumnsType<SearchItem> = [
         {
@@ -87,21 +91,32 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
         }
     ];
 
+    const EmptyDescription = () => (
+        <>
+            <Text type="secondary">No search item configured for {show}</Text>
+            <br />
+            <Button onClick={() => setOpenModal(true)}>Add Search Criteria</Button>
+        </>
+    );
+
     return (
-        searchItem ? (
-            <>
-                <Table
-                    columns={columns}
-                    dataSource={[searchItem]}
-                    bordered
-                    locale={{
-                        emptyText: <EmptyTableView text={`No search configured for ${show}`} />
-                    }}
+        <>
+            <Table
+                columns={columns}
+                dataSource={searchItem ? [searchItem] : null}
+                bordered
+                locale={{
+                    emptyText: <EmptyTableView description={<EmptyDescription />} />
+                }}
+            />
+            {openModal && (
+                <AddSearchItem
+                    open={openModal}
+                    setOpen={setOpenModal}
+                    show={show}
                 />
-            </>
-        ) : (
-            <Alert message="No search item was found for this show" type="warning" />
-        )
+            )}
+        </>
     );
 };
 

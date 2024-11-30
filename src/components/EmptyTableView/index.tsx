@@ -1,13 +1,14 @@
+import { ReactNode } from "react";
 import { Empty } from "antd";
 
 interface EmptyTableProps {
-    text: string
+    description: ReactNode
 }
 
-const EmptyTableView = ({ text }: EmptyTableProps) => (
+const EmptyTableView = ({ description }: EmptyTableProps) => (
     <Empty
         image={Empty.PRESENTED_IMAGE_SIMPLE}
-        description={text}
+        description={description}
     />
 );
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-import { validateTVMazeSeasons } from "../utils";
-import { TVMazeSeason, TVMazeShow } from "../utils/types/tvmaze";
+import { validateTVMazeEpisodes, validateTVMazeSeasons } from "../utils";
+import { TVMazeEpisode, TVMazeSeason, TVMazeShow } from "../utils/types/tvmaze";
 
 const baseURL = 'https://api.tvmaze.com';
 
@@ -16,5 +16,16 @@ export const getShowSeasons = async (tvMazeId: number | string) => {
     if (response.status === 200) {
         const seasons = validateTVMazeSeasons(response.data);
         return seasons;
+    }
+};
+
+export const getEpisodes = async (tvmazeId: number | string) => {
+    const response = await axios.get<TVMazeEpisode[]>(
+        `${baseURL}/shows/${tvmazeId}/episodes?specials=1`
+    );
+
+    if (response.status === 200) {
+        const episodes = validateTVMazeEpisodes(response.data);
+        return episodes;
     }
 };
