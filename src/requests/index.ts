@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { getRequest, postRequest } from "./api-client";
+import { getRequest, postRequest, putRequest } from "./api-client";
 import {
     Guide,
     RecordedShowModel,
@@ -80,11 +80,20 @@ const removeShowFromList = async (showToRemove: string, token: string) => {
 
 export const addSearchCriteria = async (searchCriteria: SearchItemPayload, token: string) => {
     const newSearchItem = await postRequest<SearchItemPayload, SearchItem>(
-        `/search_item`,
+        `/search-item`,
         searchCriteria,
         { Authorization: `Bearer ${token}` }
     );
     return newSearchItem;
+};
+
+export const editSearchCriteria = async (searchCriteria: SearchItemPayload, token: string) => {
+    const updatedSearchItem = await putRequest<SearchItemPayload, SearchItem>(
+        `/search-item/${searchCriteria.show}`,
+        searchCriteria,
+        { Authorization: `Bearer ${token}` }
+    );
+    return updatedSearchItem;
 };
 
 const getRecordedShow = (show: string) => {

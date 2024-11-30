@@ -36,3 +36,19 @@ export const postRequest = async <RequestType, ResponseType>(
 
     return response.data;
 };
+
+export const putRequest = async <RequestType, ResponseType>(
+    endpoint: string,
+    data: RequestType,
+    otherHeaders?: AxiosRequestConfig['headers']
+) => {
+    const response = await axios.put<ResponseType>(
+        baseURL + endpoint,
+        data,
+        {
+            headers: headers(otherHeaders)
+        }
+    );
+
+    return response.data;
+};

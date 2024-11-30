@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from "react";
-import type { Dispatch, SetStateAction } from "react";
 import { Checkbox, Form, Modal, notification, Radio, Select, Space, Spin } from "antd";
 
-import { RecordedShowsContext, UserContext } from "../../contexts";
-import { addSearchCriteria, getEpisodes, getShowSeasons } from "../../requests";
+import { RecordedShowsContext } from "../../contexts";
+import { getEpisodes, getShowSeasons } from "../../requests";
 import {
     ErrorResponse,
     SearchItem,
@@ -19,7 +18,7 @@ interface AddSearchItemProps {
     open: boolean
     show: string
     closeModal: () => void
-    successHandler: (searchCriteria: SearchItemPayload) => void
+    successHandler: (searchCriteria: SearchItemPayload) => Promise<string>
     searchItem?: SearchItem
 }
 
@@ -40,7 +39,6 @@ const SearchItemForm = (props: AddSearchItemProps) => {
     const [filteredEpisodes, setFilteredEpisodes] = useState<TVMazeEpisode[]>(null);
 
     const { shows } = useContext(RecordedShowsContext);
-    const { currentUser } = useContext(UserContext);
 
     const [form] = Form.useForm<FormValues>();
 
@@ -70,6 +68,9 @@ const SearchItemForm = (props: AddSearchItemProps) => {
 
     const handleFormUpdate = (field: keyof FormValues, value: string | string[] | number[]) => {
         setFormValues(current => ({ ...current, [field]: value }));
+        if (field === "seasonChoice" && value === "all") {
+            setFormValues(current => ({ ...current, seasons: [] }));
+        }
     };
 
     const filterOptions = (input: string) => {
@@ -95,16 +96,34 @@ const SearchItemForm = (props: AddSearchItemProps) => {
 
     const setInitialValuesForSeasons = () => {
         if (showSeasons.length !== searchItem.conditions.ignore_seasons.length) {
-            form.setFieldValue("seasonChoice", "some");
-            handleFormUpdate("seasonChoice", "some");
             const seasonsSelected = showSeasons.filter(
                 season => !searchItem.conditions.ignore_seasons.includes(season.number)
             );
+            form.setFields([
+                {
+                    name: "seasonChoice",
+                    value: "some"
+                },
+                {
+                    name: "seasons",
+                    value: seasonsSelected.map(season => season.number)
+                }
+            ]);
+            handleFormUpdate("seasonChoice", "some");
             handleFormUpdate("seasons", seasonsSelected.map(season => season.number));
-            form.setFieldValue("seasons", seasonsSelected.map(season => season.number));
         }
         else {
-            form.setFieldValue("seasonChoice", "all");
+            form.setFields([
+                {
+                    name: "seasonChoice",
+                    value: "all"
+                },
+                {
+                    name: "seasons",
+                    value: null
+                }
+            ]);
+            handleFormUpdate("seasons", []);
             handleFormUpdate("seasonChoice", "all");
         }
     }
@@ -125,13 +144,16 @@ const SearchItemForm = (props: AddSearchItemProps) => {
             exact_title_match: formValues?.exactSearch || false,
             min_season_number: Math.min(...seasons),
             max_season_number: Math.max(...seasons),
-            ignore_episodes: formValues?.ignoreEpisodes || []
+            ignore_episodes: formValues?.ignoreEpisodes || [],
         };
         if (formValues.seasonChoice === "some") {
             const ignored_seasons = showSeasons.filter(
                 season => !formValues.seasons.includes(season.number)
             );
             conditions.ignore_seasons = ignored_seasons.map(season => season.number);
+        }
+        else {
+            conditions.ignore_seasons = [];
         }
 
         const searchCriteria: SearchItemPayload = {
@@ -140,7 +162,13 @@ const SearchItemForm = (props: AddSearchItemProps) => {
         };
 
         try {
-            successHandler(searchCriteria);
+            const result = await successHandler(searchCriteria);
+            notification.success({
+                message: 'Success!',
+                description: result,
+                duration: 8
+            });
+            closeModal();
         }
         catch(error) {
             let message: string =  error?.message;
@@ -183,7 +211,6 @@ const SearchItemForm = (props: AddSearchItemProps) => {
                             name="seasonChoice"
                             label="How many seasons?"
                             required
-                            // initialValue={seasonChoiceInitial}
                             rules={[
                                 {
                                     required: true,
@@ -217,6 +244,7 @@ const SearchItemForm = (props: AddSearchItemProps) => {
                                 )) : []}
                                 mode="multiple"
                                 onChange={(value: number[]) => handleFormUpdate("seasons", value)}
+                                allowClear
                             />
                         </Form.Item>
                     )}

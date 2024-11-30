@@ -6,7 +6,7 @@ import { EditOutlined, DeleteFilled } from "@ant-design/icons";
 import { SearchItemForm } from "./SearchItemForm";
 import { EmptyTableView } from "../EmptyTableView";
 import { UserContext } from "../../contexts";
-import { addSearchCriteria } from "../../requests";
+import { addSearchCriteria, editSearchCriteria } from "../../requests";
 import type { SearchItem, SearchItemPayload } from "../../utils/types";
 import "./SearchItem.css";
 
@@ -108,22 +108,13 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
 
     const addSearchItem = async (searchCriteria: SearchItemPayload) => {
         const newSearchItem = await addSearchCriteria(searchCriteria, currentUser.token);
-        console.log(newSearchItem)
-        closeModal();
-        notification.success({
-            message: 'Success!',
-            description: `The search criteria for ${show} has been added`,
-            duration: 8
-        });
+        return `The search criteria for ${show} has been added`;
     };
 
     const editSearchItem = async (searchCriteria: SearchItemPayload) => {
-        console.log(searchCriteria)
-        notification.success({
-            message: 'Success!',
-            description: `The search criteria for ${show} has been updated`,
-            duration: 8
-        });
+        const updatedSearchItem = await editSearchCriteria(searchCriteria, currentUser.token);
+        searchItem = updatedSearchItem;
+        return `The search criteria for ${show} has been updated`;
     };
 
     const EmptyDescription = () => (
