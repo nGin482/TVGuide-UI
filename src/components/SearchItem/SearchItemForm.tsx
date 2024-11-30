@@ -266,6 +266,7 @@ const SearchItemForm = (props: AddSearchItemProps) => {
                                     value
                                 )}
                                 mode="multiple"
+                                allowClear
                             />
                         </Form.Item>
                 </Form>

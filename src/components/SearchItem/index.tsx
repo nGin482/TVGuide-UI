@@ -57,13 +57,25 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
             key: "ignore_episodes",
             dataIndex: ["conditions", "ignore_episodes"],
             title: "Ignore Episodes",
-            render: (ignore_episodes: string[]) => ignore_episodes
+            render: (ignore_episodes: string[]) => (
+                <ul>
+                    {ignore_episodes.map(episode => (
+                        <li key={episode}>{episode}</li>
+                    ))}
+                </ul>
+            )
         },
         {
             key: "ignore_seasons",
             dataIndex: ["conditions", "ignore_seasons"],
             title: "Ignore Seasons",
-            render: (ignore_seasons: number[]) => ignore_seasons
+            render: (ignore_seasons: number[]) => (
+                <ul>
+                    {ignore_seasons.map(season => (
+                        <li key={season}>Season {season}</li>
+                    ))}
+                </ul>
+            )
         },
         {
             key: "ignore_titles",
