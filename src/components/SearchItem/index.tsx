@@ -5,11 +5,11 @@ import { EditOutlined, DeleteFilled } from "@ant-design/icons";
 
 import { SearchItemForm } from "./SearchItemForm";
 import { EmptyTableView } from "../EmptyTableView";
+import { useShow } from "../../hooks/useShow";
 import { UserContext } from "../../contexts";
 import { addSearchCriteria, editSearchCriteria } from "../../requests";
-import type { SearchItem, SearchItemPayload } from "../../utils/types";
+import type { FormMode, SearchItem, SearchItemPayload } from "../../utils/types";
 import "./SearchItem.css";
-import { useShow } from "../../hooks/useShow";
 
 
 interface SearchItemProps {
@@ -19,7 +19,7 @@ interface SearchItemProps {
 
 const SearchItem = ({ searchItem, show }: SearchItemProps) => {
     const [openModal, setOpenModal] = useState(false);
-    const [formMode, setFormMode] = useState<"add" | "edit">(null);
+    const [formMode, setFormMode] = useState<FormMode>(null);
 
     const { updateShowContext } = useShow();
     const { currentUser } = useContext(UserContext);
@@ -111,7 +111,7 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
         }
     ];
 
-    const openForm = (mode: "add" | "edit") => {
+    const openForm = (mode: FormMode) => {
         setFormMode(mode);
         setOpenModal(true);
     };

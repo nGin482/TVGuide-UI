@@ -173,6 +173,8 @@ interface UserResponses<Type> {
     user: Type
 };
 
+type FormMode = "add" | "edit"
+
 
 // Contexts
 interface RecordedShowsContextModel {
@@ -216,6 +218,7 @@ export type {
     UserResponses,
     SearchItemResponses,
     NewUserDetails,
+    FormMode,
     RecordedShowsContextModel,
     RemindersContextModel,
     SearchListContextModel,

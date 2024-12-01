@@ -1,11 +1,12 @@
-import { Button, Dropdown, Table, TableColumnsType } from "antd";
+import { useState } from "react";
+import { Button, Dropdown, Table, Typography } from "antd";
 import { EditOutlined, DeleteFilled } from "@ant-design/icons";
-import type { MenuProps } from "antd";
+import type { MenuProps, TableColumnsType } from "antd";
 
 import AddReminder from "./AddReminder";
 import EditReminder from "./EditReminder";
 import { EmptyTableView } from "../EmptyTableView";
-import type { Reminder } from "../../utils/types";
+import type { FormMode, Reminder } from "../../utils/types";
 
 interface ReminderProps {
     reminder: Reminder
@@ -13,6 +14,10 @@ interface ReminderProps {
 }
 
 const Reminder = ({ reminder, show }: ReminderProps) => {
+    const [openModal, setOpenModal] = useState(false);
+    const [formMode, setFormMode] = useState<FormMode>(null);
+
+    const { Text } = Typography;
 
 
     const columns: TableColumnsType<Reminder> = [
@@ -57,6 +62,23 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
         }
     ];
 
+    const openForm = (mode: FormMode) => {
+        setFormMode(mode);
+        setOpenModal(true);
+    };
+
+    const closeModal = () => {
+        setOpenModal(false);
+    };
+
+    const EmptyDescription = () => (
+        <>
+            <Text type="secondary">No reminder set for {show}</Text>
+            <br />
+            <Button onClick={() => openForm("add")}>Add Reminder</Button>
+        </>
+    );
+
     return (
         <>
             <Table 
@@ -64,7 +86,7 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
                 columns={columns}
                 rowKey={(record: Reminder) => record.show}
                 locale={{
-                    emptyText: <EmptyTableView text={`No reminder set for ${show}`} />
+                    emptyText: <EmptyTableView description={<EmptyDescription />} />
                 }}
             />
         </>
