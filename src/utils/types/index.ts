@@ -101,6 +101,8 @@ interface SearchItemFormValues {
     ignoreEpisodes: string[]
 }
 
+interface ReminderFormValues extends Partial<Reminder> {}
+
 interface User {
     username: string
     show_subscriptions: string[]
@@ -173,7 +175,7 @@ interface UserResponses<Type> {
     user: Type
 };
 
-type FormMode = "add" | "edit"
+type FormMode = "add" | "edit";
 
 
 // Contexts
@@ -212,6 +214,7 @@ export type {
     NewShowPayload,
     SearchItemPayload,
     SearchItemFormValues,
+    ReminderFormValues,
     SuccessResponse,
     FailedResponse,
     ErrorResponse,

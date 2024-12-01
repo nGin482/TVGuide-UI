@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet';
 import { Alert, Button, Card, Modal } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 
-import { AddReminder, EditReminder } from '../components/Reminders';
 import { RemindersContext, UserContext } from '../contexts';
 import { deleteReminder } from '../requests';
 import { Reminder } from '../utils/types';
@@ -39,18 +38,6 @@ const RemindersPage = () => {
                 <title>Reminders | TVGuide</title>
             </Helmet>
             <h1>Reminders</h1>
-            {showAddReminder
-                ? <AddReminder showAddReminder setShowAddReminder={setShowAddReminder}/>
-                : (
-                    <Button
-                        id="add-reminder-button"
-                        data-testid="add-reminder-button"
-                        onClick={() => setShowAddReminder(true)}
-                    >
-                        Add Reminder
-                    </Button>
-                )
-            }
             <div id="reminders">
                 {reminders.length > 0 && (
                     reminders.map(reminder =>
@@ -71,7 +58,7 @@ const RemindersPage = () => {
                                 />
                             ] : []}
                         >
-                            <blockquote>Reminder time: {reminder.reminder_alert}</blockquote>
+                            <blockquote>Reminder time: {reminder.alert}</blockquote>
                             <blockquote>Warning time: {reminder.warning_time}</blockquote>
                             <blockquote>Occasions: {reminder.occasions}</blockquote>
                         </Card>
@@ -89,14 +76,6 @@ const RemindersPage = () => {
             >
                 {error && <Alert type="error" message={error} />}
             </Modal>
-            {reminderChosen && (
-                <EditReminder
-                    reminderChosen={reminderChosen}
-                    setReminderChosen={setReminderChosen}
-                    editingReminder={editingReminder}
-                    setEditingReminder={setEditingReminder}
-                />
-            )}
         </div>
     );
 };

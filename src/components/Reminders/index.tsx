@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Dropdown, Table, Typography } from "antd";
 import { EditOutlined, DeleteFilled } from "@ant-design/icons";
 import type { MenuProps, TableColumnsType } from "antd";
 
-import AddReminder from "./AddReminder";
-import EditReminder from "./EditReminder";
+import { ReminderForm } from "./ReminderForm";
 import { EmptyTableView } from "../EmptyTableView";
-import type { FormMode, Reminder } from "../../utils/types";
+import { UserContext } from "../../contexts";
+import { addReminder, editReminder } from "../../requests";
+import type { FormMode, Reminder, ReminderFormValues } from "../../utils/types";
+import { useShow } from "../../hooks/useShow";
 
 interface ReminderProps {
     reminder: Reminder
@@ -18,6 +20,8 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
     const [formMode, setFormMode] = useState<FormMode>(null);
 
     const { Text } = Typography;
+    const { currentUser } = useContext(UserContext);
+    const { updateShowContext } = useShow();
 
 
     const columns: TableColumnsType<Reminder> = [
@@ -52,7 +56,7 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
             icon: <EditOutlined />,
             key: "edit",
             label: "Edit",
-            onClick: () => console.log('clicked edit')
+            onClick: () => openForm("edit")
         },
         {
             icon: <DeleteFilled />,
@@ -69,6 +73,20 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
 
     const closeModal = () => {
         setOpenModal(false);
+    };
+
+    const addReminderHandle = async (formValues: ReminderFormValues) => {
+        formValues.show = show;
+        const newReminder = await addReminder(formValues, currentUser.token);
+        updateShowContext(show, "reminder", newReminder);
+        return `The reminder for ${show} has been added`;
+    };
+
+    const editReminderHandle = async (formValues: ReminderFormValues) => {
+        formValues.show = show;
+        const updatedReminder = await editReminder(formValues, currentUser.token);
+        updateShowContext(show, "reminder", updatedReminder);
+        return `The reminder for ${show} has been updated`;
     };
 
     const EmptyDescription = () => (
@@ -89,10 +107,18 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
                     emptyText: <EmptyTableView description={<EmptyDescription />} />
                 }}
             />
+            {openModal && (
+                <ReminderForm
+                    mode={formMode}
+                    open={openModal}
+                    show={reminder?.show || show}
+                    closeModal={closeModal}
+                    successHandler={formMode === "add" ? addReminderHandle : editReminderHandle}
+                    initialValues={formMode === "edit" && reminder}
+                />
+            )}
         </>
     );
-
-
 };
 
-export { AddReminder, EditReminder, Reminder };
+export { Reminder };

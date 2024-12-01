@@ -19,6 +19,7 @@ import {
     ShowData,
     SearchItemPayload,
     SearchItem,
+    ReminderFormValues,
 } from "../utils/types";
 
 const baseURL = process.env.VITE_BASE_URL;
@@ -94,47 +95,19 @@ const getRecordedShow = (show: string) => {
 const getReminders = async () => {
     return await axios.get<Reminder[]>(`${baseURL}/reminders`).then((response) => response.data);
 };
-const addReminder = async (reminder: Reminder, token: string) => {
-    try {
-        const response = await axios.post<AddReminderResponse>(`${baseURL}/reminders`, reminder, headers(token));
-        return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: ErrorResponse = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+const addReminder = async (reminder: ReminderFormValues, token: string) => {
+    return await postRequest<ReminderFormValues, Reminder>(
+        `/reminders`,
+        reminder,
+        { Authorization: `Bearer ${token}` }
+    );
 };
-const editReminder = async (reminderDetails: Reminder, token: string) => {
-    try {
-        const response = await axios.put<AddReminderResponse>(
-            `${baseURL}/reminder/${reminderDetails.show}`,
-            reminderDetails,
-            headers(token)
-        );
-        return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: ErrorResponse = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+const editReminder = async (reminderDetails: ReminderFormValues, token: string) => {
+    return await putRequest<ReminderFormValues, Reminder>(
+        `/reminder/${reminderDetails.show}`,
+        reminderDetails,
+        { Authorization: `Bearer ${token}` }
+    );
 }
 const deleteReminder = async (reminder: string, token: string) => {
     try {
