@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 
-import { getRequest, postRequest, putRequest } from "./api-client";
+import { deleteRequest, getRequest, postRequest, putRequest } from "./api-client";
 import {
     Guide,
     RecordedShowModel,
@@ -109,24 +109,8 @@ const editReminder = async (reminderDetails: ReminderFormValues, token: string) 
         { Authorization: `Bearer ${token}` }
     );
 }
-const deleteReminder = async (reminder: string, token: string) => {
-    try {
-        const response = await axios.delete<AddReminderResponse>(`${baseURL}/reminder/${reminder}`, headers(token));
-        return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: ErrorResponse = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+const deleteReminder = async (show: string, token: string) => {
+    return await deleteRequest(`/reminder/${show}`, { Authorization: `Bearer ${token}` });
 };
 
 const getUser = async (username: string) => {

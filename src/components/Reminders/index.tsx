@@ -1,13 +1,13 @@
 import { useContext, useState } from "react";
-import { Button, Dropdown, Table, Typography } from "antd";
+import { App, Button, Dropdown, Popconfirm, Table, Typography } from "antd";
 import { EditOutlined, DeleteFilled } from "@ant-design/icons";
 import type { MenuProps, TableColumnsType } from "antd";
 
 import { ReminderForm } from "./ReminderForm";
 import { EmptyTableView } from "../EmptyTableView";
 import { UserContext } from "../../contexts";
-import { addReminder, editReminder } from "../../requests";
-import type { FormMode, Reminder, ReminderFormValues } from "../../utils/types";
+import { addReminder, deleteReminder, editReminder } from "../../requests";
+import type { ErrorResponse, FormMode, Reminder, ReminderFormValues } from "../../utils/types";
 import { useShow } from "../../hooks/useShow";
 
 interface ReminderProps {
@@ -19,9 +19,53 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
     const [openModal, setOpenModal] = useState(false);
     const [formMode, setFormMode] = useState<FormMode>(null);
 
+    const { notification } = App.useApp();
     const { Text } = Typography;
     const { currentUser } = useContext(UserContext);
     const { updateShowContext } = useShow();
+
+    const addReminderHandle = async (formValues: ReminderFormValues) => {
+        formValues.show = show;
+        const newReminder = await addReminder(formValues, currentUser.token);
+        updateShowContext(show, "reminder", newReminder);
+        return `The reminder for ${show} has been added`;
+    };
+
+    const editReminderHandle = async (formValues: ReminderFormValues) => {
+        formValues.show = show;
+        const updatedReminder = await editReminder(formValues, currentUser.token);
+        updateShowContext(show, "reminder", updatedReminder);
+        return `The reminder for ${show} has been updated`;
+    };
+
+    const deleteReminderHandle = async () => {
+        try {
+            await deleteReminder(show, currentUser.token);
+            updateShowContext(show, "reminder", null);
+            notification.success({
+                message: "Success!",
+                description: `The reminder for ${show} has been deleted`,
+                duration: 8
+            });
+        }
+        catch(error) {
+            let message: string =  error?.message;
+            if (error?.response) {
+                const responseError: ErrorResponse = error.response;
+                if (responseError.data.msg) {
+                    message = "You have been logged out. Please login again to delete this reminder.";
+                }
+                else {
+                    message = responseError.data.message;
+                }
+            }
+            notification.error({
+                message: `Unable to delete the reminder for ${show}`,
+                description: message,
+                duration: 8
+            });
+        }
+    };
 
 
     const columns: TableColumnsType<Reminder> = [
@@ -59,10 +103,18 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
             onClick: () => openForm("edit")
         },
         {
-            icon: <DeleteFilled />,
             key: "delete",
-            label: "Delete",
-            onClick: () => console.log('clicked delete')
+            label: (
+                <Popconfirm
+                    title={`Delete reminder for ${show}?`}
+                    okText="Delete"
+                    okButtonProps={{ style: { background: "#f00" } } }
+                    onConfirm={deleteReminderHandle}
+                    onCancel={() => console.log("not deleted")}
+                >
+                    <DeleteFilled /> Delete
+                </Popconfirm>
+            ),
         }
     ];
 
@@ -73,20 +125,6 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
 
     const closeModal = () => {
         setOpenModal(false);
-    };
-
-    const addReminderHandle = async (formValues: ReminderFormValues) => {
-        formValues.show = show;
-        const newReminder = await addReminder(formValues, currentUser.token);
-        updateShowContext(show, "reminder", newReminder);
-        return `The reminder for ${show} has been added`;
-    };
-
-    const editReminderHandle = async (formValues: ReminderFormValues) => {
-        formValues.show = show;
-        const updatedReminder = await editReminder(formValues, currentUser.token);
-        updateShowContext(show, "reminder", updatedReminder);
-        return `The reminder for ${show} has been updated`;
     };
 
     const EmptyDescription = () => (

@@ -52,3 +52,10 @@ export const putRequest = async <RequestType, ResponseType>(
 
     return response.data;
 };
+
+export const deleteRequest = async (
+    endpoint: string,
+    otherHeaders?: AxiosRequestConfig['headers']
+) => {
+    await axios.delete<void>(baseURL + endpoint, { headers: headers(otherHeaders) });
+};
