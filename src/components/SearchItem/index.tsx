@@ -9,6 +9,7 @@ import { UserContext } from "../../contexts";
 import { addSearchCriteria, editSearchCriteria } from "../../requests";
 import type { SearchItem, SearchItemPayload } from "../../utils/types";
 import "./SearchItem.css";
+import { useShow } from "../../hooks/useShow";
 
 
 interface SearchItemProps {
@@ -20,6 +21,7 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
     const [openModal, setOpenModal] = useState(false);
     const [formMode, setFormMode] = useState<"add" | "edit">(null);
 
+    const { updateShowContext } = useShow();
     const { currentUser } = useContext(UserContext);
 
     const { Text } = Typography;
@@ -120,12 +122,13 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
 
     const addSearchItem = async (searchCriteria: SearchItemPayload) => {
         const newSearchItem = await addSearchCriteria(searchCriteria, currentUser.token);
+        updateShowContext(show, "search_item", newSearchItem);
         return `The search criteria for ${show} has been added`;
     };
 
     const editSearchItem = async (searchCriteria: SearchItemPayload) => {
         const updatedSearchItem = await editSearchCriteria(searchCriteria, currentUser.token);
-        searchItem = updatedSearchItem;
+        updateShowContext(show, "search_item", updatedSearchItem);
         return `The search criteria for ${show} has been updated`;
     };
 

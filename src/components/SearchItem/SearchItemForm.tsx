@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Checkbox, Form, Modal, notification, Radio, Select, Space, Spin } from "antd";
+import { App, Checkbox, Form, Modal, Radio, Select, Space, Spin } from "antd";
 
 import { RecordedShowsContext } from "../../contexts";
 import { getEpisodes, getShowSeasons } from "../../requests";
@@ -41,6 +41,7 @@ const SearchItemForm = (props: AddSearchItemProps) => {
     const [filteredEpisodes, setFilteredEpisodes] = useState<TVMazeEpisode[]>(null);
 
     const { shows } = useContext(RecordedShowsContext);
+    const { notification } = App.useApp();
 
     const [form] = Form.useForm<SearchItemFormValues>();
 

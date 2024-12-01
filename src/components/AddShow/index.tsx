@@ -19,21 +19,22 @@ import moment from "moment";
 
 import ShowStatusTag from "./ShowStatusTag";
 import { PrevArrow, NextArrow } from "./ArrowComponents";
-import { RecordedShowsContext, UserContext } from "../../contexts";
+import { useShow } from "../../hooks/useShow";
+import { UserContext } from "../../contexts";
 import { addNewShow, getShowSeasons, searchNewShow } from "../../requests";
 import { createSearchItemPayload } from "../../utils";
-import { ErrorResponse, NewShowPayload, SearchItemFormValues, TVMazeSeason, TVMazeShow } from "../../utils/types";
+import {
+    ErrorResponse,
+    NewShowPayload,
+    SearchItemFormValues,
+    TVMazeSeason,
+    TVMazeShow
+} from "../../utils/types";
 import './AddShow.scss';
 
 interface AddShowProps {
     openModal: boolean
     setOpenModal: Dispatch<SetStateAction<boolean>>
-};
-interface FormValues {
-    searchTerm: string
-    exactSearch: boolean
-    seasons: number[]
-    seasonChoice: "all" | "some"
 };
 type FORM_STATES = 'initial' | 'searching' | 'selected' | 'success' | 'error';
 
@@ -49,7 +50,7 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
     const [error, setError] = useState('');
     const [index, setIndex] = useState(0);
     
-    const { setShows } = useContext(RecordedShowsContext);
+    const { addShowToContext } = useShow();
     const { currentUser } = useContext(UserContext);
     const { notification } = App.useApp();
 
@@ -92,7 +93,7 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
             );
             setState('success');
             setOpenModal(false);
-            setShows(current => [...current, showData]);
+            addShowToContext(showData);
             notification.success({
                 message: 'Success!',
                 description: (
