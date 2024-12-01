@@ -88,6 +88,10 @@ export const editSearchCriteria = async (searchCriteria: SearchItemPayload, toke
     return updatedSearchItem;
 };
 
+export const deleteSearchCriteria = async (show: string, token: string) => {
+    await deleteRequest(`/search-item/${show}`, { Authorization: `Bearer ${token}` });
+};
+
 const getRecordedShow = (show: string) => {
     return axios.get<RecordedShowModel>(`${baseURL}/recorded-shows/${show}`).then((response) => response.data);
 };

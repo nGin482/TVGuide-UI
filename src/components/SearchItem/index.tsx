@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Button, Dropdown, notification, Table, Tag, Typography } from "antd";
+import { App, Button, Dropdown, Popconfirm, Table, Tag, Typography } from "antd";
 import type { MenuProps, TableColumnsType } from "antd";
 import { EditOutlined, DeleteFilled } from "@ant-design/icons";
 
@@ -7,8 +7,8 @@ import { SearchItemForm } from "./SearchItemForm";
 import { EmptyTableView } from "../EmptyTableView";
 import { useShow } from "../../hooks/useShow";
 import { UserContext } from "../../contexts";
-import { addSearchCriteria, editSearchCriteria } from "../../requests";
-import type { FormMode, SearchItem, SearchItemPayload } from "../../utils/types";
+import { addSearchCriteria, deleteSearchCriteria, editSearchCriteria } from "../../requests";
+import type { ErrorResponse, FormMode, SearchItem, SearchItemPayload } from "../../utils/types";
 import "./SearchItem.css";
 
 
@@ -24,7 +24,49 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
     const { updateShowContext } = useShow();
     const { currentUser } = useContext(UserContext);
 
+    const { notification } = App.useApp();
     const { Text } = Typography;
+
+    const addSearchItem = async (searchCriteria: SearchItemPayload) => {
+        const newSearchItem = await addSearchCriteria(searchCriteria, currentUser.token);
+        updateShowContext(show, "search_item", newSearchItem);
+        return `The search criteria for ${show} has been added`;
+    };
+
+    const editSearchItem = async (searchCriteria: SearchItemPayload) => {
+        const updatedSearchItem = await editSearchCriteria(searchCriteria, currentUser.token);
+        updateShowContext(show, "search_item", updatedSearchItem);
+        return `The search criteria for ${show} has been updated`;
+    };
+
+    const deleteSearchItemHandle = async () => {
+        try {
+            await deleteSearchCriteria(show, currentUser.token);
+            updateShowContext(show, "search_item", null);
+            notification.success({
+                message: "Success!",
+                description: `The reminder for ${show} has been deleted`,
+                duration: 8
+            });
+        }
+        catch(error) {
+            let message: string =  error?.message;
+            if (error?.response) {
+                const responseError: ErrorResponse = error.response;
+                if (responseError.data.msg) {
+                    message = "You have been logged out. Please login again to delete this search criteria.";
+                }
+                else {
+                    message = responseError.data.message;
+                }
+            }
+            notification.error({
+                message: `Unable to delete the search criteria for ${show}`,
+                description: message,
+                duration: 8
+            });
+        }
+    };
 
     const columns: TableColumnsType<SearchItem> = [
         {
@@ -104,10 +146,18 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
             onClick: () => openForm("edit")
         },
         {
-            icon: <DeleteFilled />,
             key: "delete",
-            label: "Delete",
-            onClick: () => console.log('clicked delete')
+            label: (
+                <Popconfirm
+                    title={`Delete Search Criteria for ${show}?`}
+                    okText="Delete"
+                    okButtonProps={{ style: { background: "#f00" } } }
+                    onConfirm={deleteSearchItemHandle}
+                    onCancel={() => console.log("not deleted")}
+                >
+                    <DeleteFilled /> Delete
+                </Popconfirm>
+            ),
         }
     ];
 
@@ -118,18 +168,6 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
 
     const closeModal = () => {
         setOpenModal(false);
-    };
-
-    const addSearchItem = async (searchCriteria: SearchItemPayload) => {
-        const newSearchItem = await addSearchCriteria(searchCriteria, currentUser.token);
-        updateShowContext(show, "search_item", newSearchItem);
-        return `The search criteria for ${show} has been added`;
-    };
-
-    const editSearchItem = async (searchCriteria: SearchItemPayload) => {
-        const updatedSearchItem = await editSearchCriteria(searchCriteria, currentUser.token);
-        updateShowContext(show, "search_item", updatedSearchItem);
-        return `The search criteria for ${show} has been updated`;
     };
 
     const EmptyDescription = () => (
