@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Alert, Button, Table, TableColumnsType, Tag } from 'antd';
+import { Alert, Button, Dropdown, Popconfirm, Table, TableColumnsType, Tag, Typography } from 'antd';
+import { DeleteFilled, EditOutlined } from "@ant-design/icons";
+import type { MenuProps } from 'antd';
 import dayjs from 'dayjs';
 
 import { getSeasons } from '../../utils';
@@ -15,6 +17,18 @@ interface ShowProps {
 
 const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
     const [season, setSeason] = useState(1);
+    const [episodeEdited, setEpisodeEdited] = useState<ShowEpisode>(null);
+    const [showForm, setShowForm] = useState(false);
+
+    const { Text } = Typography;
+
+    const toggleForm = () => {
+        setShowForm(current => !current);
+    };
+
+    const deleteEpisodeHandle = () => {
+        console.log(`deleting episode ${episodeEdited.episode_title} with id ${episodeEdited.id}`)
+    };
 
     const episodeColumns: TableColumnsType<ShowEpisode> = [
         {
@@ -72,8 +86,53 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
                     {dayjs(air_date).format("DD/MM/YYYY")}
                 </Tag>
             )
+        },
+        {
+            key: "actions",
+            className: "actions",
+            title: "Actions",
+            render: (record: ShowEpisode) => (
+                <Dropdown
+                    menu={{ items: menuItems }}
+                    trigger={["click"]}
+                    onOpenChange={() => setEpisodeEdited(record)}
+                >
+                    <Button>Edit Episode</Button>
+                </Dropdown>
+            )
+        },
+    ];
+
+    const menuItems: MenuProps['items'] = [
+        {
+            icon: <EditOutlined />,
+            key: "edit",
+            label: "Edit",
+            onClick: toggleForm
+        },
+        {
+            key: "delete",
+            label: (
+                <Popconfirm
+                    title={`Delete Episode?`}
+                    okText="Delete"
+                    okButtonProps={{ style: { background: "#f00" } } }
+                    onConfirm={deleteEpisodeHandle}
+                    onCancel={() => console.log("not deleted")}
+                >
+                    <DeleteFilled /> Delete
+                </Popconfirm>
+            ),
         }
     ];
+
+    const EmptyDescription = () => (
+        <>
+            <Text>No episodes found for {showName}</Text>
+            <br />
+            <Button>Get Episodes</Button>
+        </>
+    );
 
     return (
         episodes ? (
@@ -109,7 +168,7 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
                         }
                     }
                     locale={{
-                        emptyText: <EmptyTableView text={`No episodes found for ${showName}`} />
+                        emptyText: <EmptyTableView description={<EmptyDescription />} />
                     }}
                 />
             </div>
