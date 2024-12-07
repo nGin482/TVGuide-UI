@@ -139,7 +139,7 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
         <>
             <Table 
                 dataSource={reminder ? [reminder] : null}
-                columns={columns}
+                columns={currentUser ? columns : columns.filter(col => col.key !== "actions")}
                 rowKey={(record: Reminder) => record.show}
                 locale={{
                     emptyText: <EmptyTableView description={<EmptyDescription />} />

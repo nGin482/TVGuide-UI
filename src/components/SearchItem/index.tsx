@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { App, Button, Dropdown, Popconfirm, Table, Tag, Typography } from "antd";
 import type { MenuProps, TableColumnsType } from "antd";
 import { EditOutlined, DeleteFilled } from "@ant-design/icons";
@@ -181,7 +181,7 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
     return (
         <>
             <Table
-                columns={columns}
+                columns={currentUser ? columns : columns.filter(col => col.key !== "actions")}
                 dataSource={searchItem ? [searchItem] : null}
                 bordered
                 locale={{
