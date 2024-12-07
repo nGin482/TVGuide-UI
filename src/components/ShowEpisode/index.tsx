@@ -5,10 +5,11 @@ import { DeleteFilled, EditOutlined } from "@ant-design/icons";
 import type { MenuProps } from 'antd';
 import dayjs from 'dayjs';
 
+import { EmptyTableView } from '../EmptyTableView';
+import { EpisodeForm } from './EpisodeForm';
 import { getSeasons } from '../../utils';
 import { ShowEpisode } from '../../utils/types';
 import "./ShowEpisode.css";
-import { EmptyTableView } from '../EmptyTableView';
 
 interface ShowProps {
     episodes: ShowEpisode[]
@@ -171,6 +172,14 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
                         emptyText: <EmptyTableView description={<EmptyDescription />} />
                     }}
                 />
+                {showForm && (
+                    <EpisodeForm
+                        episode={episodeEdited}
+                        open={showForm}
+                        closeForm={toggleForm}
+                        successHandler={() => null}
+                    />
+                )}
             </div>
         )
         : (
