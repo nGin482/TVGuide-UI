@@ -1,9 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DatePicker, Form, Modal, Input, Select } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 
 import { CHANNELS } from "./channels";
+import { RecordedShowsContext } from "../../contexts";
+import { getEpisodes, getShowSeasons } from "../../requests";
 import { ShowEpisode } from "../../utils/types";
+import { TVMazeEpisode, TVMazeSeason } from "../../utils/types/tvmaze";
 
 interface EpisodeFormProps {
     episode: ShowEpisode
@@ -16,12 +19,50 @@ const EpisodeForm = (props: EpisodeFormProps) => {
     const { episode, open, closeForm, successHandler } = props;
 
     const [formValues, setFormValues] = useState<ShowEpisode>(episode);
+    const [allSeasons, setAllSeasons] = useState<TVMazeSeason[]>([]);
+    const [allEpisodes, setAllEpisodes] = useState<TVMazeEpisode[]>([]);
+    const [episodeSelected, setEpisodeSelected] = useState<TVMazeEpisode>(null);
+    
+    const [form] = Form.useForm<ShowEpisode>();
+    const { shows } = useContext(RecordedShowsContext);
+
+    useEffect(() => {
+        const showData = shows.find(show => show.show_name === episode.show);
+        fetchAllSeasons(showData.show_details.tvmaze_id);
+        fetchAllEpisodes(showData.show_details.tvmaze_id);
+    }, []);
 
     useEffect(() => {
         console.log(formValues)
+        setEpisodeSelected(allEpisodes.find(tvmazeEpisode =>
+            tvmazeEpisode.season === formValues.season_number &&
+            tvmazeEpisode.number === formValues.episode_number
+        ));
     }, [formValues])
 
-    const [form] = Form.useForm<ShowEpisode>();
+    useEffect(() => {
+        if (episodeSelected && formValues.episode_title !== episodeSelected?.name) {
+            form.setFieldsValue({
+                episode_title: episodeSelected.name,
+                summary: episodeSelected.summary
+            });
+            setFormValues(current => ({
+                ...current,
+                episode_title: episodeSelected.name,
+                summary: episodeSelected.summary
+            }));
+        }
+    }, [episodeSelected]);
+
+    const fetchAllSeasons = async (tvmazeId: string) => {
+        const seasons = await getShowSeasons(tvmazeId);
+        setAllSeasons(seasons);
+    }
+
+    const fetchAllEpisodes = async (tvmazeId: string) => {
+        const episodes = await getEpisodes(tvmazeId);
+        setAllEpisodes(episodes);
+    };
 
     const convertDatetoDayJS = (date: Date) => {
         return dayjs(date);
@@ -46,8 +87,13 @@ const EpisodeForm = (props: EpisodeFormProps) => {
                     name="season_number"
                     initialValue={episode.season_number}
                 >
-                    <Input
-                        onChange={event => handleInput("season_number", event.currentTarget.value)}
+                    <Select
+                        options={allSeasons.map(season => ({
+                            label: `${season.number}`,
+                            value: season.number
+                        }))}
+                        onChange={value => handleInput("season_number", value)}
+                        value={episode.season_number}
                     />
                 </Form.Item>
                 <Form.Item
@@ -55,8 +101,16 @@ const EpisodeForm = (props: EpisodeFormProps) => {
                     name="episode_number"
                     initialValue={episode.episode_number}
                 >
-                    <Input
-                        onChange={event => handleInput("episode_number", event.currentTarget.value)}
+                    <Select
+                        options={allEpisodes.filter(tvmazeEpisode => 
+                            tvmazeEpisode.season === formValues.season_number
+                        ).map(episode => ({
+                                label: `${episode.number}`,
+                                value: episode.number
+                            })
+                        )}
+                        onChange={value => handleInput("episode_number", value)}
+                        value={episode.episode_number}
                     />
                 </Form.Item>
                 <Form.Item
