@@ -57,7 +57,7 @@ const EpisodeForm = (props: EpisodeFormProps) => {
     const fetchAllSeasons = async (tvmazeId: string) => {
         const seasons = await getShowSeasons(tvmazeId);
         setAllSeasons(seasons);
-    }
+    };
 
     const fetchAllEpisodes = async (tvmazeId: string) => {
         const episodes = await getEpisodes(tvmazeId);
@@ -68,7 +68,7 @@ const EpisodeForm = (props: EpisodeFormProps) => {
         return dayjs(date);
     };
 
-    const handleInput = (field: keyof ShowEpisode, value: string | number | Dayjs) => {
+    const handleInput = (field: keyof ShowEpisode, value: string | string[] | number | Dayjs) => {
         setFormValues(current => ({ ...current, [field]: value }));
     };
 
@@ -120,6 +120,21 @@ const EpisodeForm = (props: EpisodeFormProps) => {
                 >
                     <Input
                         onChange={event => handleInput("episode_title", event.currentTarget.value)}
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Alternative Titles"
+                    name="alternative_titles"
+                    initialValue={episode.alternative_titles}
+                >
+                    <Select
+                        mode="tags"
+                        options={formValues.alternative_titles.map(title => ({
+                            label: title,
+                            value: title 
+                        }))}
+                        onChange={value => handleInput("alternative_titles", value)}
+                        value={formValues.alternative_titles}
                     />
                 </Form.Item>
                 <Form.Item
