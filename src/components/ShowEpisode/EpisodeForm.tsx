@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { DatePicker, Form, Modal, Input, Select } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 
+import { CustomEditor } from "../Editor";
 import { CHANNELS } from "./channels";
 import { RecordedShowsContext } from "../../contexts";
 import { getEpisodes, getShowSeasons } from "../../requests";
@@ -64,9 +65,7 @@ const EpisodeForm = (props: EpisodeFormProps) => {
         setAllEpisodes(episodes);
     };
 
-    const convertDatetoDayJS = (date: Date) => {
-        return dayjs(date);
-    };
+    const convertDatetoDayJS = (date: Date) => dayjs(date);
 
     const handleInput = (field: keyof ShowEpisode, value: string | string[] | number | Dayjs) => {
         setFormValues(current => ({ ...current, [field]: value }));
@@ -142,8 +141,9 @@ const EpisodeForm = (props: EpisodeFormProps) => {
                     name="summary"
                     initialValue={episode.summary}
                 >
-                    <Input.TextArea
-                        onChange={event => handleInput("summary", event.currentTarget.value)}
+                    <CustomEditor
+                        content={formValues.summary}
+                        updateContent={handleInput}
                     />
                 </Form.Item>
                 <Form.Item
