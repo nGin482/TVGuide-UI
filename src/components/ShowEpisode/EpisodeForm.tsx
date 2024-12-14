@@ -38,8 +38,8 @@ const EpisodeForm = (props: EpisodeFormProps) => {
             tvmazeEpisode.season === formValues.season_number &&
             tvmazeEpisode.number === formValues.episode_number
         ));
-    }, [formValues])
-
+    }, [formValues.season_number, formValues.episode_number])
+    
     useEffect(() => {
         if (episodeSelected && formValues.episode_title !== episodeSelected?.name) {
             form.setFieldsValue({
