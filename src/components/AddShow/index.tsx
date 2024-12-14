@@ -15,7 +15,7 @@ import {
 } from "antd";
 import { NavLink } from "react-router-dom";
 import classNames from "classnames";
-import moment from "moment";
+import dayjs from "dayjs";
 
 import ShowStatusTag from "./ShowStatusTag";
 import { PrevArrow, NextArrow } from "./ArrowComponents";
@@ -74,7 +74,7 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
     const addShowSubmission = async () => {
         form.validateFields();
         if (!form.getFieldsValue().exactSearch) {
-            form.setFieldValue('exact_search', false);
+            form.setFieldValue("exactSearch", false);
         }
         
         const formValues = form.getFieldsValue();
@@ -209,7 +209,7 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
                                     <p dangerouslySetInnerHTML={{ __html: result.show.summary }} />
                                     <blockquote>Premiered: {" "}
                                         <Tag color="processing">
-                                            {moment(result.show.premiered).format('DD MMMM YYYY')}
+                                            {dayjs(result.show.premiered).format('DD MMMM YYYY')}
                                         </Tag>
                                     </blockquote>
                                     <blockquote>Status: <ShowStatusTag status={result.show.status} /></blockquote>
