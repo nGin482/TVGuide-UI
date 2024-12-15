@@ -20,6 +20,7 @@ import {
     SearchItemPayload,
     SearchItem,
     ReminderFormValues,
+    ShowEpisode,
 } from "../utils/types";
 
 const baseURL = process.env.VITE_BASE_URL;
@@ -115,6 +116,14 @@ const editReminder = async (reminderDetails: ReminderFormValues, token: string) 
 }
 const deleteReminder = async (show: string, token: string) => {
     return await deleteRequest(`/reminder/${show}`, { Authorization: `Bearer ${token}` });
+};
+
+const updateShowEpisode = async (episode: ShowEpisode, token: string) => {
+    return await putRequest<ShowEpisode, ShowEpisode>(
+        `/show-episode/${episode.id}`,
+        episode,
+        { Authorization: `Bearer ${token}` }
+    );
 };
 
 const getUser = async (username: string) => {
@@ -234,6 +243,7 @@ export {
     addReminder,
     editReminder,
     deleteReminder,
+    updateShowEpisode,
     getUser,
     registerNewUser,
     changePassword,

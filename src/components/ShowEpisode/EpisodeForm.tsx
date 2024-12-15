@@ -13,11 +13,11 @@ interface EpisodeFormProps {
     episode: ShowEpisode
     open: boolean
     closeForm: () => void
-    successHandler: () => void
+    updateHandler: (formValues: ShowEpisode) => Promise<void>
 }
 
 const EpisodeForm = (props: EpisodeFormProps) => {
-    const { episode, open, closeForm, successHandler } = props;
+    const { episode, open, closeForm, updateHandler } = props;
 
     const [formValues, setFormValues] = useState<ShowEpisode>(episode);
     const [allSeasons, setAllSeasons] = useState<TVMazeSeason[]>([]);
@@ -34,7 +34,6 @@ const EpisodeForm = (props: EpisodeFormProps) => {
     }, []);
 
     useEffect(() => {
-        console.log(formValues)
         setEpisodeSelected(allEpisodes.find(tvmazeEpisode =>
             tvmazeEpisode.season === formValues.season_number &&
             tvmazeEpisode.number === formValues.episode_number
@@ -71,9 +70,15 @@ const EpisodeForm = (props: EpisodeFormProps) => {
         setFormValues(current => ({ ...current, [field]: value }));
     };
 
+    const updateEpisode = async () => {
+        await form.validateFields();
+        await updateHandler(formValues);
+    };
+
     return (
         <Modal
             open={open}
+            onOk={updateEpisode}
             onCancel={closeForm}
             title={`Edit ${episode.episode_title}`}
             okText="Edit Episode"

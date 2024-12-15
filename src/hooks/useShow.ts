@@ -21,16 +21,33 @@ const useShow = () => {
                 const updatedShow = { ...show, [property]: newData };
                 return updatedShow;
             }
-            else {
+            return show;
+        });
+        setShows(updatedShows);
+    };
+
+    const updateEpisodeContext = (showName: string, episodeId: number, updatedEpisode: ShowEpisode) => {
+        const show = shows.find(show => show.show_name === showName);
+        const updatedEpisodes = show.show_episodes.map(episode => {
+            if (episode.id === episodeId) {
+                return updatedEpisode;
+            }
+            return episode;
+        });
+        show.show_episodes = updatedEpisodes;
+        const updatedShows = shows.map(currentShow => {
+            if (currentShow.show_name === showName) {
                 return show;
             }
+            return currentShow;
         });
         setShows(updatedShows);
     };
 
     return {
         addShowToContext,
-        updateShowContext
+        updateShowContext,
+        updateEpisodeContext,
     };
 };
 

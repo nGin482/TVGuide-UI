@@ -1,14 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Alert, Button, Dropdown, Popconfirm, Table, TableColumnsType, Tag, Typography } from 'antd';
+import {
+    App,
+    Alert,
+    Button,
+    Dropdown,
+    Popconfirm,
+    Table,
+    TableColumnsType,
+    Tag,
+    Typography
+} from 'antd';
 import { DeleteFilled, EditOutlined } from "@ant-design/icons";
 import type { MenuProps } from 'antd';
 import dayjs from 'dayjs';
 
 import { EmptyTableView } from '../EmptyTableView';
 import { EpisodeForm } from './EpisodeForm';
+import { UserContext } from '../../contexts';
+import { useShow } from '../../hooks/useShow';
+import { updateShowEpisode } from '../../requests';
 import { getSeasons } from '../../utils';
-import { ShowEpisode } from '../../utils/types';
+import { ErrorResponse, ShowEpisode } from '../../utils/types';
 import "./ShowEpisode.css";
 
 interface ShowProps {
@@ -21,10 +34,45 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
     const [episodeEdited, setEpisodeEdited] = useState<ShowEpisode>(null);
     const [showForm, setShowForm] = useState(false);
 
+    const { notification } = App.useApp();
+    const { currentUser } = useContext(UserContext);
+    const { updateEpisodeContext } = useShow();
+
     const { Text } = Typography;
 
     const toggleForm = () => {
         setShowForm(current => !current);
+    };
+
+    const updateEpisode = async (formValues: ShowEpisode) => {
+        try {
+            const updatedEpisode = await updateShowEpisode(formValues, currentUser.token);
+            updateEpisodeContext(formValues.show, formValues.id, updatedEpisode);
+            notification.success({
+                message: "Success!",
+                description: `The episode '${formValues.episode_title}' has been updated`,
+                duration: 8
+            });
+            toggleForm();
+            setEpisodeEdited(null);
+        }
+        catch(error) {
+            let message: string =  error?.message;
+            if (error?.response) {
+                const responseError: ErrorResponse = error.response;
+                if (responseError.data.msg) {
+                    message = "You have been logged out. Please login again to update this episode.";
+                }
+                else {
+                    message = responseError.data.message;
+                }
+            }
+            notification.error({
+                message: `Unable to edit the episode for '${formValues.episode_title}'`,
+                description: message,
+                duration: 8
+            });
+        }
     };
 
     const deleteEpisodeHandle = () => {
@@ -177,7 +225,7 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
                         episode={episodeEdited}
                         open={showForm}
                         closeForm={toggleForm}
-                        successHandler={() => null}
+                        updateHandler={updateEpisode}
                     />
                 )}
             </div>
