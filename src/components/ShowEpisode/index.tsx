@@ -222,7 +222,8 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
                 />
                 {showForm && (
                     <EpisodeForm
-                        episode={episodeEdited}
+                        showName={showName}
+                        episodeId={episodeEdited.id}
                         open={showForm}
                         closeForm={toggleForm}
                         updateHandler={updateEpisode}
