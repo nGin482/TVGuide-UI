@@ -167,8 +167,10 @@ interface NewUserDetails {
 
 interface SubscriptionsPayload {
     show_subscriptions?: string[],
-    reminder_subscriptions?: string[]
+    action: SubscriptionsAction
 };
+
+export type SubscriptionsAction = "subscribe" | "unsubscribe";
 
 interface UserResponses<Type> {
     message: string

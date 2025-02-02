@@ -127,23 +127,7 @@ const updateShowEpisode = async (episode: ShowEpisode, token: string) => {
 };
 
 const getUser = async (username: string) => {
-    try {
-        const response = await axios.get<User>(`${baseURL}/user/${username}`);
-        return { result: 'success', payload: response.data } as SuccessResponse<User>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: ErrorResponse = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+    return await getRequest<User>(`/user/${username}`);
 };
 const registerNewUser = async (user: NewUserDetails) => {
     try {
@@ -186,39 +170,17 @@ const changePassword = async (username: string, newPassword: string, token: stri
         return result;
     }
 };
-const updateSubscriptions = async (username: string, subscriptions: SubscriptionsPayload, token: string) => {
-    try {
-        const response = await axios.put<UserResponses<User>>(
-            `${baseURL}/user/${username}/subscriptions`,
-            subscriptions,
-            headers(token)
-        );
-        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<User>>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: ErrorResponse = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-        else {
-            const result: FailedResponse = {
-                result: 'error',
-                status: 0,
-                statusText: error.message,
-                message: error.message === 'Network Error'
-                    ? 'Unable to communicate with the server at this time. Please try again later.'
-                    : error.message
-            };
-            return result;
-        }
-    }
+const updateSubscriptions = async (
+    username: string,
+    subscriptions: SubscriptionsPayload,
+    token: string
+) => {
+    const updatedUser = await putRequest<SubscriptionsPayload, UserResponses<User>>(
+        `/users/${username}/subscriptions`,
+        subscriptions,
+        headers(token)
+    );
+    return { result: 'success', payload: updatedUser } as SuccessResponse<UserResponses<User>>;
 };
 
 const login = async (loginDetails: { username: string, password: string }) => {
