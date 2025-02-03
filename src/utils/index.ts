@@ -58,3 +58,7 @@ export const validateTVMazeEpisodes = (episodes: TVMazeEpisode[]) => {
         return episode;
     });
 };
+
+export const sessionExpiryMessage = (action: string) => {
+    return `You have been logged out. Please log in again to ${action}.`;
+};

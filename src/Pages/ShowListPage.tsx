@@ -6,6 +6,7 @@ import { DeleteOutlined } from "@ant-design/icons";
 import AddShow from "../components/AddShow";
 import { SearchListContext, UserContext } from "../contexts";
 import { removeShowFromList } from "../requests";
+import { sessionExpiryMessage } from "../utils";
 import image from '../assets/no_image.jpg';
 import './styles/ShowList.css';
 
@@ -27,7 +28,7 @@ const ShowListPage = () => {
         else {
             notification.error({
                 message: 'Problem deleting show!',
-                description: response?.message ||  'You have been logged out. Please login again to delete this show',
+                description: response?.message ||  sessionExpiryMessage("delete this show"),
                 duration: 5
             });
         }

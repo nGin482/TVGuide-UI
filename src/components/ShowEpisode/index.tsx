@@ -20,7 +20,7 @@ import { EpisodeForm } from './EpisodeForm';
 import { UserContext } from '../../contexts';
 import { useShow } from '../../hooks/useShow';
 import { updateShowEpisode } from '../../requests';
-import { getSeasons } from '../../utils';
+import { getSeasons, sessionExpiryMessage } from '../../utils';
 import { ErrorResponse, ShowEpisode } from '../../utils/types';
 import "./ShowEpisode.css";
 
@@ -61,7 +61,7 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
             if (error?.response) {
                 const responseError: ErrorResponse = error.response;
                 if (responseError.data.msg) {
-                    message = "You have been logged out. Please login again to update this episode.";
+                    message = sessionExpiryMessage("update this episode");
                 }
                 else {
                     message = responseError.data.message;

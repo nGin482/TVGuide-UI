@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { Alert, Button, Divider, Form, Input, Space } from "antd";
 
 import { changePassword } from "../requests";
+import { sessionExpiryMessage } from "../utils";
 import { CurrentUser } from "../utils/types";
 import "../styles/ProfileSettingsPage.css";
 
@@ -40,7 +41,7 @@ const ProfileSettingsPage = ({ user }: SettingsProps) => {
         }
         else {
             const message = response.msg
-                ? 'You have been signed out. Please sign in again to change your password'
+                ? sessionExpiryMessage("change your password")
                 : response.message;
             setChangeDetailsResponse({
                 submitted: true,

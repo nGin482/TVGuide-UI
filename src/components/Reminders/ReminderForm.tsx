@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { App, Form, Modal, Input, Select, Typography, Alert } from "antd";
 
+import { sessionExpiryMessage } from "../../utils";
 import { ErrorResponse, FormMode, Reminder } from "../../utils/types";
 
 
@@ -67,7 +68,7 @@ const ReminderForm = ({ mode, open, show, closeModal, successHandler, initialVal
             if (error?.response) {
                 const responseError: ErrorResponse = error.response;
                 if (responseError.data.msg) {
-                    message = "You have been logged out. Please login again to add this reminder.";
+                    message = sessionExpiryMessage("add this reminder");
                 }
                 else {
                     message = responseError.data.message;

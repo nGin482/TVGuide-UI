@@ -8,6 +8,7 @@ import { EmptyTableView } from "../EmptyTableView";
 import { useShow } from "../../hooks/useShow";
 import { UserContext } from "../../contexts";
 import { addSearchCriteria, deleteSearchCriteria, editSearchCriteria } from "../../requests";
+import { sessionExpiryMessage } from "../../utils";
 import type { ErrorResponse, FormMode, SearchItem, SearchItemPayload } from "../../utils/types";
 import "./SearchItem.css";
 
@@ -54,7 +55,7 @@ const SearchItem = ({ searchItem, show }: SearchItemProps) => {
             if (error?.response) {
                 const responseError: ErrorResponse = error.response;
                 if (responseError.data.msg) {
-                    message = "You have been logged out. Please login again to delete this search criteria.";
+                    message = sessionExpiryMessage("delete this search criteria");
                 }
                 else {
                     message = responseError.data.message;

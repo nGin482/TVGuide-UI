@@ -6,9 +6,10 @@ import type { MenuProps, TableColumnsType } from "antd";
 import { ReminderForm } from "./ReminderForm";
 import { EmptyTableView } from "../EmptyTableView";
 import { UserContext } from "../../contexts";
-import { addReminder, deleteReminder, editReminder } from "../../requests";
-import type { ErrorResponse, FormMode, Reminder, ReminderFormValues } from "../../utils/types";
 import { useShow } from "../../hooks/useShow";
+import { addReminder, deleteReminder, editReminder } from "../../requests";
+import { sessionExpiryMessage } from "../../utils";
+import type { ErrorResponse, FormMode, Reminder, ReminderFormValues } from "../../utils/types";
 
 interface ReminderProps {
     reminder: Reminder
@@ -53,7 +54,7 @@ const Reminder = ({ reminder, show }: ReminderProps) => {
             if (error?.response) {
                 const responseError: ErrorResponse = error.response;
                 if (responseError.data.msg) {
-                    message = "You have been logged out. Please login again to delete this reminder.";
+                    message = sessionExpiryMessage("delete this reminder");
                 }
                 else {
                     message = responseError.data.message;

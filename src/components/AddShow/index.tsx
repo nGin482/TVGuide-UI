@@ -22,7 +22,7 @@ import { PrevArrow, NextArrow } from "./ArrowComponents";
 import { useShow } from "../../hooks/useShow";
 import { UserContext } from "../../contexts";
 import { addNewShow, getShowSeasons, searchNewShow } from "../../requests";
-import { createSearchItemPayload } from "../../utils";
+import { createSearchItemPayload, sessionExpiryMessage } from "../../utils";
 import {
     ErrorResponse,
     NewShowPayload,
@@ -109,7 +109,7 @@ const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
         catch(error) {
             if (error?.response) {
                 const response = error.response as ErrorResponse;
-                setError(response.data?.message || 'You have been logged out. Please login again to add this show');
+                setError(response.data?.message || sessionExpiryMessage("add this show"));
                 setState('error');
             }
         }

@@ -7,6 +7,7 @@ import TVGuide from "../components/TVGuide";
 import { SubscriptionForm } from "../components/SubscriptionForm";
 import { UserContext } from "../contexts/UserContext";
 import { getGuide, getUser, updateSubscriptions } from "../requests";
+import { sessionExpiryMessage } from "../utils";
 import { Guide, SubscriptionsPayload, User } from "../utils/types";
 import "../styles/ProfilePage.css";
 
@@ -90,7 +91,7 @@ const ProfilePage = () => {
         catch(error) {
             console.log(error?.response)
             const message = error?.response?.data?.msg
-                ? `You have been signed out. Please sign in again to ${payload.action}.`
+                ? sessionExpiryMessage(payload.action)
                 : error.message;
             notification.error({
                 message: "An error occurred updating your show subscriptions!",

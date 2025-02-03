@@ -3,7 +3,7 @@ import { App, Checkbox, Form, Modal, Radio, Select, Space, Spin } from "antd";
 
 import { RecordedShowsContext } from "../../contexts";
 import { getEpisodes, getShowSeasons } from "../../requests";
-import { createSearchItemPayload } from "../../utils";
+import { createSearchItemPayload, sessionExpiryMessage } from "../../utils";
 import {
     ErrorResponse,
     SearchItem,
@@ -134,7 +134,7 @@ const SearchItemForm = (props: AddSearchItemProps) => {
     const submitSearchItem = async () => {
         form.validateFields();
         if (!form.getFieldsValue().exactSearch) {
-            form.setFieldValue('exact_search', false);
+            form.setFieldValue("exactSearch", false);
         }
         
         const formValues = form.getFieldsValue();
@@ -160,7 +160,7 @@ const SearchItemForm = (props: AddSearchItemProps) => {
             if (error?.response) {
                 const responseError: ErrorResponse = error.response;
                 if (responseError.data.msg) {
-                    message = "You have been logged out. Please login again to add this search criteria.";
+                    message = sessionExpiryMessage("add this search criteria");
                 }
                 else {
                     message = responseError.data.message;
