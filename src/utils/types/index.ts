@@ -105,7 +105,7 @@ interface ReminderFormValues extends Partial<Reminder> {}
 
 interface User {
     username: string
-    show_subscriptions: string[]
+    show_subscriptions: SearchItem[]
     reminder_subscriptions: string[]
     role: 'Standard' | 'Admin'
 };

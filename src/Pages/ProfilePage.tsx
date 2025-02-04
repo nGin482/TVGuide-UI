@@ -6,9 +6,9 @@ import { Alert, App, Button, List, Space, Spin, Typography } from "antd";
 import TVGuide from "../components/TVGuide";
 import { SubscriptionForm } from "../components/SubscriptionForm";
 import { UserContext } from "../contexts/UserContext";
-import { getGuide, getUser, updateSubscriptions } from "../requests";
+import { getGuide, getUser, getUserSubscriptions, addSubscriptions } from "../requests";
 import { sessionExpiryMessage } from "../utils";
-import { Guide, SubscriptionsPayload, User } from "../utils/types";
+import { Guide, SubscriptionsPayload, SuccessResponse, User, UserResponses } from "../utils/types";
 import "../styles/ProfilePage.css";
 
 interface UserParam {
@@ -32,6 +32,7 @@ const ProfilePage = () => {
         if (user) {
             setLoadingUser(true);
             fetchUser(user);
+            fetchUserSubscriptions(user);
             fetchGuide();
         }
     }, [user]);
@@ -48,6 +49,10 @@ const ProfilePage = () => {
         setLoadingUser(false);
     };
 
+    const fetchUserSubscriptions = async (username: string) => {
+        await getUserSubscriptions(username);
+    };
+
     const fetchGuide = async () => {
         const guide = await getGuide();
         setUserTVGuide(guide);
@@ -59,10 +64,10 @@ const ProfilePage = () => {
 
     const unsubscribe = (show: string) => {
         const updatedSearchList = userDetails.show_subscriptions.filter(
-            searchItem => searchItem !== show
+            searchItem => searchItem.show !== show
         );
         const subscriptions: SubscriptionsPayload = {
-            show_subscriptions: updatedSearchList,
+            show_subscriptions: updatedSearchList.map(show => show.show),
             action: "unsubscribe"
         };
         updateSubscriptionsHandle(subscriptions);
@@ -77,11 +82,17 @@ const ProfilePage = () => {
     };
 
     const updateSubscriptionsHandle = async (payload: SubscriptionsPayload) => {
+        let response: User;
         try {
-            const response = await updateSubscriptions(user, payload, currentUser.token);
-            setUserDetails(response.payload.user);
+            if (payload.action === "subscribe") {
+                response = await addSubscriptions(user, payload.show_subscriptions, currentUser.token);
+            }
+            else {
+
+            }
+            setUserDetails(response);
             if (viewingOwnProfile) {
-                setUser(prevState => ({ token: prevState.token, ...response.payload.user }));
+                setUser(prevState => ({ token: prevState.token, ...response }));
             }
             notification.success({
                 message: "Success!",
@@ -89,7 +100,7 @@ const ProfilePage = () => {
             });
         }
         catch(error) {
-            console.log(error?.response)
+            console.error(error)
             const message = error?.response?.data?.msg
                 ? sessionExpiryMessage(payload.action)
                 : error.message;
@@ -120,10 +131,10 @@ const ProfilePage = () => {
                         renderItem={item => (
                             <List.Item
                                 actions={viewingOwnProfile ? [
-                                    <Button onClick={() => unsubscribe(item)}>Unsubscribe</Button>
+                                    <Button onClick={() => unsubscribe(item.show)}>Unsubscribe</Button>
                                 ] : []}
                             >
-                                <span>{item}</span>
+                                <span>{item.show}</span>
                             </List.Item>
                         )}
                         header={<strong>{viewingOwnProfile ? 'Your' : `${user}'s`} Show Subscriptions</strong>}

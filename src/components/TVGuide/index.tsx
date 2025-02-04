@@ -21,7 +21,8 @@ const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
         }
 
         if (user) {
-            guideShows = guideShows.filter(show => user.show_subscriptions.includes(show.title));
+            const userSubscriptions = user.show_subscriptions.map(searchItem => searchItem.show);
+            guideShows = guideShows.filter(guideEpisode => userSubscriptions.includes(guideEpisode.title));
         }
         
         guideShows.sort((a, b) => sortServices(a, b));

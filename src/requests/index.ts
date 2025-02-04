@@ -170,17 +170,22 @@ const changePassword = async (username: string, newPassword: string, token: stri
         return result;
     }
 };
-const updateSubscriptions = async (
+const getUserSubscriptions = async (user: string) => {
+    const data = await getRequest(`/users/${user}/subscriptions`);
+    console.log(data)
+};
+const addSubscriptions = async (
     username: string,
-    subscriptions: SubscriptionsPayload,
+    subscriptions: string[],
     token: string
 ) => {
-    const updatedUser = await putRequest<SubscriptionsPayload, UserResponses<User>>(
+    const updatedUser = await postRequest<string[], User>(
         `/users/${username}/subscriptions`,
         subscriptions,
-        headers(token)
+        { Authorization: `Bearer ${token}` }
     );
-    return { result: 'success', payload: updatedUser } as SuccessResponse<UserResponses<User>>;
+
+    return updatedUser;
 };
 
 const login = async (loginDetails: { username: string, password: string }) => {
@@ -209,7 +214,8 @@ export {
     getUser,
     registerNewUser,
     changePassword,
-    updateSubscriptions,
+    getUserSubscriptions,
+    addSubscriptions,
     login
 };
 

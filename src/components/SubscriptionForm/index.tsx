@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Form, Modal, Select } from "antd";
+
 
 import { getShows } from "../../requests";
 import { ShowData, SubscriptionsPayload, User } from "../../utils/types";
+import { RecordedShowsContext } from "../../contexts";
 
 
 interface SubscriptionFormProps {
@@ -14,28 +16,23 @@ interface SubscriptionFormProps {
 
 const SubscriptionForm = (props: SubscriptionFormProps) => {
     const { showForm, userDetails, toggleModal, updateSubscriptionsHandle } = props;
-
-    const [recordedShows, setRecordedShows] = useState<ShowData[]>([]);
-
-    useEffect(() => {
-        getShows().then(shows => setRecordedShows(shows));
-    }, []);
+    
+    const { shows } = useContext(RecordedShowsContext);
 
     const [ form ] = Form.useForm();
 
     const setSelectOptions = () => {
-        return recordedShows.map(recordedShow => (
-            { label: recordedShow.show_name, value: recordedShow.show_name }
-        ));
+        const filteredShows = shows.filter(show => show.search_item);
+        return filteredShows.map(show => ({ label: show.show_name, value: show.show_name }));
     };
 
     const subscribe = () => {
-        const updatedSearchList = userDetails.show_subscriptions.concat(form.getFieldValue('shows'));
         const subscriptions: SubscriptionsPayload = {
-            show_subscriptions: updatedSearchList,
+            show_subscriptions: form.getFieldValue('shows'),
             action: "subscribe"
         };
         updateSubscriptionsHandle(subscriptions);
+        toggleModal();
     };
 
 
