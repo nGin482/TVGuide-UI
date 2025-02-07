@@ -6,7 +6,13 @@ import { Alert, App, Button, List, Space, Spin, Typography } from "antd";
 import TVGuide from "../components/TVGuide";
 import { SubscriptionForm } from "../components/SubscriptionForm";
 import { UserContext } from "../contexts/UserContext";
-import { addSubscriptions, getGuide, getUser, getUserSubscriptions, unsubscribeFromSearch } from "../requests";
+import {
+    addSubscriptions,
+    getGuide,
+    getUser,
+    getUserSubscriptions,
+    unsubscribeFromSearch
+} from "../requests";
 import { sessionExpiryMessage } from "../utils";
 import { Guide, SubscriptionsPayload, SubscriptionsAction, User } from "../utils/types";
 import "../styles/ProfilePage.css";
@@ -36,9 +42,6 @@ const ProfilePage = () => {
             fetchGuide();
         }
     }, [user]);
-    useEffect(() => {
-        console.log(userDetails)
-    }, [userDetails])
 
     useEffect(() => {
         if (user && currentUser && user === currentUser.username) {
@@ -74,14 +77,6 @@ const ProfilePage = () => {
         updateSubscriptionsHandle(payload, "unsubscribe");
     };
 
-    const resetAllSubscriptions = async () => {
-        // const subscriptions: SubscriptionsPayload = {
-        //     show_subscriptions: [],
-        //     action: "unsubscribe"
-        // };
-        // updateSubscriptionsHandle(subscriptions);
-    };
-
     const updateSubscriptionsHandle = async (
         subscriptionsPayload: SubscriptionsPayload,
         action: SubscriptionsAction
@@ -105,7 +100,6 @@ const ProfilePage = () => {
                     subscriptions,
                     currentUser.token
                 );
-                console.log(updatedUserDetails)
             }
             setUserDetails(updatedUserDetails);
             setUser(prevState => ({ ...updatedUserDetails, token: prevState.token }));
@@ -116,12 +110,15 @@ const ProfilePage = () => {
         }
         catch(error) {
             console.error(error)
-            const message = error?.response?.data?.msg
-                ? sessionExpiryMessage("update your subscriptions")
-                : error.message;
+            let errorMessage = error?.message;
+            if (error?.response) {
+                errorMessage = error?.response?.data?.msg
+                    ? sessionExpiryMessage("update your subscriptions")
+                    : error.message;
+            }
             notification.error({
                 message: "An error occurred updating your show subscriptions!",
-                description: <Text>{message}</Text>
+                description: <Text>{errorMessage}</Text>
             });
         }
     };
@@ -157,7 +154,6 @@ const ProfilePage = () => {
                         footer={viewingOwnProfile && (
                             <Space>
                                 <Button onClick={() => toggleModal()}>Subscribe to a Show</Button>
-                                <Button onClick={() => resetAllSubscriptions()}>Unsubscribe from all</Button>
                             </Space>
                         )}
                     />

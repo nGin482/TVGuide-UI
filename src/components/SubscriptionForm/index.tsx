@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import { Form, Modal, Select } from "antd";
 
-import { addSubscriptions } from "../../requests";
 import { RecordedShowsContext, UserContext } from "../../contexts";
 import { SubscriptionsAction, SubscriptionsPayload, User } from "../../utils/types";
 
