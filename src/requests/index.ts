@@ -5,10 +5,8 @@ import {
     Guide,
     RecordedShowModel,
     Reminder,
-    AddReminderResponse,
     User,
     CurrentUser,
-    SubscriptionsPayload,
     ErrorResponse,
     FailedResponse,
     SuccessResponse,
@@ -188,6 +186,10 @@ const addSubscriptions = async (
     return updatedUser;
 };
 
+const unsubscribeFromSearch = async (subscriptionId: number, token: string) => {
+    await deleteRequest(`/users/subscriptions/${subscriptionId}`, { Authorization: `Bearer ${token}` });
+};
+
 const login = async (loginDetails: { username: string, password: string }) => {
     try {
         const response = await axios.post<UserResponses<CurrentUser>>(`${baseURL}/auth/login`, loginDetails);
@@ -216,6 +218,7 @@ export {
     changePassword,
     getUserSubscriptions,
     addSubscriptions,
+    unsubscribeFromSearch,
     login
 };
 

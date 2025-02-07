@@ -6,9 +6,9 @@ import { Alert, App, Button, List, Space, Spin, Typography } from "antd";
 import TVGuide from "../components/TVGuide";
 import { SubscriptionForm } from "../components/SubscriptionForm";
 import { UserContext } from "../contexts/UserContext";
-import { getGuide, getUser, getUserSubscriptions, addSubscriptions } from "../requests";
+import { addSubscriptions, getGuide, getUser, getUserSubscriptions, unsubscribeFromSearch } from "../requests";
 import { sessionExpiryMessage } from "../utils";
-import { Guide, SubscriptionsPayload, SuccessResponse, User, UserResponses } from "../utils/types";
+import { Guide, SubscriptionsPayload, SubscriptionsAction, User } from "../utils/types";
 import "../styles/ProfilePage.css";
 
 interface UserParam {
@@ -36,6 +36,9 @@ const ProfilePage = () => {
             fetchGuide();
         }
     }, [user]);
+    useEffect(() => {
+        console.log(userDetails)
+    }, [userDetails])
 
     useEffect(() => {
         if (user && currentUser && user === currentUser.username) {
@@ -62,38 +65,50 @@ const ProfilePage = () => {
         setShowSubscriptionModal(current => !current);
     };
 
-    const unsubscribe = (show: string) => {
-        const updatedSearchList = userDetails.show_subscriptions.filter(
-            searchItem => searchItem.show !== show
-        );
-        const subscriptions: SubscriptionsPayload = {
-            show_subscriptions: updatedSearchList.map(show => show.show),
-            action: "unsubscribe"
+    const unsubscribe = async (subscriptionId: number) => {
+        const payload: SubscriptionsPayload = {
+            unsubscribe: {
+                subscriptionId
+            }
         };
-        updateSubscriptionsHandle(subscriptions);
+        updateSubscriptionsHandle(payload, "unsubscribe");
     };
 
     const resetAllSubscriptions = async () => {
-        const subscriptions: SubscriptionsPayload = {
-            show_subscriptions: [],
-            action: "unsubscribe"
-        };
-        updateSubscriptionsHandle(subscriptions);
+        // const subscriptions: SubscriptionsPayload = {
+        //     show_subscriptions: [],
+        //     action: "unsubscribe"
+        // };
+        // updateSubscriptionsHandle(subscriptions);
     };
 
-    const updateSubscriptionsHandle = async (payload: SubscriptionsPayload) => {
-        let response: User;
+    const updateSubscriptionsHandle = async (
+        subscriptionsPayload: SubscriptionsPayload,
+        action: SubscriptionsAction
+    ) => {
         try {
-            if (payload.action === "subscribe") {
-                response = await addSubscriptions(user, payload.show_subscriptions, currentUser.token);
+            let updatedUserDetails: User;
+            if (action === "unsubscribe") {
+                const subscriptionId = subscriptionsPayload.unsubscribe.subscriptionId;
+                await unsubscribeFromSearch(subscriptionId, currentUser.token);
+                updatedUserDetails = {
+                    ...userDetails,
+                    show_subscriptions: userDetails.show_subscriptions.filter(
+                        subscription => subscription.id !== subscriptionId
+                    )
+                };
             }
             else {
-
+                const subscriptions = subscriptionsPayload.subscribe.show_subscriptions;
+                updatedUserDetails = await addSubscriptions(
+                    currentUser.username,
+                    subscriptions,
+                    currentUser.token
+                );
+                console.log(updatedUserDetails)
             }
-            setUserDetails(response);
-            if (viewingOwnProfile) {
-                setUser(prevState => ({ token: prevState.token, ...response }));
-            }
+            setUserDetails(updatedUserDetails);
+            setUser(prevState => ({ ...updatedUserDetails, token: prevState.token }));
             notification.success({
                 message: "Success!",
                 description: "Your subscriptions have been updated",
@@ -102,7 +117,7 @@ const ProfilePage = () => {
         catch(error) {
             console.error(error)
             const message = error?.response?.data?.msg
-                ? sessionExpiryMessage(payload.action)
+                ? sessionExpiryMessage("update your subscriptions")
                 : error.message;
             notification.error({
                 message: "An error occurred updating your show subscriptions!",
@@ -131,10 +146,10 @@ const ProfilePage = () => {
                         renderItem={item => (
                             <List.Item
                                 actions={viewingOwnProfile ? [
-                                    <Button onClick={() => unsubscribe(item.show)}>Unsubscribe</Button>
+                                    <Button onClick={() => unsubscribe(item.id)}>Unsubscribe</Button>
                                 ] : []}
                             >
-                                <span>{item.show}</span>
+                                <span>{item.search_item.show}</span>
                             </List.Item>
                         )}
                         header={<strong>{viewingOwnProfile ? 'Your' : `${user}'s`} Show Subscriptions</strong>}

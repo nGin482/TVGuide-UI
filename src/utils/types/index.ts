@@ -105,7 +105,7 @@ interface ReminderFormValues extends Partial<Reminder> {}
 
 interface User {
     username: string
-    show_subscriptions: SearchItem[]
+    show_subscriptions: UserSearchSubscription[]
     reminder_subscriptions: string[]
     role: 'Standard' | 'Admin'
 };
@@ -113,6 +113,13 @@ interface User {
 interface CurrentUser extends User {
     token: string
 };
+
+interface UserSearchSubscription {
+    id: number
+    user_id: number
+    search_id: number
+    search_item: SearchItem
+}
 
 interface UserContextModel {
     currentUser: CurrentUser
@@ -166,8 +173,12 @@ interface NewUserDetails {
 };
 
 interface SubscriptionsPayload {
-    show_subscriptions?: string[],
-    action: SubscriptionsAction
+    subscribe?: {
+        show_subscriptions: string[]
+    }
+    unsubscribe?: {
+        subscriptionId: number
+    }
 };
 
 export type SubscriptionsAction = "subscribe" | "unsubscribe";

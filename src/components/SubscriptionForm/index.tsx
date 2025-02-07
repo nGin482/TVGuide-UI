@@ -1,37 +1,41 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Form, Modal, Select } from "antd";
 
-
-import { getShows } from "../../requests";
-import { ShowData, SubscriptionsPayload, User } from "../../utils/types";
-import { RecordedShowsContext } from "../../contexts";
+import { addSubscriptions } from "../../requests";
+import { RecordedShowsContext, UserContext } from "../../contexts";
+import { SubscriptionsAction, SubscriptionsPayload, User } from "../../utils/types";
 
 
 interface SubscriptionFormProps {
     showForm: boolean
     userDetails: User
     toggleModal: () => void
-    updateSubscriptionsHandle: (subscriptions: SubscriptionsPayload) => Promise<void>
+    updateSubscriptionsHandle: (
+        payload: SubscriptionsPayload,
+        action: SubscriptionsAction
+    ) => Promise<void>
 }
 
 const SubscriptionForm = (props: SubscriptionFormProps) => {
-    const { showForm, userDetails, toggleModal, updateSubscriptionsHandle } = props;
+    const { showForm, toggleModal, updateSubscriptionsHandle } = props;
     
     const { shows } = useContext(RecordedShowsContext);
+    const { currentUser } = useContext(UserContext);
 
-    const [ form ] = Form.useForm();
+    const [ form ] = Form.useForm<{ shows: string[] }>();
 
     const setSelectOptions = () => {
         const filteredShows = shows.filter(show => show.search_item);
         return filteredShows.map(show => ({ label: show.show_name, value: show.show_name }));
     };
 
-    const subscribe = () => {
-        const subscriptions: SubscriptionsPayload = {
-            show_subscriptions: form.getFieldValue('shows'),
-            action: "subscribe"
+    const subscribe = async () => {
+        const payload: SubscriptionsPayload = {
+            subscribe: {
+                show_subscriptions: form.getFieldValue("shows")
+            }
         };
-        updateSubscriptionsHandle(subscriptions);
+        updateSubscriptionsHandle(payload, "subscribe");
         toggleModal();
     };
 
