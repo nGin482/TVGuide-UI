@@ -36,7 +36,7 @@ const headers = (token: string) => {
 };
 
 const getGuide = async () => {
-    return await getRequest<Guide>(`/guide?date=10/08/2024`);
+    return await getRequest<Guide>(`/guide`);
 };
 
 export const getShows = () => {
