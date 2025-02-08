@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { Helmet } from "react-helmet";
-import { Alert, Button, Divider, Form, Input, Space } from "antd";
+import { App, Button, Divider, Flex, Form, Input, Typography } from "antd";
 
 import { changePassword } from "../requests";
 import { sessionExpiryMessage } from "../utils";
@@ -16,37 +15,26 @@ interface AccountDetailsFormValues {
     password: string
 };
 
-interface ChangeDetailsResponse {
-    submitted: boolean
-    result: boolean
-    message: string
-};
-
 const ProfileSettingsPage = ({ user }: SettingsProps) => {
-    const baseChangeDetailsResponse: ChangeDetailsResponse = {
-        submitted: false,
-        result: false,
-        message: ''
-    };
-    const [changeDetailsResponse, setChangeDetailsResponse] = useState<ChangeDetailsResponse>(baseChangeDetailsResponse);
+
+    const { notification } = App.useApp();
+    const { Title } = Typography;
 
     const changeDetailsHandle = async (values: AccountDetailsFormValues) => {
-        const response = await changePassword(user.username, values.password, user.token);
-        if (response.result === 'success') {
-            setChangeDetailsResponse({
-                submitted: true,
-                result: true,
-                message: response.payload.message
+        try {
+            await changePassword(user.username, values.password, user.token);
+            notification.success({
+                message: "Success!",
+                description: "Your password has been updated"
             });
         }
-        else {
-            const message = response.msg
+        catch(error) {
+            const message = error?.response?.msg
                 ? sessionExpiryMessage("change your password")
-                : response.message;
-            setChangeDetailsResponse({
-                submitted: true,
-                result: false,
-                message: message
+                : error?.response?.message;
+            notification.error({
+                message: "An error occurred updating your password",
+                description: message
             });
         }
     };
@@ -57,38 +45,43 @@ const ProfileSettingsPage = ({ user }: SettingsProps) => {
             <Helmet>
                 <title>Your Settings | TVGuide</title>
             </Helmet>
-            <h3>{user.username}</h3>
+            <Title level={3}>
+                {user.username}
+            </Title>
             <Divider />
-            <div id="change-details">
-                <h5>Change Account Details</h5>
-                <Form
-                    onFinish={changeDetailsHandle}
-                >
-                    <Form.Item
-                        label="Change Username"
-                        name="username"
+            <Flex justify="space-around" className="account-settings-wrapper">
+                <div id="change-details">
+                    <h5>Change Account Details</h5>
+                    <Form
+                        onFinish={changeDetailsHandle}
                     >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Change Password"
-                        name="password"
-                    >
-                        <Input.Password />
-                    </Form.Item>
-                    <Form.Item>
-                        <Space>
+                        <Form.Item
+                            label="Change Username"
+                            name="username"
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            label="Change Password"
+                            name="password"
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                        <Form.Item>
                             <Button htmlType="submit" type="primary">Submit</Button>
-                        </Space>
-                    </Form.Item>
-                </Form>
-                {changeDetailsResponse.submitted && (
-                    <Alert
-                        type={changeDetailsResponse.result ? "success" : "error"}
-                        message={changeDetailsResponse.message}
-                    />
-                )}
-            </div>
+                        </Form.Item>
+                    </Form>
+                </div>
+                <div id="delete-account-section">
+                    <Title level={4}>Delete Your Account</Title>
+                    <p>Please be certain before deleting your account.
+                        <br/>
+                        NOTE: Any shows or reminders you have requested to be added will not be deleted as these are used for all users.
+                    </p>
+                    <Button danger type="primary" className="delete-account">Delete Account</Button>
+                </div>
+            </Flex>
+            
             {user.role !== 'Admin' && (
                 <>
                     <Divider orientation="left">Request Administrator Access</Divider>
@@ -106,16 +99,8 @@ const ProfileSettingsPage = ({ user }: SettingsProps) => {
                     </div>
                 </>
             )}
-            <div id="delete-account-section">
-                <Divider orientation="left">Delete Account</Divider>
-                <p>Please be certain before deleting your account.
-                    <br/>
-                    NOTE: Any shows or reminders you have requested to be added will not be deleted as these are used for all users.
-                </p>
-                <Button danger type="primary">Delete Account</Button>
-            </div>
         </>
-    )
+    );
 };
 
 export default ProfileSettingsPage;
