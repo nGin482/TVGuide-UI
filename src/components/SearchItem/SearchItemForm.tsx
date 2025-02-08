@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { App, Checkbox, Form, Modal, Radio, Select, Space, Spin } from "antd";
 
-import { RecordedShowsContext } from "../../contexts";
+import { ShowsContext } from "../../contexts";
 import { getEpisodes, getShowSeasons } from "../../requests";
 import { createSearchItemPayload, sessionExpiryMessage } from "../../utils";
 import {
@@ -40,7 +40,7 @@ const SearchItemForm = (props: AddSearchItemProps) => {
     const [showEpisodes, setShowEpisodes] = useState<TVMazeEpisode[]>(null);
     const [filteredEpisodes, setFilteredEpisodes] = useState<TVMazeEpisode[]>(null);
 
-    const { shows } = useContext(RecordedShowsContext);
+    const { shows } = useContext(ShowsContext);
     const { notification } = App.useApp();
 
     const [form] = Form.useForm<SearchItemFormValues>();

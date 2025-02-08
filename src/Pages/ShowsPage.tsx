@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 import { Button, Card, Image } from "antd";
 
 import AddShow from "../components/AddShow";
-import { RecordedShowsContext, UserContext } from "../contexts";
+import { ShowsContext, UserContext } from "../contexts";
 import { getSeasons } from "../utils";
 import './styles/RecordedShows.css';
 
@@ -12,7 +12,7 @@ const ShowsPage = () => {
     const [addingNewShow, setAddingNewShow] = useState(false);
 
     const history = useHistory();
-    const { shows } = useContext(RecordedShowsContext);
+    const { shows } = useContext(ShowsContext);
     const { currentUser } = useContext(UserContext);
 
     return (

@@ -4,7 +4,7 @@ import dayjs, { Dayjs } from "dayjs";
 
 import { CustomEditor } from "../Editor";
 import { CHANNELS } from "./channels";
-import { RecordedShowsContext } from "../../contexts";
+import { ShowsContext } from "../../contexts";
 import { getEpisodes, getShowSeasons } from "../../requests";
 import { ShowEpisode } from "../../utils/types";
 import { TVMazeEpisode, TVMazeSeason } from "../../utils/types/tvmaze";
@@ -27,7 +27,7 @@ const EpisodeForm = (props: EpisodeFormProps) => {
     const [episodeSelected, setEpisodeSelected] = useState<TVMazeEpisode>(null);
     
     const [form] = Form.useForm<ShowEpisode>();
-    const { shows } = useContext(RecordedShowsContext);
+    const { shows } = useContext(ShowsContext);
 
     useEffect(() => {
         const showData = shows.find(show => show.show_name === showName);

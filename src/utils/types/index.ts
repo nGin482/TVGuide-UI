@@ -197,19 +197,9 @@ type FormMode = "add" | "edit";
 
 
 // Contexts
-interface RecordedShowsContextModel {
+interface ShowsContextModel {
     shows: ShowData[]
     setShows: React.Dispatch<React.SetStateAction<ShowData[]>>
-};
-
-interface RemindersContextModel {
-    reminders: Reminder[]
-    setReminders: React.Dispatch<React.SetStateAction<Reminder[]>>
-};
-
-interface SearchListContextModel {
-    searchList: SearchItem[]
-    setSearchList: React.Dispatch<React.SetStateAction<SearchItem[]>>
 };
 
 interface ErrorsContextModel {
@@ -241,8 +231,6 @@ export type {
     NewUserDetails,
     AccountDetailsFormValues,
     FormMode,
-    RecordedShowsContextModel,
-    RemindersContextModel,
-    SearchListContextModel,
+    ShowsContextModel,
     ErrorsContextModel
 };

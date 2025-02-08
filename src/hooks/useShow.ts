@@ -1,11 +1,11 @@
 import { useContext } from "react";
 
-import { RecordedShowsContext } from "../contexts";
+import { ShowsContext } from "../contexts";
 import { Reminder, SearchItem, ShowData, ShowDetails, ShowEpisode } from "../utils/types";
 
 const useShow = () => {
 
-    const { shows, setShows } = useContext(RecordedShowsContext);
+    const { shows, setShows } = useContext(ShowsContext);
 
     const addShowToContext = (newShow: ShowData) => {
         setShows(current => [...current, newShow]);

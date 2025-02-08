@@ -1,5 +1,5 @@
 import { createContext } from "react";
 
-import { RecordedShowsContextModel } from "../utils/types";
+import { ShowsContextModel } from "../utils/types";
 
-export const RecordedShowsContext = createContext<RecordedShowsContextModel>(null);
+export const ShowsContext = createContext<ShowsContextModel>(null);

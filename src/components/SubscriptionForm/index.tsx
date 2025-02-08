@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Form, Modal, Select } from "antd";
 
-import { RecordedShowsContext, UserContext } from "../../contexts";
+import { ShowsContext, UserContext } from "../../contexts";
 import { SubscriptionsAction, SubscriptionsPayload, User } from "../../utils/types";
 
 
@@ -18,7 +18,7 @@ interface SubscriptionFormProps {
 const SubscriptionForm = (props: SubscriptionFormProps) => {
     const { showForm, toggleModal, updateSubscriptionsHandle } = props;
     
-    const { shows } = useContext(RecordedShowsContext);
+    const { shows } = useContext(ShowsContext);
     const { currentUser } = useContext(UserContext);
 
     const [ form ] = Form.useForm<{ shows: string[] }>();

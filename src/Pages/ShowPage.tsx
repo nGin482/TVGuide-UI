@@ -7,7 +7,7 @@ import { ShowDetails } from "../components/ShowDetails";
 import { ShowEpisodes } from "../components/ShowEpisode";
 import { SearchItem } from "../components/SearchItem";
 import { Reminder } from "../components/Reminders";
-import { RecordedShowsContext } from "../contexts";
+import { ShowsContext } from "../contexts";
 import { ShowData } from "../utils/types";
 import "./styles/ShowPage.css";
 
@@ -22,7 +22,7 @@ const ShowPage = () => {
     const [showData, setshowData] = useState<ShowData>(null);
     const [dataView, setDataView] = useState<DataView>(null);
 
-    const { shows } = useContext(RecordedShowsContext);
+    const { shows } = useContext(ShowsContext);
     const location = useLocation();
     
     useEffect(() => {
