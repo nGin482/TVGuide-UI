@@ -20,16 +20,8 @@ const NavigationMenu = () => {
             key: 'home'
         },
         {
-            label: <NavLink to="/show-list" exact={false}>Search List</NavLink>,
-            key: 'show-list'
-        },
-        {
             label: <NavLink to="/shows" exact={true}>Recorded Shows</NavLink>,
             key: 'shows'
-        },
-        {
-            label: <NavLink to="/reminders" exact={false}>Reminders</NavLink>,
-            key: 'reminders'
         },
         {
             label: <NavLink to="/login" exact={false}>Login</NavLink>,
