@@ -202,11 +202,6 @@ interface ShowsContextModel {
     setShows: React.Dispatch<React.SetStateAction<ShowData[]>>
 };
 
-interface ErrorsContextModel {
-    errors: string[]
-    setErrors: React.Dispatch<React.SetStateAction<string[]>>
-};
-
 export type {
     Guide,
     GuideShow,
@@ -232,5 +227,4 @@ export type {
     AccountDetailsFormValues,
     FormMode,
     ShowsContextModel,
-    ErrorsContextModel
 };
