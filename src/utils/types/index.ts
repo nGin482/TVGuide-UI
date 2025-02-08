@@ -165,6 +165,11 @@ interface FailedResponse extends BaseResponse {
     msg?: string
 };
 
+interface LoginData {
+    username: string
+    password: string
+}
+
 interface NewUserDetails {
     username: string
     password: string
@@ -182,11 +187,6 @@ interface SubscriptionsPayload {
 };
 
 export type SubscriptionsAction = "subscribe" | "unsubscribe";
-
-interface UserResponses<Type> {
-    message: string
-    user: Type
-};
 
 interface AccountDetailsFormValues {
     username?: string
@@ -221,8 +221,8 @@ export type {
     SuccessResponse,
     FailedResponse,
     ErrorResponse,
-    UserResponses,
     SearchItemResponses,
+    LoginData,
     NewUserDetails,
     AccountDetailsFormValues,
     FormMode,

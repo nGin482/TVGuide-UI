@@ -3,14 +3,12 @@ import axios, { AxiosResponse } from "axios";
 import { deleteRequest, getRequest, postRequest, putRequest } from "./api-client";
 import {
     Guide,
-    RecordedShowModel,
     Reminder,
     User,
     CurrentUser,
     ErrorResponse,
     FailedResponse,
     SuccessResponse,
-    UserResponses,
     SearchItemResponses,
     NewUserDetails,
     NewShowPayload,
@@ -20,6 +18,7 @@ import {
     ReminderFormValues,
     ShowEpisode,
     AccountDetailsFormValues,
+    LoginData,
 } from "../utils/types";
 
 const baseURL = process.env.VITE_BASE_URL;
@@ -92,10 +91,6 @@ export const deleteSearchCriteria = async (show: string, token: string) => {
     await deleteRequest(`/search-item/${show}`, { Authorization: `Bearer ${token}` });
 };
 
-const getRecordedShow = (show: string) => {
-    return axios.get<RecordedShowModel>(`${baseURL}/recorded-shows/${show}`).then((response) => response.data);
-};
-
 const getReminders = async () => {
     return await axios.get<Reminder[]>(`${baseURL}/reminders`).then((response) => response.data);
 };
@@ -129,20 +124,8 @@ const getUser = async (username: string) => {
     return await getRequest<User>(`/user/${username}`);
 };
 const registerNewUser = async (user: NewUserDetails) => {
-    try {
-        const response = await axios.post<UserResponses<CurrentUser>>(`${baseURL}/auth/register`, user);
-        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
-    }
-    catch(error) {
-        const response: ErrorResponse = error.response;
-        const result: FailedResponse = {
-            result: 'error',
-            status: response.status,
-            statusText: response.statusText,
-            message: response.data.message
-        };
-        return result;
-    }
+    const newUser = await postRequest<NewUserDetails, CurrentUser>(`/auth/register`, user);
+    return newUser;
 };
 const changePassword = async (
     username: string,
@@ -179,24 +162,15 @@ const unsubscribeFromSearch = async (subscriptionId: number, token: string) => {
     await deleteRequest(`/users/subscriptions/${subscriptionId}`, { Authorization: `Bearer ${token}` });
 };
 
-const login = async (loginDetails: { username: string, password: string }) => {
-    try {
-        const response = await axios.post<UserResponses<CurrentUser>>(`${baseURL}/auth/login`, loginDetails);
-        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
-    }
-    catch(err) {
-        if (err?.response) {
-            const payload: FailedResponse = err.response.data
-            return { result: 'error', ...payload }
-        }
-    }
+const login = async (loginDetails: LoginData) => {
+    const currentUser = await postRequest<LoginData, CurrentUser>(`/auth/login`, loginDetails);
+    return currentUser;
 };
 
 export {
     getGuide,
     addNewShow,
     removeShowFromList,
-    getRecordedShow,
     getReminders,
     addReminder,
     editReminder,
