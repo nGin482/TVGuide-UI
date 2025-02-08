@@ -3,7 +3,7 @@ import Cookies from "universal-cookie";
 
 import { RecordedShowsContext, RemindersContext, SearchListContext, UserContext, ErrorsContext } from "../contexts";
 import { CurrentUser, Reminder, SearchItem, ShowData } from "../utils/types";
-import { getReminders, getShows } from "../requests";
+import { getShows } from "../requests";
 
 const ContextWrapper = ({ children }: { children: JSX.Element | JSX.Element[] }) => {
     const cookies = new Cookies('user', { path: '/' });
@@ -16,13 +16,18 @@ const ContextWrapper = ({ children }: { children: JSX.Element | JSX.Element[] })
     const [errors, setErrors] = useState<string[]>([]);
 
     useEffect(() => {
-        getShows()
-            .then(shows => setShows(shows))
-            .catch(error => setErrors(prev => [...prev, catchError(error, 'Recorded Shows')]));
-        getReminders()
-            .then(reminders => setReminders(reminders))
-            .catch(error => setErrors(prev => [...prev, catchError(error, 'Reminders')]));
+        fetchShows();
     }, []);
+
+    const fetchShows = async () => {
+        try {
+            const shows = await getShows();
+            setShows(shows);
+        }
+        catch(error) {
+            setErrors(prev => [...prev, catchError(error, 'Recorded Shows')]);
+        }
+    };
 
     const catchError = (error, resource: string) => {
         if (error?.response) {
