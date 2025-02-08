@@ -1,37 +1,40 @@
+import { useContext } from "react";
 import { Helmet } from "react-helmet";
 import { App, Button, Divider, Flex, Form, Input, Typography } from "antd";
 
+import { UserContext } from "../contexts";
 import { changePassword } from "../requests";
 import { sessionExpiryMessage } from "../utils";
-import { CurrentUser } from "../utils/types";
+import { AccountDetailsFormValues, CurrentUser } from "../utils/types";
 import "../styles/ProfileSettingsPage.css";
 
 interface SettingsProps {
     user: CurrentUser
 };
 
-interface AccountDetailsFormValues {
-    username: string
-    password: string
-};
 
 const ProfileSettingsPage = ({ user }: SettingsProps) => {
 
+    const { setUser } = useContext(UserContext);
     const { notification } = App.useApp();
     const { Title } = Typography;
 
     const changeDetailsHandle = async (values: AccountDetailsFormValues) => {
         try {
-            await changePassword(user.username, values.password, user.token);
+            const updatedDetails = await changePassword(user.username, values, user.token);
+            setUser(current => ({ ...updatedDetails, token: current.token }));
             notification.success({
                 message: "Success!",
                 description: "Your password has been updated"
             });
         }
         catch(error) {
-            const message = error?.response?.msg
-                ? sessionExpiryMessage("change your password")
-                : error?.response?.message;
+            let message = error?.message;
+            if (error?.response) {
+                message = error?.response?.data?.msg
+                    ? sessionExpiryMessage("change your password")
+                    : error?.response?.data?.message;
+            }
             notification.error({
                 message: "An error occurred updating your password",
                 description: message

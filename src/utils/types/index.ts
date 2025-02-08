@@ -188,6 +188,11 @@ interface UserResponses<Type> {
     user: Type
 };
 
+interface AccountDetailsFormValues {
+    username?: string
+    password?: string
+};
+
 type FormMode = "add" | "edit";
 
 
@@ -234,6 +239,7 @@ export type {
     UserResponses,
     SearchItemResponses,
     NewUserDetails,
+    AccountDetailsFormValues,
     FormMode,
     RecordedShowsContextModel,
     RemindersContextModel,

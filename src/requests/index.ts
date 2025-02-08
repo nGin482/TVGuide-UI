@@ -19,6 +19,7 @@ import {
     SearchItem,
     ReminderFormValues,
     ShowEpisode,
+    AccountDetailsFormValues,
 } from "../utils/types";
 
 const baseURL = process.env.VITE_BASE_URL;
@@ -143,30 +144,18 @@ const registerNewUser = async (user: NewUserDetails) => {
         return result;
     }
 };
-const changePassword = async (username: string, newPassword: string, token: string) => {
-    try {
-        const response = await axios.post<UserResponses<CurrentUser>>(
-            `${baseURL}/user/${username}/change_password`,
-            { password: newPassword },
-            headers(token)
-        );
-        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
+const changePassword = async (
+    username: string,
+    details: AccountDetailsFormValues,
+    token: string
+) => {
+    const response = await putRequest<{ password: string }, User>(
+        `/user/${username}/change_password`,
+        { password: details.password },
+        { Authorization: `Bearer ${token}` }
+    );
 
-    }
-    catch(error) {
-        const response: ErrorResponse = error.response;
-        const message = error?.response
-            ? response.data.message
-            : 'Unable to communicate with the server. Please try again later';
-        const result: FailedResponse = {
-            result: 'error',
-            status: response?.status || 0,
-            statusText: response?.statusText || '',
-            message,
-            msg: response?.data.msg
-        };
-        return result;
-    }
+    return response;
 };
 const getUserSubscriptions = async (user: string) => {
     const data = await getRequest(`/users/${user}/subscriptions`);
