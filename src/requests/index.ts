@@ -1,38 +1,20 @@
-import axios, { AxiosResponse } from "axios";
 
 import { deleteRequest, getRequest, postRequest, putRequest } from "./api-client";
 import {
-    Guide,
-    Reminder,
-    User,
+    AccountDetailsFormValues,
     CurrentUser,
-    ErrorResponse,
-    FailedResponse,
-    SuccessResponse,
-    SearchItemResponses,
-    NewUserDetails,
+    Guide,
+    LoginData,
     NewShowPayload,
-    ShowData,
+    NewUserDetails,
+    Reminder,
+    ReminderFormValues,
     SearchItemPayload,
     SearchItem,
-    ReminderFormValues,
+    ShowData,
     ShowEpisode,
-    AccountDetailsFormValues,
-    LoginData,
+    User,
 } from "../utils/types";
-
-const baseURL = process.env.VITE_BASE_URL;
-
-
-const headers = (token: string) => {
-    return {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
-    };
-};
 
 const getGuide = async () => {
     return await getRequest<Guide>(`/guide`);
@@ -50,23 +32,10 @@ const addNewShow = async (newShowData: NewShowPayload, token: string): Promise<S
     return newShowDetails;
 };
 const removeShowFromList = async (showToRemove: string, token: string) => {
-    try {
-        const response: AxiosResponse<SearchItemResponses> = await axios.delete(`${baseURL}/show-list/${showToRemove}`, headers(token));
-        return { result: 'success', payload: response.data } as SuccessResponse<SearchItemResponses>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: ErrorResponse = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+    await deleteRequest(
+        `/shows/${showToRemove}`,
+        { Authorization: `Bearer ${token}` }
+    );
 };
 
 export const addSearchCriteria = async (searchCriteria: SearchItemPayload, token: string) => {
@@ -92,7 +61,8 @@ export const deleteSearchCriteria = async (show: string, token: string) => {
 };
 
 const getReminders = async () => {
-    return await axios.get<Reminder[]>(`${baseURL}/reminders`).then((response) => response.data);
+    const reminders = await getRequest<Reminder[]>("/reminders");
+    return reminders;
 };
 const addReminder = async (reminder: ReminderFormValues, token: string) => {
     return await postRequest<ReminderFormValues, Reminder>(

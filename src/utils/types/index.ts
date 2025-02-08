@@ -26,6 +26,7 @@ export interface ShowData {
     search_item: SearchItem
     reminder: Reminder
 }
+
 export interface ShowDetails {
     title: string
     description: string
@@ -45,26 +46,6 @@ export interface ShowEpisode {
     channels: string[]
     air_dates: Date[]
 }
-
-interface RecordedShowModel {
-    show: string
-    seasons: Season[]
-    tvmaze_id: string
-};
-
-interface Season {
-    season_number: string | number
-    episodes: Episode[]
-};
-
-interface Episode {
-    episode_number: number
-    episode_title: string
-    alternative_titles: string[]
-    summary: string
-    channels: string[]
-    air_dates: string[]
-};
 
 interface Reminder {
     show: string
@@ -121,49 +102,12 @@ interface UserSearchSubscription {
     search_item: SearchItem
 }
 
-interface UserContextModel {
-    currentUser: CurrentUser
-    setUser: React.Dispatch<React.SetStateAction<CurrentUser>>
-};
-
-interface BaseResponse {
-    message: string
-};
-
 interface NewShowPayload {
     name: string,
     conditions: Partial<SearchItem['conditions']> & {
         exact_title_match: boolean
     }
 }
-
-interface SuccessResponse<Type> {
-    result: 'success'
-    payload: Type
-};
-interface ErrorResponse extends AxiosResponse {
-    data: {
-        message?: string
-        msg?: "Token has expired"
-    }
-}
-
-interface AddReminderResponse extends BaseResponse {
-    result: 'success'
-    reminders: Reminder[]
-};
-
-interface SearchItemResponses {
-    message: string
-    searchList: SearchItem[]
-};
-
-interface FailedResponse extends BaseResponse {
-    result: 'error'
-    status: number
-    statusText: string
-    msg?: string
-};
 
 interface LoginData {
     username: string
@@ -202,26 +146,24 @@ interface ShowsContextModel {
     setShows: React.Dispatch<React.SetStateAction<ShowData[]>>
 };
 
+interface UserContextModel {
+    currentUser: CurrentUser
+    setUser: React.Dispatch<React.SetStateAction<CurrentUser>>
+};
+
 export type {
     Guide,
     GuideShow,
-    RecordedShowModel,
-    Episode,
     Reminder,
     SearchItem,
     User,
     UserContextModel,
     CurrentUser,
-    AddReminderResponse,
     SubscriptionsPayload,
     NewShowPayload,
     SearchItemPayload,
     SearchItemFormValues,
     ReminderFormValues,
-    SuccessResponse,
-    FailedResponse,
-    ErrorResponse,
-    SearchItemResponses,
     LoginData,
     NewUserDetails,
     AccountDetailsFormValues,
