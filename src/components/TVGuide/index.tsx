@@ -3,6 +3,7 @@ import { Button, Table, TableColumnsType, Tag } from "antd";
 
 import { Guide, GuideShow, User } from "../../utils/types";
 import './TVGuide.css';
+import { EmptyTableView } from "../EmptyTableView";
 
 const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
     const [service, setService] = useState('All');
@@ -103,9 +104,12 @@ const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
                     {
                         position: ['bottomCenter'],
                         pageSize: 50,
-                        hideOnSinglePage: true
+                        hideOnSinglePage: true,
                     }
                 }
+                locale={{
+                    emptyText: <EmptyTableView description="No episodes for this day" />,
+                }}
                 rowKey={record => `${record.channel}-${record.start_time}`}
             />
         </div>
