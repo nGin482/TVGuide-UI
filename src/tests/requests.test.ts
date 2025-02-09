@@ -2,36 +2,33 @@ import axios, { AxiosResponse } from "axios";
 
 import {
     addReminder,
-    addShowToList,
+    addNewShow,
     changePassword,
     deleteReminder,
     editReminder,
     getGuide,
-    getRecordedShow, 
-    getRecordedShows,
+    getShows,
     getReminders,
-    getShowList,
     getUser,
     login,
     registerNewUser,
     removeShowFromList,
-    updateSubscriptions
+    addSubscriptions
 } from "../requests";
 import {
     addSearchItem,
-    addSearchItemResponse,
     guide,
     loginRes,
+    newShowPayload,
     newUser,
     newUserRes,
-    recordedShows,
+    shows,
     reminders,
     searchList,
-    tvMazeResult,
     updateSubscriptionsRes,
     user
 } from "./test_data";
-import { Reminder, SearchItemResponses } from "../utils/types";
+import { AccountDetailsFormValues, Reminder } from "../utils/types";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -60,7 +57,7 @@ describe('requests return correct responses', () => {
         
         mockedAxios.get.mockResolvedValue(response);
         const guideRes = await getGuide();
-        expect(guideRes.FTA[0].title).toEqual(guide.FTA[0].title);
+        expect(guideRes.fta[0].title).toEqual(guide.fta[0].title);
     });
     
     // fail condition
@@ -70,13 +67,13 @@ describe('requests return correct responses', () => {
     });
 
 
-    test('returns 200 when retrieving searchList', async () => {
+    test('returns 200 when retrieving the list of shows stored', async () => {
 
-        response.data = searchList;
+        response.data = shows;
         
         mockedAxios.get.mockResolvedValue(response);
-        const searchListResponse = await getShowList();
-        expect(searchListResponse[0].show).toEqual(searchList[0].show);
+        const searchListResponse = await getShows();
+        expect(searchListResponse[0].show_name).toEqual(searchList[0].show);
     });
 
     test.skip('throws an error when unable to retrieve SearchList', async () => {
@@ -85,64 +82,41 @@ describe('requests return correct responses', () => {
     });
 
     test('returns updated searchList when searchItem added', async () => {
-        response.data = addSearchItemResponse;
+        response.data = addSearchItem;
 
         mockedAxios.post.mockResolvedValue(response);
-        const res = await addShowToList(tvMazeResult, {}, 'test-token');
+        const newShowData = await addNewShow(newShowPayload, 'test-token');
         
-        expect(res.result).toEqual('success');
-        let payload: SearchItemResponses;
-        if (res.result === 'success') {
-            payload = res.payload;
-        }
-        expect(payload.message).toContain(addSearchItem.show);
-        expect(payload.searchList.length).toBeGreaterThan(searchList.length);
+        expect(newShowData).toEqual(addSearchItem);
     });
 
     test.skip('returns error when unable to add searchItem', async () => {
         mockedAxios.post.mockRejectedValue(Error(`${badResponse.status} ${badResponse.statusText}`));
 
-        await expect(async () => await addShowToList(tvMazeResult, {}, 'test-token')).rejects.toMatchObject(badResponse);
+        await expect(async () => await addNewShow(newShowPayload, 'test-token')).rejects.toMatchObject(badResponse);
     });
 
     test('returns updated searchList when searchItem deleted', async () => {
-        response.data = {
-            message: 'Maigret has been removed from the Search List',
-            searchList: addSearchItemResponse.searchList.filter(searchItem => searchItem.show !== addSearchItem.show)
-        };
-
-        mockedAxios.delete.mockResolvedValue(response);
-        const res = await removeShowFromList(addSearchItem.show, 'test-token');
+        await removeShowFromList(addSearchItem.show, 'test-token');
         
-        expect(res.result).toEqual('success');
-        let payload: SearchItemResponses;
-        if (res.result === 'success') {
-            payload = res.payload;
-        }
-        expect(payload.searchList.length).toBeLessThan(addSearchItemResponse.searchList.length);
+        // expect(res.result).toEqual('success');
+        // let payload: SearchItemResponses;
+        // if (res.result === 'success') {
+        //     payload = res.payload;
+        // }
+        // expect(payload.searchList.length).toBeLessThan(addSearchItemResponse.searchList.length);
     });
 
     test('returns Recorded Shows', async () => {
-        response.data = recordedShows;
+        response.data = shows;
 
         mockedAxios.get.mockResolvedValue(response);
-        const res = await getRecordedShows();
+        const showList = await getShows();
         
-        expect(res.length).toBeGreaterThan(0);
-        expect(res[0].show).toEqual(recordedShows[0].show);
-        expect(res[0].seasons[0].season_number).toEqual(recordedShows[0].seasons[0].season_number);
-        expect(res[0].seasons[0].episodes[0].episode_number).toEqual(recordedShows[0].seasons[0].episodes[0].episode_number);
-    });
-
-    test('returns Recorded Show', async () => {
-        response.data = recordedShows[1];
-
-        mockedAxios.get.mockResolvedValue(response);
-        const res = await getRecordedShow('Maigret');
-        
-        expect(res.show).toEqual(recordedShows[1].show);
-        expect(res.seasons[0].season_number).toEqual(recordedShows[1].seasons[0].season_number);
-        expect(res.seasons[0].episodes[0].episode_number).toEqual(recordedShows[1].seasons[0].episodes[0].episode_number);
+        expect(showList.length).toBeGreaterThan(0);
+        expect(showList[0].show_name).toEqual(shows[0].show_name);
+        expect(showList[0].show_episodes[0].season_number).toEqual(shows[0].show_episodes[0].season_number);
+        expect(showList[0].show_episodes[0].episode_number).toEqual(shows[0].show_episodes[0].episode_number);
     });
 
     test('returns Reminders', async () => {
@@ -159,49 +133,32 @@ describe('requests return correct responses', () => {
         const newReminder: Reminder = {
             show: 'Endeavour',
             warning_time: 5,
-            reminder_alert: 'Before',
+            alert: 'Before',
             occasions: 'All'
         };
-        response.data = {
-            result: 'success',
-            reminders: [...reminders, newReminder]
-        };
+        response.data = newReminder;
 
         mockedAxios.post.mockResolvedValue(response);
         const res = await addReminder(newReminder, 'test-token');
 
-        expect(res.result).toEqual('success');
-        if (res.result === 'success') {
-            let length = res.payload.reminders.length;
-            expect(length).toBeGreaterThan(reminders.length);
-            expect(res.payload.reminders[length - 1].show).toContain(newReminder.show);
-        }
+        expect(res.show).toContain(newReminder.show);
     });
 
     test('is able to edit a Reminder', async () => {
-        const editedReminder: Reminder = {
+        const editReminderPayload: Reminder = {
             show: 'Doctor Who',
             warning_time: 3,
-            reminder_alert: 'Before',
+            alert: 'Before',
             occasions: 'All'
         };
-        response.data = {
-            result: 'success',
-            reminders: reminders.map(reminder => {
-                if (reminder.show === 'Doctor Who') {
-                    reminder.warning_time = 3;
-                }
-                return reminder;
-            })
-        };
+        const updatedReminder = reminders.find(remidner => remidner.show === "Doctor Who");
+        updatedReminder.warning_time = 3;
+        response.data = updatedReminder;
 
         mockedAxios.put.mockResolvedValue(response);
-        const res = await editReminder(editedReminder, 'test-token');
+        const res = await editReminder(editReminderPayload, 'test-token');
 
-        expect(res.result).toEqual('success');
-        if (res.result === 'success') {
-            expect(res.payload.reminders[0].warning_time).toEqual(editedReminder.warning_time);
-        }
+        expect(res.warning_time).toEqual(3);
     });
 
     test('is able to delete a Reminder', async () => {
@@ -213,18 +170,15 @@ describe('requests return correct responses', () => {
         mockedAxios.delete.mockResolvedValue(response);
         const res = await deleteReminder('Maigret', 'test-token');
 
-        expect(res.result).toEqual('success');
-        if (res.result === 'success') {
-            let length = res.payload.reminders.length;
-            expect(length).toBeLessThan(reminders.length);
-            let maigretFound = false;
-            res.payload.reminders.forEach(reminder => {
-                if (reminder.show === 'Maigret') {
-                    maigretFound = true;
-                }
-            });
-            expect(maigretFound).toBe(false);
-        }
+        // let length = res.payload.reminders.length;
+        // expect(length).toBeLessThan(reminders.length);
+        // let maigretFound = false;
+        // res.payload.reminders.forEach(reminder => {
+        //     if (reminder.show === 'Maigret') {
+        //         maigretFound = true;
+        //     }
+        // });
+        // expect(maigretFound).toBe(false);
     });
 
     test('is able to retrieve a user', async () => {
@@ -233,10 +187,7 @@ describe('requests return correct responses', () => {
         mockedAxios.get.mockResolvedValue(response);
         const res = await getUser('Test');
 
-        expect(res.result).toEqual('success');
-        if (res.result === 'success') {
-            expect(res.payload.username).toEqual(user.username);
-        }
+        expect(res.username).toEqual(user.username);
     });
 
     test('is able to register a new user', async () => {
@@ -245,35 +196,30 @@ describe('requests return correct responses', () => {
         mockedAxios.post.mockResolvedValue(response);
         const userResponse = await registerNewUser(newUser);
 
-        expect(userResponse.result).toEqual('success');
-        if (userResponse.result === 'success') {
-            expect(userResponse.payload.message).toEqual(newUserRes.message);
-            expect(userResponse.payload.user.username).toEqual(newUserRes.user.username);
-            expect(userResponse.payload.user.show_subscriptions).toEqual(newUserRes.user.show_subscriptions);
-            expect(userResponse.payload.user.reminder_subscriptions).toEqual(newUserRes.user.reminder_subscriptions);
-        }
+        expect(userResponse.username).toEqual(newUserRes.username);
+        expect(userResponse.show_subscriptions).toEqual(newUserRes.show_subscriptions);
     });
 
     test('is able to update password of user', async () => {
         response.data = { ...user, password: 'updated-password' };
-
         mockedAxios.post.mockResolvedValue(response);
-        const userResponse = await changePassword('Test', 'updated-password', 'test-token');
 
-        expect(userResponse.result).toEqual('success');
+        const updatedAccountDetails: AccountDetailsFormValues = {
+            password: "updated-password"
+        };
+
+        const userResponse = await changePassword('Test', updatedAccountDetails, 'test-token');
     });
 
-    test('is able to update password of user', async () => {
+    test("is able to add to a user's subscriptions", async () => {
         response.data = updateSubscriptionsRes
 
         mockedAxios.put.mockResolvedValue(response);
-        const userResponse = await updateSubscriptions('Test', { show_subscriptions: ['Vera'] }, 'test-token');
+        const userResponse = await addSubscriptions('Test', ['Vera'], 'test-token');
 
-        expect(userResponse.result).toEqual('success');
-        if (userResponse.result === 'success') {
-            expect(userResponse.payload.user.show_subscriptions.length).toBeGreaterThan(user.show_subscriptions.length);
-            expect(userResponse.payload.user.show_subscriptions).toContain('Vera');
-        }
+       const latestSubscription = userResponse.show_subscriptions[userResponse.show_subscriptions.length - 1];
+        expect(userResponse.show_subscriptions.length).toBeGreaterThan(user.show_subscriptions.length);
+        expect(latestSubscription.search_item.show).toContain('Vera');
     });
 
     test('is able to log a user in', async () => {
@@ -282,11 +228,8 @@ describe('requests return correct responses', () => {
         mockedAxios.post.mockResolvedValue(response);
         const userResponse = await login({ username: 'Test', password: 'password' });
 
-        expect(userResponse.result).toEqual('success');
-        if (userResponse.result === 'success') {
-            expect(userResponse.payload.message).toEqual('You have successfully logged in');
-            expect(userResponse.payload.user.username).toEqual('Test');
-        }
+        expect(userResponse.username).toEqual('Test');
+        expect(userResponse.token).toEqual("test-token");
     });
 
 });

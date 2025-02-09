@@ -21,7 +21,7 @@ import { UserContext } from '../../contexts';
 import { useShow } from '../../hooks/useShow';
 import { updateShowEpisode } from '../../requests';
 import { getSeasons, sessionExpiryMessage } from '../../utils';
-import { ErrorResponse, ShowEpisode } from '../../utils/types';
+import { ShowEpisode } from '../../utils/types';
 import "./ShowEpisode.css";
 
 interface ShowProps {
@@ -59,12 +59,11 @@ const ShowEpisodes = ({ episodes, showName }: ShowProps) => {
         catch(error) {
             let message: string =  error?.message;
             if (error?.response) {
-                const responseError: ErrorResponse = error.response;
-                if (responseError.data.msg) {
+                if (error.response?.data.msg) {
                     message = sessionExpiryMessage("update this episode");
                 }
                 else {
-                    message = responseError.data.message;
+                    message = error.response.data.message;
                 }
             }
             notification.error({

@@ -1,213 +1,317 @@
 import {
     CurrentUser,
-    FailedResponse,
     Guide,
     NewUserDetails,
-    RecordedShowModel,
+    ShowData,
     Reminder,
     SearchItem,
-    SearchItemResponses,
-    ShowSearchResult,
     User,
-    UserResponses
+    NewShowPayload,
 } from "../../utils/types";
-
+import { TVMazeShow } from "../../utils/types/tvmaze";
 
 export const guide: Guide = {
-    FTA: [
+    fta: [
         {
-            title: 'Doctor Who',
-            time: '22:35',
-            channel: 'ABC2',
-            season_number: '6',
+            title: 'Maigret',
+            start_time: '20:30',
+            end_time: "22:00",
+            channel: 'ABC1',
+            season_number: '2',
             episode_number: 1,
-            episode_title: 'The Impossible Astronaut',
-            repeat: false,
-            event: 'Doctor Who has aired today'
+            episode_title: "Maigret's Dead Man",
+            repeat: true,
+            event: 'Maigret has aired today'
+        },
+        {
+            title: 'Vera',
+            start_time: '13:00',
+            end_time: "14:30",
+            channel: 'ABC1',
+            season_number: '7',
+            episode_number: 3,
+            episode_title: 'Broken Promise',
+            repeat: true,
+            event: 'Vera has aired today'
         }
     ],
-    BBC: [
-
+    bbc: [
+        {
+            title: 'Death in Paradise',
+            start_time: '19:30',
+            end_time: "20:30",
+            channel: 'BBC First',
+            season_number: '1',
+            episode_number: 1,
+            episode_title: 'Arriving in Paradise',
+            repeat: true,
+            event: 'Death in Paradise has aired today'
+        },
+        {
+            title: 'Lewis',
+            start_time: '15:00',
+            end_time: "16:30",
+            channel: 'BBC UKTV',
+            season_number: '2',
+            episode_number: 3,
+            episode_title: 'Life Born of Fire',
+            repeat: true,
+            event: 'Lewis has aired today'
+        }
     ]
 };
 
 export const searchList: SearchItem[] = [
     {
-        show: 'Doctor Who',
-        image: 'http://image_url.com/doctor-who',
-        conditions: {
-
-        },
-        searchActive: true
+        show: "Doctor Who",
+        conditions: null,
+        search_active: true,
+        exact_title_match: true,
     },
     {
-        show: 'Endeavour',
-        image: 'http://image_url.com/endeavour',
-        conditions: {
-
-        },
-        searchActive: true
+        show: "Endeavour",
+        conditions: null,
+        search_active: true,
+        exact_title_match: true,
     }
 ];
 
 export const addSearchItem: SearchItem = {
-    show: 'Maigret',
-    image: 'https://image_url.com/maigret',
-    conditions: {
-
-    },
-    searchActive: true
+    show: "Maigret",
+    conditions: null,
+    search_active: true,
+    exact_title_match: true,
 };
 
-export const addSearchItemResponse: SearchItemResponses = {
-    message: 'Maigret was added to the Search List',
-    searchList: [...searchList, addSearchItem]
-};
-
-export const failedSearchItemResponse: FailedResponse = {
-    result: 'error',
-    status: 400,
-    statusText: 'Bad Request',
-    message: 'Maigret already exists'
-};
-
-export const recordedShows: RecordedShowModel[] = [
+export const shows: ShowData[] = [
     {
-        show: 'Doctor Who',
-        seasons: [
+        show_name: "Doctor Who",
+        show_episodes: [
             {
-                season_number: '1',
-                episodes: [
-                    {
-                        episode_number: 1,
-                        episode_title: 'Rose',
-                        alternative_titles: [],
-                        summary: '',
-                        channels: ['ABC1', 'ABCHD'],
-                        air_dates: ['01/01/2024']
-                    },
-                    {
-                        episode_number: 2,
-                        episode_title: 'The End of the World',
-                        alternative_titles: [],
-                        summary: '',
-                        channels: ['ABC1', 'ABCHD'],
-                        air_dates: ['08/01/2024']
-                    }
+                id: 1,
+                show: "Doctor Who",
+                season_number: 1,
+                episode_number: 1,
+                episode_title: "Rose",
+                alternative_titles: [],
+                summary: "",
+                channels: [
+                    "ABC1",
+                    "ABCHD"
+                ],
+                air_dates: [
+                    new Date("01/01/2024")
+                ],
+            },
+            {
+                id: 2,
+                show: "Doctor Who",
+                season_number: 1,
+                episode_number: 2,
+                episode_title: "The End of the World",
+                alternative_titles: [],
+                summary: "",
+                channels: [
+                    "ABC1",
+                    "ABCHD"
+                ],
+                air_dates: [
+                    new Date("08/01/2024")
                 ]
-            }
+            },
+            {
+                id: 3,
+                show: "Doctor Who",
+                season_number: 2,
+                episode_number: 0,
+                episode_title: 'A Christmas Invasion',
+                alternative_titles: [],
+                summary: '',
+                channels: [
+                    'ABC1',
+                    'ABCHD',
+                    'ABC2'
+                ],
+                air_dates: [
+                    new Date('11/4/2024'),
+                    new Date('12/4/2024'),
+                ]
+            },
         ],
-        tvmaze_id: '1234'
+        show_details: {
+            title: "Doctor Who",
+            description: "",
+            genres: [],
+            image: "",
+            tvmaze_id: "1234"
+        },
+        search_item: {
+            show: "Doctor Who",
+            search_active: true,
+            exact_title_match: true,
+            conditions: null,
+        },
+        reminder: null
     },
     {
-        show: 'Maigret',
-        seasons: [
+        show_name: "Maigret",
+        show_episodes: [
             {
-                season_number: '1',
-                episodes: [
-                    {
-                        episode_number: 1,
-                        episode_title: 'Maigret Sets A Trap',
-                        alternative_titles: [],
-                        summary: '',
-                        channels: ['ABC1', 'ABCHD'],
-                        air_dates: ['01/01/2024']
-                    },
-                    {
-                        episode_number: 2,
-                        episode_title: "Maigret's Dead Man",
-                        alternative_titles: [],
-                        summary: '',
-                        channels: ['ABC1', 'ABCHD'],
-                        air_dates: ['08/01/2024']
-                    }
+                id: 3,
+                show: "Maigret",
+                season_number: 1,
+                episode_number: 1,
+                episode_title: "Maigret Sets A Trap",
+                alternative_titles: [],
+                summary: "",
+                channels: [
+                    "ABC1",
+                    "ABCHD"
+                ],
+                air_dates: [
+                    new Date("01/01/2024")
                 ]
-            }
+            },
+            {
+                id: 4,
+                show: "Maigret",
+                season_number: 1,
+                episode_number: 2,
+                episode_title: "Maigret's Dead Man",
+                alternative_titles: [],
+                summary: "",
+                channels: [
+                    "ABC1", "ABCHD"
+                ],
+                air_dates: [
+                    new Date("08/01/2024")
+                ]
+            },
         ],
-        tvmaze_id: '1234'
+        show_details: {
+            title: "Maigret",
+            description: "",
+            genres: [],
+            image: "",
+            tvmaze_id: "1234"
+        },
+        search_item: {
+            show: "Maigret",
+            exact_title_match: true,
+            search_active: true,
+            conditions: null,
+        },
+        reminder: null
     }
 ];
 
 export const reminders: Reminder[] = [
     {
-        show: 'Doctor Who',
+        show: "Doctor Who",
         warning_time: 5,
-        reminder_alert: 'Before',
-        occasions: 'All'
+        alert: "Before",
+        occasions: "All"
     },
     {
-        show: 'Maigret',
+        show: "Maigret",
         warning_time: 3,
-        reminder_alert: 'Before',
-        occasions: 'All'
+        alert: "Before",
+        occasions: "All"
     }
 ];
 
 export const user: User = {
-    username: 'Test',
+    username: "Test",
     show_subscriptions: [
-        'Maigret',
-        'Doctor Who',
-        'Endeavour'
+        {
+            id: 1,
+            search_id: 1,
+            user_id: 2,
+            search_item: shows[1].search_item
+        },
+        {
+            id: 2,
+            search_id: 2,
+            user_id: 2,
+            search_item: shows[0].search_item
+        },
     ],
     reminder_subscriptions: [
-        'Maigret',
-        'Endeavour'
+        "Maigret",
+        "Endeavour"
     ],
-    role: 'Standard'
+    role: "Standard"
 };
 
+export const currentUser: CurrentUser = { ...user, token: "test-token" };
+
 export const newUser: NewUserDetails = {
-    username: 'Random',
-    password: 'test-password',
+    username: "Random",
+    password: "test-password",
     show_subscriptions: [],
     reminder_subscriptions: []
 };
 
-export const newUserRes: UserResponses<CurrentUser> = {
-    message: 'Your account has been created',
-    user: {
-        username: 'Random',
-        show_subscriptions: [],
-        reminder_subscriptions: [],
-        role: 'Standard',
-        token: 'token-test'
-    }
+export const newUserRes: CurrentUser = {
+    username: "Random",
+    show_subscriptions: [],
+    reminder_subscriptions: [],
+    role: "Standard",
+    token: "test-token"
 };
 
-export const updateSubscriptionsRes: UserResponses<CurrentUser> = {
-    message: 'Your subscriptions have been updated',
-    user: {
-        username: 'Random',
-        show_subscriptions: ['Maigret', 'Endeavour', 'Doctor Who', 'Vera'],
-        reminder_subscriptions: [],
-        role: 'Standard',
-        token: 'token-test'
-    }
+export const updateSubscriptionsRes: CurrentUser = {
+    username: "Random",
+    show_subscriptions: [
+        ...user.show_subscriptions, 
+        {
+            id: 3,
+            search_id: 3,
+            user_id: 2,
+            search_item: {
+                show: "Vera",
+                search_active: true,
+                exact_title_match: true,
+                conditions: null
+            }
+        },
+    ],
+    reminder_subscriptions: [],
+    role: "Standard",
+    token: "test-token"
 };
 
-export const loginRes: UserResponses<CurrentUser> = {
-    message: 'You have successfully logged in',
-    user: {
-        username: 'Test',
-        show_subscriptions: [],
-        reminder_subscriptions: [],
-        role: 'Standard',
-        token: 'token-test'
-    }
+export const loginRes: CurrentUser = {
+    username: "Test",
+    show_subscriptions: [],
+    reminder_subscriptions: [],
+    role: "Standard",
+    token: "test-token"
 };
 
-export const tvMazeResult: ShowSearchResult = {
+export const newShowPayload: NewShowPayload = {
+    name: "Maigret",
+    conditions: {
+        exact_title_match: true,
+        min_season_number: 1,
+        max_season_number: 2,
+        ignore_episodes: [],
+        ignore_seasons: [],
+        ignore_titles: [],
+    }
+}
+
+export const tvMazeResult: TVMazeShow = {
     score: 0.9,
     show: {
         id: 1234,
-        name: 'Maigret',
+        name: "Maigret",
         image: {
-            medium: 'https://image_url.com/maigret',
-            original: 'https://image_url.com/maigret'
+            medium: "https://image_url.com/maigret",
+            original: "https://image_url.com/maigret"
         },
-        summary: 'Maigret Summary',
-        status: 'Ended',
-        premiered: '01/01/2016'
+        summary: "Maigret Summary",
+        status: "Ended",
+        premiered: "01/01/2016"
     }
 };
