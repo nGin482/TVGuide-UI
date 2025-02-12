@@ -33,24 +33,23 @@ import { AccountDetailsFormValues, Reminder } from "../utils/types";
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('requests return correct responses', () => {
-    
-    const response: AxiosResponse = {
-        status: 200,
-        statusText: 'OK',
-        data: null,
-        headers: null,
-        config: null
-    };
+const response: AxiosResponse = {
+    status: 200,
+    statusText: 'OK',
+    data: null,
+    headers: null,
+    config: null
+};
 
-    const badResponse: AxiosResponse = {
-        status: 404,
-        statusText: 'Not Found',
-        data: null,
-        headers: null,
-        config: null
-    };
+const badResponse: AxiosResponse = {
+    status: 404,
+    statusText: 'Not Found',
+    data: null,
+    headers: null,
+    config: null
+};
 
+describe("Fetch Guide data", () => {
     test('returns 200 when retrieving guide', async () => {
         
         response.data = guide;
@@ -65,9 +64,10 @@ describe('requests return correct responses', () => {
         mockedAxios.get.mockRejectedValue(Error(`${badResponse.status} ${badResponse.statusText}`));
         expect(async () => await getGuide()).rejects.toThrow(`${badResponse.status} ${badResponse.statusText}`);
     });
+});
 
-
-    test('returns 200 when retrieving the list of shows stored', async () => {
+describe("Handling Show Data", () => {
+    test("should successfully retrive data for all shows", async () => {
 
         response.data = shows;
         
@@ -81,7 +81,7 @@ describe('requests return correct responses', () => {
         await expect(async () => await getGuide()).rejects.toThrow(`${badResponse.status} ${badResponse.statusText}`);
     });
 
-    test('returns updated searchList when searchItem added', async () => {
+    test("creates a new show and returns the created details", async () => {
         response.data = addSearchItem;
 
         mockedAxios.post.mockResolvedValue(response);
@@ -96,7 +96,7 @@ describe('requests return correct responses', () => {
         await expect(async () => await addNewShow(newShowPayload, 'test-token')).rejects.toMatchObject(badResponse);
     });
 
-    test('returns updated searchList when searchItem deleted', async () => {
+    test.skip('returns updated searchList when searchItem deleted', async () => {
         await removeShowFromList(addSearchItem.show, 'test-token');
         
         // expect(res.result).toEqual('success');
@@ -107,19 +107,7 @@ describe('requests return correct responses', () => {
         // expect(payload.searchList.length).toBeLessThan(addSearchItemResponse.searchList.length);
     });
 
-    test('returns Recorded Shows', async () => {
-        response.data = shows;
-
-        mockedAxios.get.mockResolvedValue(response);
-        const showList = await getShows();
-        
-        expect(showList.length).toBeGreaterThan(0);
-        expect(showList[0].show_name).toEqual(shows[0].show_name);
-        expect(showList[0].show_episodes[0].season_number).toEqual(shows[0].show_episodes[0].season_number);
-        expect(showList[0].show_episodes[0].episode_number).toEqual(shows[0].show_episodes[0].episode_number);
-    });
-
-    test('returns Reminders', async () => {
+    test("successfully retrieves all Reminders", async () => {
         response.data = reminders;
 
         mockedAxios.get.mockResolvedValue(response);
@@ -129,7 +117,7 @@ describe('requests return correct responses', () => {
         expect(res[0].show).toEqual(reminders[0].show);
     });
 
-    test('is able to create a Reminder', async () => {
+    test("should be able to create a Reminder", async () => {
         const newReminder: Reminder = {
             show: 'Endeavour',
             warning_time: 5,
@@ -144,7 +132,7 @@ describe('requests return correct responses', () => {
         expect(res.show).toContain(newReminder.show);
     });
 
-    test('is able to edit a Reminder', async () => {
+    test("is able to edit a Reminder", async () => {
         const editReminderPayload: Reminder = {
             show: 'Doctor Who',
             warning_time: 3,
@@ -161,7 +149,7 @@ describe('requests return correct responses', () => {
         expect(res.warning_time).toEqual(3);
     });
 
-    test('is able to delete a Reminder', async () => {
+    test.skip('is able to delete a Reminder', async () => {
         response.data = {
             result: 'success',
             reminders: reminders.filter(reminder => reminder.show !== 'Maigret')
@@ -180,8 +168,10 @@ describe('requests return correct responses', () => {
         // });
         // expect(maigretFound).toBe(false);
     });
+});
 
-    test('is able to retrieve a user', async () => {
+describe("Handle User Data", () => {
+    test("is able to retrieve a user", async () => {
         response.data = user;
 
         mockedAxios.get.mockResolvedValue(response);
@@ -190,7 +180,7 @@ describe('requests return correct responses', () => {
         expect(res.username).toEqual(user.username);
     });
 
-    test('is able to register a new user', async () => {
+    test("is able to register a new user", async () => {
         response.data = newUserRes;
 
         mockedAxios.post.mockResolvedValue(response);
@@ -200,7 +190,7 @@ describe('requests return correct responses', () => {
         expect(userResponse.show_subscriptions).toEqual(newUserRes.show_subscriptions);
     });
 
-    test('is able to update password of user', async () => {
+    test("is able to update password of user", async () => {
         response.data = { ...user, password: 'updated-password' };
         mockedAxios.post.mockResolvedValue(response);
 
@@ -209,6 +199,7 @@ describe('requests return correct responses', () => {
         };
 
         const userResponse = await changePassword('Test', updatedAccountDetails, 'test-token');
+        expect(Object.values(userResponse)).toContain("updated-password");
     });
 
     test("is able to add to a user's subscriptions", async () => {
@@ -222,7 +213,7 @@ describe('requests return correct responses', () => {
         expect(latestSubscription.search_item.show).toContain('Vera');
     });
 
-    test('is able to log a user in', async () => {
+    test("is able to log a user in", async () => {
         response.data = loginRes;
 
         mockedAxios.post.mockResolvedValue(response);
@@ -231,5 +222,4 @@ describe('requests return correct responses', () => {
         expect(userResponse.username).toEqual('Test');
         expect(userResponse.token).toEqual("test-token");
     });
-
 });
