@@ -1,11 +1,11 @@
 import { BrowserRouter } from 'react-router-dom';
-import { ConfigProvider } from 'antd';
+import { App as AntdApp, ConfigProvider, ThemeConfig } from 'antd';
 
 import NavigationHandle from './Navigation/NavigationHandle';
 import BasePage from './Pages/BasePage';
 import { ContextWrapper } from "./contexts";
 
-const theme = {
+const theme: ThemeConfig = {
     token: {
         colorPrimary: '#00b96b'
     }
@@ -15,12 +15,14 @@ function App() {
 
     return (
         <ConfigProvider theme={theme}>
-            <ContextWrapper>
-                <BrowserRouter>
-                    <BasePage />
-                    <NavigationHandle/>
-                </BrowserRouter>
-            </ContextWrapper>
+            <BrowserRouter>
+                <AntdApp>
+                    <ContextWrapper>
+                        <BasePage />
+                        <NavigationHandle/>
+                    </ContextWrapper>
+                </AntdApp>
+            </BrowserRouter>
         </ConfigProvider>
     );
 };

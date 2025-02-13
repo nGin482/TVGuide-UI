@@ -6,13 +6,9 @@ import Cookies from "universal-cookie";
 
 import { UserContext } from "../../contexts/UserContext";
 import { login } from "../../requests";
-
+import { LoginData } from "../../utils/types";
 import "./login.css";
 
-interface LoginForm {
-    username: string
-    password: string
-};
 
 const rules: FormRule[] = [
     {
@@ -22,21 +18,22 @@ const rules: FormRule[] = [
 
 const Login = () => {
     const [loginError, setLoginError] = useState('');
+
     const { setUser } = useContext(UserContext);
-    const [ form ] = Form.useForm();
+    const [ form ] = Form.useForm<LoginData>();
     const history = useHistory<string>();
 
     const cookies = new Cookies(null, { path: '/' });
 
-    const loginHandle = async (values: LoginForm) => {
-        const response = await login(values);
-        if (response.result === 'success') {
-            cookies.set('user', JSON.stringify(response.payload.user));
-            setUser(response.payload.user);
+    const loginHandle = async (values: LoginData) => {
+        try {
+            const loggedInUser = await login(values);
+            cookies.set('user', JSON.stringify(loggedInUser));
+            setUser(loggedInUser);
             history.push(`/profile/${values.username}`);
         }
-        else {
-            setLoginError(response.message);
+        catch(error) {
+            setLoginError(error?.response?.data?.message);
         }
     };
 
@@ -47,11 +44,11 @@ const Login = () => {
     return (
         <>
             <Form form={form} onFinish={loginHandle} id="login-form" onFinishFailed={loginFailed} className="auth-form">
-                <Form.Item<LoginForm> label="Username" name="username" rules={rules}>
+                <Form.Item label="Username" name="username" rules={rules}>
                     <Input />
                 </Form.Item>
 
-                <Form.Item<LoginForm> label="Password" name="password" rules={rules}>
+                <Form.Item label="Password" name="password" rules={rules}>
                     <Input.Password />
                 </Form.Item>
                 

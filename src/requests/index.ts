@@ -1,287 +1,157 @@
-import axios, { AxiosResponse } from "axios";
 
+import { deleteRequest, getRequest, postRequest, putRequest } from "./api-client";
 import {
-    Guide,
-    RecordedShowModel,
-    Reminder,
-    SearchItem,
-    AddReminderResponse,
-    User,
+    AccountDetailsFormValues,
     CurrentUser,
-    SubscriptionsPayload,
-    ErrorResponse,
-    FailedResponse,
-    SuccessResponse,
-    UserResponses,
-    SearchItemResponses,
+    Guide,
+    LoginData,
+    NewShowPayload,
     NewUserDetails,
-    ShowSearchResult
+    Reminder,
+    ReminderFormValues,
+    SearchItemPayload,
+    SearchItem,
+    ShowData,
+    ShowEpisode,
+    User,
 } from "../utils/types";
 
-const baseURL = process.env.BASE_URL;
-
-
-const headers = (token: string) => {
-    return {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        }
-    };
-};
-
 const getGuide = async () => {
-    const response = await axios.get(`${baseURL}/guide`);
-    if (response.status === 200) {
-        return response.data as Guide;
-    }
-    throw Error(`${response.status} ${response.statusText}`);
+    return await getRequest<Guide>(`/guide`);
 };
 
-const getEvents = async () => {
-    const response = await axios.get(`${baseURL}/events`);
-    if (response.status === 200) {
-        return response.data as string[];
-    }
-
-    throw Error(`${response.status} ${response.statusText}`);
-};
-
-const getShowList = () => {
-    return axios.get(`${baseURL}/show-list`).then((response: AxiosResponse<SearchItem[]>) => response.data);
-};
-const addShowToList = async (newShow: ShowSearchResult, conditions: SearchItem['conditions'], token: string) => {
-    try {
-        const response = await axios.post<SearchItemResponses>(
-            `${baseURL}/show-list`,
-            { show: newShow.show.name, image: newShow.show.image.medium, tvmaze_id: newShow.show.id, conditions },
-            headers(token)
-        );
-        return { result: 'success', payload: response.data } as SuccessResponse<SearchItemResponses>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+export const getShows = () => {
+    return getRequest<ShowData[]>("/shows");
+}
+const addNewShow = async (newShowData: NewShowPayload, token: string): Promise<ShowData> => {
+    const newShowDetails = await postRequest<NewShowPayload, ShowData>(
+        "/shows",
+        newShowData,
+        { Authorization: `Bearer ${token}` }
+    );
+    return newShowDetails;
 };
 const removeShowFromList = async (showToRemove: string, token: string) => {
-    try {
-        const response: AxiosResponse<SearchItemResponses> = await axios.delete(`${baseURL}/show-list/${showToRemove}`, headers(token));
-        return { result: 'success', payload: response.data } as SuccessResponse<SearchItemResponses>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+    await deleteRequest(
+        `/shows/${showToRemove}`,
+        { Authorization: `Bearer ${token}` }
+    );
 };
 
-const getRecordedShows = () => {
-    return axios.get(`${baseURL}/recorded-shows`).then((response: AxiosResponse<RecordedShowModel[]>) => response.data);
-}
-const getRecordedShow = (show: string) => {
-    return axios.get(`${baseURL}/recorded-shows/${show}`).then((response: AxiosResponse<RecordedShowModel>) => response.data);
+export const addSearchCriteria = async (searchCriteria: SearchItemPayload, token: string) => {
+    const newSearchItem = await postRequest<SearchItemPayload, SearchItem>(
+        `/search-item`,
+        searchCriteria,
+        { Authorization: `Bearer ${token}` }
+    );
+    return newSearchItem;
 };
 
-const getReminders = () => {
-    return axios.get(`${baseURL}/reminders`).then((response: AxiosResponse<Reminder[]>) => response.data);
+export const editSearchCriteria = async (searchCriteria: SearchItemPayload, token: string) => {
+    const updatedSearchItem = await putRequest<SearchItemPayload, SearchItem>(
+        `/search-item/${searchCriteria.show}`,
+        searchCriteria,
+        { Authorization: `Bearer ${token}` }
+    );
+    return updatedSearchItem;
 };
-const addReminder = async (reminder: Reminder, token: string) => {
-    try {
-        const response: AxiosResponse<AddReminderResponse> = await axios.post(`${baseURL}/reminders`, reminder, headers(token));
-        return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+
+export const deleteSearchCriteria = async (show: string, token: string) => {
+    await deleteRequest(`/search-item/${show}`, { Authorization: `Bearer ${token}` });
 };
-const editReminder = async (reminderDetails: Reminder, token: string) => {
-    try {
-        const response: AxiosResponse<AddReminderResponse> = await axios.put(`${baseURL}/reminder/${reminderDetails.show}`, reminderDetails, headers(token));
-        return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+
+const getReminders = async () => {
+    const reminders = await getRequest<Reminder[]>("/reminders");
+    return reminders;
+};
+const addReminder = async (reminder: ReminderFormValues, token: string) => {
+    return await postRequest<ReminderFormValues, Reminder>(
+        `/reminders`,
+        reminder,
+        { Authorization: `Bearer ${token}` }
+    );
+};
+const editReminder = async (reminderDetails: ReminderFormValues, token: string) => {
+    return await putRequest<ReminderFormValues, Reminder>(
+        `/reminder/${reminderDetails.show}`,
+        reminderDetails,
+        { Authorization: `Bearer ${token}` }
+    );
 }
-const deleteReminder = async (reminder: string, token: string) => {
-    try {
-        const response: AxiosResponse<AddReminderResponse> = await axios.delete(`${baseURL}/reminder/${reminder}`, headers(token));
-        return { result: 'success', payload: response.data } as SuccessResponse<AddReminderResponse>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+const deleteReminder = async (show: string, token: string) => {
+    return await deleteRequest(`/reminder/${show}`, { Authorization: `Bearer ${token}` });
+};
+
+const updateShowEpisode = async (episode: ShowEpisode, token: string) => {
+    return await putRequest<ShowEpisode, ShowEpisode>(
+        `/show-episode/${episode.id}`,
+        episode,
+        { Authorization: `Bearer ${token}` }
+    );
 };
 
 const getUser = async (username: string) => {
-    try {
-        const response: AxiosResponse<User> = await axios.get(`${baseURL}/user/${username}`);
-        return { result: 'success', payload: response.data } as SuccessResponse<User>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-    }
+    return await getRequest<User>(`/user/${username}`);
 };
 const registerNewUser = async (user: NewUserDetails) => {
-    try {
-        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.post(`${baseURL}/auth/register`, user);
-        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
-    }
-    catch(error) {
-        const response: AxiosResponse<ErrorResponse> = error.response;
-        const result: FailedResponse = {
-            result: 'error',
-            status: response.status,
-            statusText: response.statusText,
-            message: response.data.message
-        };
-        return result;
-    }
+    const newUser = await postRequest<NewUserDetails, CurrentUser>(`/auth/register`, user);
+    return newUser;
 };
-const changePassword = async (username: string, newPassword: string, token: string) => {
-    try {
-        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.post(
-            `${baseURL}/user/${username}/change_password`,
-            { password: newPassword },
-            headers(token)
-        );
-        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
+const changePassword = async (
+    username: string,
+    details: AccountDetailsFormValues,
+    token: string
+) => {
+    const response = await putRequest<{ password: string }, User>(
+        `/user/${username}/change_password`,
+        { password: details.password },
+        { Authorization: `Bearer ${token}` }
+    );
 
-    }
-    catch(error) {
-        const response: AxiosResponse<ErrorResponse> = error.response;
-        const message = error?.response
-            ? response.data.message
-            : 'Unable to communicate with the server. Please try again later';
-        const result: FailedResponse = {
-            result: 'error',
-            status: response?.status || 0,
-            statusText: response?.statusText || '',
-            message,
-            msg: response?.data.msg
-        };
-        return result;
-    }
+    return response;
 };
-const updateSubscriptions = async (username: string, subscriptions: SubscriptionsPayload, token: string) => {
-    try {
-        const response: AxiosResponse<UserResponses<User>> = await axios.put(`${baseURL}/user/${username}/subscriptions`, subscriptions, headers(token));
-        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<User>>;
-    }
-    catch(error) {
-        if (error?.response) {
-            const response: AxiosResponse<ErrorResponse> = error.response;
-            const result: FailedResponse = {
-                result: 'error',
-                status: response.status,
-                statusText: response.statusText,
-                message: response.data?.message,
-                msg: response.data?.msg
-            };
-            return result;
-        }
-        else {
-            const result: FailedResponse = {
-                result: 'error',
-                status: 0,
-                statusText: error.message,
-                message: error.message === 'Network Error'
-                    ? 'Unable to communicate with the server at this time. Please try again later.'
-                    : error.message
-            };
-            return result;
-        }
-    }
+const getUserSubscriptions = async (user: string) => {
+    const data = await getRequest(`/users/${user}/subscriptions`);
+    console.log(data)
+};
+const addSubscriptions = async (
+    username: string,
+    subscriptions: string[],
+    token: string
+) => {
+    const updatedUser = await postRequest<string[], User>(
+        `/users/${username}/subscriptions`,
+        subscriptions,
+        { Authorization: `Bearer ${token}` }
+    );
+
+    return updatedUser;
 };
 
-const login = async (loginDetails: { username: string, password: string }) => {
-    try {
-        const response: AxiosResponse<UserResponses<CurrentUser>> = await axios.post(`${baseURL}/auth/login`, loginDetails);
-        return { result: 'success', payload: response.data } as SuccessResponse<UserResponses<CurrentUser>>;
-    }
-    catch(err) {
-        if (err?.response) {
-            const payload: FailedResponse = err.response.data
-            return { result: 'error', ...payload }
-        }
-    }
+const unsubscribeFromSearch = async (subscriptionId: number, token: string) => {
+    await deleteRequest(`/users/subscriptions/${subscriptionId}`, { Authorization: `Bearer ${token}` });
+};
+
+const login = async (loginDetails: LoginData) => {
+    const currentUser = await postRequest<LoginData, CurrentUser>(`/auth/login`, loginDetails);
+    return currentUser;
 };
 
 export {
     getGuide,
-    getShowList,
-    getEvents,
-    addShowToList,
+    addNewShow,
     removeShowFromList,
-    getRecordedShows,
-    getRecordedShow,
     getReminders,
     addReminder,
     editReminder,
     deleteReminder,
+    updateShowEpisode,
     getUser,
     registerNewUser,
     changePassword,
-    updateSubscriptions,
+    getUserSubscriptions,
+    addSubscriptions,
+    unsubscribeFromSearch,
     login
 };
 

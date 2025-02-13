@@ -1,41 +1,60 @@
-import { Dispatch, SetStateAction, useEffect, useContext, useState } from "react";
-import { Alert, Carousel, Checkbox, Form, Input, Modal, notification, Select, Tag } from "antd";
+import { useEffect, useContext, useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
+import {
+    Alert,
+    App,
+    Carousel,
+    Checkbox,
+    Form,
+    Input,
+    Modal,
+    Radio,
+    Space,
+    Select,
+    Tag
+} from "antd";
+import { NavLink } from "react-router-dom";
 import classNames from "classnames";
-import moment from "moment";
+import dayjs from "dayjs";
 
 import ShowStatusTag from "./ShowStatusTag";
 import { PrevArrow, NextArrow } from "./ArrowComponents";
-import { UserContext } from "../../contexts/UserContext";
-import { addShowToList } from "../../requests";
-import { getShowSeasons, searchNewShow } from "../../requests";
-import { SeasonSearch, ShowSearchResult } from "../../utils/types";
+import { useShow } from "../../hooks/useShow";
+import { UserContext } from "../../contexts";
+import { addNewShow, getShowSeasons, searchNewShow } from "../../requests";
+import { createSearchItemPayload, sessionExpiryMessage } from "../../utils";
+import {
+    ErrorResponse,
+    NewShowPayload,
+    SearchItemFormValues,
+    TVMazeSeason,
+    TVMazeShow
+} from "../../utils/types";
 import './AddShow.scss';
 
 interface AddShowProps {
     openModal: boolean
     setOpenModal: Dispatch<SetStateAction<boolean>>
 };
-interface FormValues {
-    searchTerm: string
-    exact_search: boolean
-    seasons: number[]
-};
 type FORM_STATES = 'initial' | 'searching' | 'selected' | 'success' | 'error';
 
-const AddShow = (props: AddShowProps) => {
-    const { openModal, setOpenModal } = props;
+const AddShow = ({ openModal, setOpenModal }: AddShowProps) => {
     
     const [state, setState] = useState<FORM_STATES>('initial');
     const [searchTerm, setSearchTerm] = useState('');
-    const [searchResults, setSearchResults] = useState<ShowSearchResult[]>([]);
-    const [showSelected, setShowSelected] = useState<ShowSearchResult>(null);
+    const [searchResults, setSearchResults] = useState<TVMazeShow[]>([]);
+    const [showSelected, setShowSelected] = useState<TVMazeShow>(null);
     const [showSelectedIndex, setShowSelectedIndex] = useState<number>(null);
-    const [showSeasons, setShowSeasons] = useState<SeasonSearch[]>([]);
+    const [seasonChoice, setSeasonChoice] = useState<"all" | "some">();
+    const [showSeasons, setShowSeasons] = useState<TVMazeSeason[]>([]);
     const [error, setError] = useState('');
     const [index, setIndex] = useState(0);
+    
+    const { addShowToContext } = useShow();
     const { currentUser } = useContext(UserContext);
+    const { notification } = App.useApp();
 
-    const [form] = Form.useForm<FormValues>();
+    const [form] = Form.useForm<SearchItemFormValues>();
 
     useEffect(() => {
         setState('initial');
@@ -53,22 +72,46 @@ const AddShow = (props: AddShowProps) => {
     }, [showSelected]);
 
     const addShowSubmission = async () => {
-        if (!form.getFieldsValue().exact_search) {
-            form.setFieldValue('exact_search', false);
+        form.validateFields();
+        if (!form.getFieldsValue().exactSearch) {
+            form.setFieldValue("exactSearch", false);
         }
         
-        const conditions = form.getFieldsValue();
-        delete conditions.searchTerm;
+        const formValues = form.getFieldsValue();
         
-        const response = await addShowToList(showSelected, conditions, currentUser.token);
-        if (response.result === 'success') {
+        const searchConditions = createSearchItemPayload(showSelected.show.name, formValues, showSeasons);
+
+        const newShow: NewShowPayload = {
+            name: showSelected.show.name,
+            conditions: searchConditions
+        };
+        
+        try {
+            const showData = await addNewShow(
+                newShow,
+                currentUser.token
+            );
             setState('success');
             setOpenModal(false);
-            notification.success({ message: 'Success!', description: response.payload.message, duration: 5 });
+            addShowToContext(showData);
+            notification.success({
+                message: 'Success!',
+                description: (
+                    <>
+                        {showData.show_name} has been added.
+                        <br/>
+                        <NavLink to={`/shows/${showData.show_name}`}>View show</NavLink>
+                    </>
+                ),
+                duration: 8
+            });
         }
-        else {
-            setError(response?.message || 'You have been logged out. Please login again to add this show');
-            setState('error');
+        catch(error) {
+            if (error?.response) {
+                const response = error.response as ErrorResponse;
+                setError(response.data?.message || sessionExpiryMessage("add this show"));
+                setState('error');
+            }
         }
     };
 
@@ -162,9 +205,13 @@ const AddShow = (props: AddShowProps) => {
                                     )}
                                 >
                                     <h2>{result.show.name}</h2>
-                                    <img src={result.show.image.medium} style={{ margin: '0 auto'}} />
+                                    <img src={result.show?.image?.medium} style={{ margin: '0 auto'}} />
                                     <p dangerouslySetInnerHTML={{ __html: result.show.summary }} />
-                                    <blockquote>Premiered: <Tag color="processing">{moment(result.show.premiered).format('DD MMMM YYYY')}</Tag></blockquote>
+                                    <blockquote>Premiered: {" "}
+                                        <Tag color="processing">
+                                            {dayjs(result.show.premiered).format('DD MMMM YYYY')}
+                                        </Tag>
+                                    </blockquote>
                                     <blockquote>Status: <ShowStatusTag status={result.show.status} /></blockquote>
                                 </div>
                             ))}
@@ -173,22 +220,54 @@ const AddShow = (props: AddShowProps) => {
                 ) : state === 'selected' && (
                     <>
                         <Form.Item
-                            name="exact_search"
+                            name="exactSearch"
                             valuePropName="checked"
                         >
                             <Checkbox name="exact_search">Exact Title Search</Checkbox>
                         </Form.Item>
                         <Form.Item
-                            name="seasons"
-                            label="Select the seasons desired"
+                            name="seasonChoice"
+                            label="How many seasons?"
+                            required
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Please select how many seasons you'd like"
+                                }
+                            ]}
                         >
-                            <Select
-                                options={showSeasons.map(season => ({ label: `Season ${season.number}`, value: season.number }))}
-                            />
+                            <Radio.Group onChange={value => setSeasonChoice(value.target.value)}>
+                                <Space direction="vertical">
+                                    <Radio value="all">All Seasons</Radio>
+                                    <Radio value="some">Some Seasons</Radio>
+                                </Space>
+                            </Radio.Group>
                         </Form.Item>
+                        {seasonChoice === "some" && (
+                            <Form.Item
+                                name="seasons"
+                                label="Select the desired seasons"
+                            >
+                                <Select
+                                    options={
+                                        showSeasons.map(season => ({
+                                            label: `Season ${season.number}`,
+                                            value: season.number
+                                        }))
+                                    }
+                                    mode="multiple"
+                                />
+                            </Form.Item>
+                        )}
                     </>
                 )}
-                {error && <Alert type="error" message={error} description="Note: You can edit your search term to start again" />}
+                {error && (
+                    <Alert
+                        type="error"
+                        message={error}
+                        description="Note: You can edit your search term to start again"
+                    />
+                )}
             </Form>
         </Modal>
     );

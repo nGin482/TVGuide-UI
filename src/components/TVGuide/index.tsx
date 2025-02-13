@@ -3,25 +3,31 @@ import { Button, Table, TableColumnsType, Tag } from "antd";
 
 import { Guide, GuideShow, User } from "../../utils/types";
 import './TVGuide.css';
+import { EmptyTableView } from "../EmptyTableView";
 
 const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
     const [service, setService] = useState('All');
-    const [guideShows, setGuideShows] = useState([...guide.FTA, ...guide.BBC]);
+    const [guideShows, setGuideShows] = useState([]);
 
     useEffect(() => {
         let guideShows: GuideShow[] = [];
         if (service === 'FTA') {
-            guideShows = [...guide.FTA];
+            guideShows = [...guide.fta];
         }
         else if (service === 'BBC') {
-            guideShows = [...guide.BBC];
+            guideShows = [...guide?.bbc || []];
         }
         else {
-            guideShows = [...guide.FTA, ...guide.BBC];
+            guideShows = [...guide.fta, ...guide?.bbc || []];
         }
 
         if (user) {
-            guideShows = guideShows.filter(show => user.show_subscriptions.includes(show.title));
+            const userSubscriptions = user.show_subscriptions.map(
+                subscription => subscription.search_item.show
+            );
+            guideShows = guideShows.filter(
+                guideEpisode => userSubscriptions.includes(guideEpisode.title)
+            );
         }
         
         guideShows.sort((a, b) => sortServices(a, b));
@@ -29,10 +35,10 @@ const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
     }, [service, guide, user]);
 
     const sortServices = (a: GuideShow, b: GuideShow) => {
-        if (a.time > b.time) {
+        if (a.start_time > b.start_time) {
             return 1;
         }
-        if (a.time < b.time) {
+        if (a.start_time < b.start_time) {
             return -1;
         }
         return 0;
@@ -45,9 +51,14 @@ const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
             key: 'show'
         },
         {
-            title: 'Time',
-            dataIndex: 'time',
-            key: 'time'
+            title: 'Start Time',
+            dataIndex: 'start_time',
+            key: 'start_time'
+        },
+        {
+            title: 'End Time',
+            dataIndex: 'end_time',
+            key: 'end_time'
         },
         {
             title: 'Channel',
@@ -93,10 +104,13 @@ const TVGuide = ({ guide, user }: { guide: Guide, user?: User }) => {
                     {
                         position: ['bottomCenter'],
                         pageSize: 50,
-                        hideOnSinglePage: true
+                        hideOnSinglePage: true,
                     }
                 }
-                rowKey={record => `${record.channel}-${record.time}`}
+                locale={{
+                    emptyText: <EmptyTableView description="No episodes for this day" />,
+                }}
+                rowKey={record => `${record.channel}-${record.start_time}`}
             />
         </div>
     );
